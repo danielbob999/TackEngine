@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net7.0-android</TargetFramework>
+    <SupportedOSPlatformVersion>21</SupportedOSPlatformVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Xamarin.Legacy.OpenTK" Version="1.0.2" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TackEngine.Core\TackEngine.Core.csproj" />
+  </ItemGroup>
+</Project>
