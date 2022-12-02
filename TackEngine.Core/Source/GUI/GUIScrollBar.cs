@@ -4,13 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using TackEngineLib.Main;
-using TackEngineLib.GUI;
-using TackEngineLib.GUI.Events;
-using TackEngineLib.Input;
-using TackEngineLib.Math;
+using TackEngine.Core.Main;
+using TackEngine.Core.GUI;
+using TackEngine.Core.GUI.Events;
+using TackEngine.Core.Input;
+using TackEngine.Core.Math;
 
-namespace TackEngineLib.GUI {
+namespace TackEngine.Core.GUI {
     internal class GUIScrollBar : GUIObject {
         public enum GUIScrollBarOrientation {
             Horizontal,

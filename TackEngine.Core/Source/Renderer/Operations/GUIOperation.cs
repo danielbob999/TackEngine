@@ -5,10 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
 
-using TackEngineLib.GUI;
-using TackEngineLib.Main;
+using TackEngine.Core.GUI;
+using TackEngine.Core.Main;
 
-namespace TackEngineLib.Renderer.Operations {
+namespace TackEngine.Core.Renderer.Operations {
 	public class GUIOperation {
 		public int DrawLevel { get; set; }			// The order that sets the order that all operations are drawn.
 													//	- Drawn from smallest value to largest (Operation with a larger draw level value be be drawn over the top of a smaller draw level value operation)

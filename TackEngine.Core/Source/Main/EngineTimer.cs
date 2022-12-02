@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using TackEngineLib.Engine;
+using TackEngine.Core.Engine;
 
-namespace TackEngineLib.Main {
+namespace TackEngine.Core.Main {
     public class EngineTimer {
         public static EngineTimer Instance = null;
 

@@ -6,9 +6,9 @@ using System.Text;
 using System.IO;
 using System.Threading.Tasks;
 using System.Drawing;
-using TackEngineLib.Engine;
+using TackEngine.Core.Engine;
 
-namespace TackEngineLib.Main {
+namespace TackEngine.Core.Main {
     /// <summary>
     /// 
     /// </summary>

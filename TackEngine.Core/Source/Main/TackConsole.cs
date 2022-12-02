@@ -4,11 +4,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using TackEngineLib.Engine;
-using TackEngineLib.GUI;
-using TackEngineLib.Input;
+using TackEngine.Core.Engine;
+using TackEngine.Core.GUI;
+using TackEngine.Core.Input;
 
-namespace TackEngineLib.Main {
+namespace TackEngine.Core.Main {
     /// <summary>
     /// 
     /// </summary>
@@ -90,7 +90,7 @@ namespace TackEngineLib.Main {
         internal void OnStart() {
             double startTime = EngineTimer.Instance.TotalRunTime;
 
-            GetCommandsFromAssembly(typeof(TackEngine).Assembly.FullName);
+            GetCommandsFromAssembly(typeof(TackEngineInstance).Assembly.FullName);
 
             EngineLog(LogType.Message, "TackConsole started in " + (EngineTimer.Instance.TotalRunTime - startTime).ToString("0.000") + " seconds");
         }
@@ -99,7 +99,7 @@ namespace TackEngineLib.Main {
             if (m_consoleInputField == null && m_consoleTextArea == null) {
                 m_consoleInputField = new GUIInputField();
                 m_consoleInputField.Position = new Vector2f(0, 500);
-                m_consoleInputField.Size = new Vector2f(TackEngine.Instance.Window.WindowSize.X, 30);
+                m_consoleInputField.Size = new Vector2f(TackEngineInstance.Instance.Window.WindowSize.X, 30);
                 m_consoleInputField.OnSubmittedEvent += ProcessCommand;
                 m_consoleInputField.Active = m_consoleGUIActive;
                 m_consoleInputField.Text = "";
@@ -107,7 +107,7 @@ namespace TackEngineLib.Main {
 
                 m_consoleTextArea = new GUITextArea();
                 m_consoleTextArea.Position = new Vector2f(0, 0);
-                m_consoleTextArea.Size = new Vector2f(TackEngine.Instance.Window.WindowSize.X, 500);
+                m_consoleTextArea.Size = new Vector2f(TackEngineInstance.Instance.Window.WindowSize.X, 500);
                 m_consoleTextArea.NormalStyle = new GUITextArea.GUITextAreaStyle() {
                     Colour = new Colour4b(0, 0, 0, 220),
                     Border = null,

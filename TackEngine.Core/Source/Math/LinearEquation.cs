@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TackEngineLib.Math
+namespace TackEngine.Core.Math
 {
     /// <summary>
     /// Representation of a linear equation (straight line)

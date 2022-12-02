@@ -5,11 +5,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using TackEngineLib.Main;
-using TackEngineLib.Physics;
-using TackEngineLib.Math;
+using TackEngine.Core.Main;
+using TackEngine.Core.Physics;
+using TackEngine.Core.Math;
 
-namespace TackEngineLib.Physics
+namespace TackEngine.Core.Physics
 {
     static class PhysicsMovement
     {

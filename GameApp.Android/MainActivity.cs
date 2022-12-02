@@ -1,10 +1,10 @@
 using System.Security.AccessControl;
-using TackEngineLib.Main;
-using TackEngineLib.Objects.Components;
-using TackEngineLib.Objects;
+using TackEngine.Core.Main;
+using TackEngine.Core.Objects.Components;
+using TackEngine.Core.Objects;
 using Android.OS;
 using TackEngine.Android;
-using TackEngineLib.GUI;
+using TackEngine.Core.GUI;
 
 namespace GameApp.Android {
     [Activity(Label = "@string/app_name", MainLauncher = true)]

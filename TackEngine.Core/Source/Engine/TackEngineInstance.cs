@@ -6,16 +6,16 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
 
-using TackEngineLib.Main;
-using TackEngineLib.Objects;
-using TackEngineLib.Objects.Components;
+using TackEngine.Core.Main;
+using TackEngine.Core.Objects;
+using TackEngine.Core.Objects.Components;
 
-namespace TackEngineLib.Engine
+namespace TackEngine.Core.Engine
 {
     /// <summary>
     /// The main engine class
     /// </summary>
-    public class TackEngine
+    public class TackEngineInstance
     {
         private const int VERSION_MAJOR = 1;
         private const int VERSION_MINOR = 8;
@@ -84,17 +84,17 @@ namespace TackEngineLib.Engine
             }
         }
 
-        public static TackEngine Instance = null;
+        public static TackEngineInstance Instance = null;
 
         //internal TackGameWindow Window { get; private set; }
         internal IBaseTackWindow Window { get; private set; }
         public InitalisationSettings Settings { get; private set; }
 
-        public TackEngine() { }
+        public TackEngineInstance() { }
 
         public static void Initialise(object window) {
             // Create a new instance of TackEngine. This is tracked and used by calling TackEngine.Instance
-            Instance = new TackEngine();
+            Instance = new TackEngineInstance();
             Instance.Window = (IBaseTackWindow)window;
             
 

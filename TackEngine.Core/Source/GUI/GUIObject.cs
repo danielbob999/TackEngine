@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using TackEngineLib.Main;
-using TackEngineLib.GUI.Events;
+using TackEngine.Core.Main;
+using TackEngine.Core.GUI.Events;
 
-namespace TackEngineLib.GUI {
+namespace TackEngine.Core.GUI {
     public class GUIObject {
         private static int s_nextId = 0;
 
@@ -101,7 +101,7 @@ namespace TackEngineLib.GUI {
         internal virtual void OnUpdate() {
             RectangleShape shape = GetShapeWithMask();
 
-            if (Physics.AABB.IsPointInAABB(new Physics.AABB(new Vector2f(shape.X, shape.Y + shape.Height), new Vector2f(shape.X + shape.Width, shape.Y)), TackEngineLib.Input.TackInput.Instance.MousePosition.ToVector2f())) {
+            if (Physics.AABB.IsPointInAABB(new Physics.AABB(new Vector2f(shape.X, shape.Y + shape.Height), new Vector2f(shape.X + shape.Width, shape.Y)), TackEngine.Core.Input.TackInput.Instance.MousePosition.ToVector2f())) {
                 IsMouseHovering = true;
             } else {
                 IsMouseHovering = false;

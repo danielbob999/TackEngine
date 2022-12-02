@@ -4,10 +4,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TackEngineLib.Main;
-using TackEngineLib.Engine;
+using TackEngine.Core.Main;
+using TackEngine.Core.Engine;
 
-namespace TackEngineLib.Engine {
+namespace TackEngine.Core.Engine {
     internal abstract class SpriteManager {
         public static SpriteManager Instance { get; protected set; }
 

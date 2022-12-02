@@ -4,10 +4,10 @@ using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Xml.Serialization;
-using TackEngineLib.Main;
-using TackEngineLib.Math;
+using TackEngine.Core.Main;
+using TackEngine.Core.Math;
 
-namespace TackEngineLib.Main {
+namespace TackEngine.Core.Main {
     /// <summary>
     /// Represents a 2D vector using two single-precision floating-point numbers.
     /// </summary>

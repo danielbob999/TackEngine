@@ -5,9 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Text.RegularExpressions;
 
-using TackEngineLib.Main;
+using TackEngine.Core.Main;
 
-namespace TackEngineLib.Renderer {
+namespace TackEngine.Core.Renderer {
     internal static class ShaderParser {
         public struct ParsedShaderDetails {
             public bool m_supportsLighting;

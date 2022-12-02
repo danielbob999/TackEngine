@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 using tainicom.Aether.Physics2D.Common;
 using tainicom.Aether.Physics2D.Dynamics;
 
-using TackEngineLib.Main;
-using TackEngineLib.Physics;
+using TackEngine.Core.Main;
+using TackEngine.Core.Physics;
 
-namespace TackEngineLib.Objects.Components {
+namespace TackEngine.Core.Objects.Components {
     public abstract class BasePhysicsComponent : TackComponent {
 
         private float m_mass;

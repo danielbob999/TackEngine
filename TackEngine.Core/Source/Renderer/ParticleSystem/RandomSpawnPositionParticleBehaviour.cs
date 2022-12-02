@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using TackEngineLib.Main;
-using TackEngineLib.Objects;
+using TackEngine.Core.Main;
+using TackEngine.Core.Objects;
 
-namespace TackEngineLib.Renderer.ParticleSystem {
+namespace TackEngine.Core.Renderer.ParticleSystem {
     public class RandomSpawnPositionParticleBehaviour : ParticleBehaviour {
         private Random m_rand;
         private string m_particleSystemParentHash;

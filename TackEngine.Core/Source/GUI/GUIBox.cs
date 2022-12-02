@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using TackEngineLib.Main;
-using TackEngineLib.Engine;
+using TackEngine.Core.Main;
+using TackEngine.Core.Engine;
 
-namespace TackEngineLib.GUI {
+namespace TackEngine.Core.GUI {
     public class GUIBox : GUIObject {
 
         /// <summary>

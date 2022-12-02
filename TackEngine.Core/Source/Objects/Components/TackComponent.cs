@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TackEngineLib.Objects.Components
+namespace TackEngine.Core.Objects.Components
 {
     public class TackComponent {
         private static int s_nextId = 0;

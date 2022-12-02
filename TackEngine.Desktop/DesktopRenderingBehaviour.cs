@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using TackEngineLib.Engine;
-using TackEngineLib.Main;
-using TackEngineLib.Objects.Components;
-using TackEngineLib.Objects;
-using TackEngineLib.Renderer;
+using TackEngine.Core.Engine;
+using TackEngine.Core.Main;
+using TackEngine.Core.Objects.Components;
+using TackEngine.Core.Objects;
+using TackEngine.Core.Renderer;
 using OpenTK.Graphics.OpenGL;
-using TackEngineLib.Physics;
+using TackEngine.Core.Physics;
 
 namespace TackEngine.Desktop {
     public class DesktopRenderingBehaviour : RenderingBehaviour {
@@ -283,14 +283,14 @@ namespace TackEngine.Desktop {
             OpenTK.Mathematics.Matrix4 scaleMat = OpenTK.Mathematics.Matrix4.CreateScale(scale.X / 2.0f, scale.Y / 2.0f, 1);
 
             // Generate rotation matrix
-            OpenTK.Mathematics.Matrix4 rotationMat = OpenTK.Mathematics.Matrix4.CreateRotationZ((float)TackEngineLib.Math.TackMath.DegToRad(rotation));
+            OpenTK.Mathematics.Matrix4 rotationMat = OpenTK.Mathematics.Matrix4.CreateRotationZ((float)TackEngine.Core.Math.TackMath.DegToRad(rotation));
 
             // Generate the view matrix
-            float widthToHeightRatio = TackEngineLib.Engine.TackEngine.Instance.Window.WindowSize.Y / (float)TackEngineLib.Engine.TackEngine.Instance.Window.WindowSize.X;
+            float widthToHeightRatio = TackEngine.Core.Engine.TackEngineInstance.Instance.Window.WindowSize.Y / (float)TackEngine.Core.Engine.TackEngineInstance.Instance.Window.WindowSize.X;
 
             OpenTK.Mathematics.Matrix4 orthoView = new OpenTK.Mathematics.Matrix4(
-                new OpenTK.Mathematics.Vector4((1 * Camera.MainCamera.ZoomFactor) * (1f / ((float)TackEngineLib.Engine.TackEngine.Instance.Window.WindowSize.X / 2.0f)), 0, 0, 0),
-                new OpenTK.Mathematics.Vector4(0, (1 * Camera.MainCamera.ZoomFactor) * (1f / ((float)TackEngineLib.Engine.TackEngine.Instance.Window.WindowSize.Y / 2.0f)), 0, 0),
+                new OpenTK.Mathematics.Vector4((1 * Camera.MainCamera.ZoomFactor) * (1f / ((float)TackEngine.Core.Engine.TackEngineInstance.Instance.Window.WindowSize.X / 2.0f)), 0, 0, 0),
+                new OpenTK.Mathematics.Vector4(0, (1 * Camera.MainCamera.ZoomFactor) * (1f / ((float)TackEngine.Core.Engine.TackEngineInstance.Instance.Window.WindowSize.Y / 2.0f)), 0, 0),
                 new OpenTK.Mathematics.Vector4(0, 0, 1, 0),
                 new OpenTK.Mathematics.Vector4(0, 0, 0, 1)
                 );

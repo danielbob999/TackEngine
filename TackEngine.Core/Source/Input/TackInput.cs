@@ -5,11 +5,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using TackEngineLib.Main;
-using TackEngineLib.Engine;
-using TackEngineLib.Objects.Components;
+using TackEngine.Core.Main;
+using TackEngine.Core.Engine;
+using TackEngine.Core.Objects.Components;
 
-namespace TackEngineLib.Input {
+namespace TackEngine.Core.Input {
     public class TackInput {
         public static TackInput Instance { get; private set; } = null;
 
@@ -65,14 +65,14 @@ namespace TackEngineLib.Input {
         public Vector2f MousePositionInWorld {
             get {
                 Vector2f clampedMousePos = new Vector2f(
-                (MousePosition.X / (TackEngine.Instance.Window.WindowSize.X / 2.0f)) - 1f,
-                ((MousePosition.Y / (TackEngine.Instance.Window.WindowSize.Y / 2.0f)) - 1f) * -1f);
+                (MousePosition.X / (TackEngineInstance.Instance.Window.WindowSize.X / 2.0f)) - 1f,
+                ((MousePosition.Y / (TackEngineInstance.Instance.Window.WindowSize.Y / 2.0f)) - 1f) * -1f);
 
                 Vector2f cameraPosition = Camera.MainCamera.GetParent().Position;
 
                 return new Vector2f(
-                    (clampedMousePos.X * (TackEngine.Instance.Window.WindowSize.X / (2.0f * Camera.MainCamera.ZoomFactor))) + cameraPosition.X,
-                    (clampedMousePos.Y * (TackEngine.Instance.Window.WindowSize.Y / (2.0f * Camera.MainCamera.ZoomFactor))) + cameraPosition.Y);
+                    (clampedMousePos.X * (TackEngineInstance.Instance.Window.WindowSize.X / (2.0f * Camera.MainCamera.ZoomFactor))) + cameraPosition.X,
+                    (clampedMousePos.Y * (TackEngineInstance.Instance.Window.WindowSize.Y / (2.0f * Camera.MainCamera.ZoomFactor))) + cameraPosition.Y);
             }
         }
 
@@ -171,7 +171,7 @@ namespace TackEngineLib.Input {
                 mKeysDownPerFrame[(int)_key] = true;
                 locker_mKeysDownPerFrame[(int)_key] = true;
 
-                if (mGUIInputRequired || (TackEngineLib.GUI.BaseTackGUI.Instance.FocusedGUIObject != null)) {
+                if (mGUIInputRequired || (TackEngine.Core.GUI.BaseTackGUI.Instance.FocusedGUIObject != null)) {
                     GUI.BaseTackGUI.Instance.RegisterKeyboardEvent(new GUI.Events.GUIKeyboardEvent(_key, KeyboardKeyAction.Down, mInputBufferShift, mInputBufferCapsLock));
                 }
             }
@@ -180,7 +180,7 @@ namespace TackEngineLib.Input {
         }
 
         internal void KeyUpEvent(KeyboardKey _key) {
-            if (mGUIInputRequired || (TackEngineLib.GUI.BaseTackGUI.Instance.FocusedGUIObject != null)) {
+            if (mGUIInputRequired || (TackEngine.Core.GUI.BaseTackGUI.Instance.FocusedGUIObject != null)) {
                 if (_key == KeyboardKey.LeftShift || _key == KeyboardKey.RightShift) {
                     mInputBufferShift = false;
                 }

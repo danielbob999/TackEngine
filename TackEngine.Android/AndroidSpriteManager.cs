@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using TackEngineLib.Engine;
-using TackEngineLib.Main;
+using TackEngine.Core.Engine;
+using TackEngine.Core.Main;
 using OpenTK.Graphics;
 using OpenTK.Graphics.ES30;
 using Android.Graphics;
@@ -76,7 +76,7 @@ namespace TackEngine.Android {
 
             AndroidBitmapInfo info = defaultBitmap.GetBitmapInfo();
 
-            int[] pixels = new int[(int)TackEngineLib.Math.TackMath.Abs(defaultBitmap.GetBitmapInfo().Stride) * defaultBitmap.Height];
+            int[] pixels = new int[(int)TackEngine.Core.Math.TackMath.Abs(defaultBitmap.GetBitmapInfo().Stride) * defaultBitmap.Height];
 
             defaultBitmap.GetPixels(pixels, 0, (int)info.Stride, 0, 0, 32, 32);
 
@@ -85,7 +85,7 @@ namespace TackEngine.Android {
 
             //Sprite.DefaultSprite.PixelFormat = (Sprite.SpritePixelFormat)defaultBitmap.GetBitmapInfo().Format;
             //Sprite.DefaultSprite.m_stride = defaultBitmap.
-            //Sprite.DefaultSprite.Data = new byte[TackEngineLib.Math.TackMath.Abs(defaultBitmap.GetBitmapInfo().Stride) * defaultBitmap.Height];
+            //Sprite.DefaultSprite.Data = new byte[TackEngine.Core.Math.TackMath.Abs(defaultBitmap.GetBitmapInfo().Stride) * defaultBitmap.Height];
 
             //System.Runtime.InteropServices.Marshal.Copy(pixel, Sprite.DefaultSprite.Data, 0, Sprite.DefaultSprite.Data.Length);
 
@@ -104,7 +104,7 @@ namespace TackEngine.Android {
             Sprite.DefaultUISprite = LoadSpriteFromFile("tackresources/sprites/ui/ui_panel.png");
             Sprite.DefaultUISprite.Create();
             Sprite.DefaultUISprite.IsNineSliced = true;
-            Sprite.DefaultUISprite.NineSlicedData = new TackEngineLib.Main.Sprite.SliceData(20);
+            Sprite.DefaultUISprite.NineSlicedData = new TackEngine.Core.Main.Sprite.SliceData(20);
             */
 
             Sprite.DefaultUISprite = Sprite.DefaultSprite;

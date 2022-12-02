@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using TackEngineLib.Main;
+using TackEngine.Core.Main;
 
-namespace TackEngineLib.Physics {
+namespace TackEngine.Core.Physics {
     public class AABB {
         private Vector2f m_bottomLeft;
         private Vector2f m_topRight;

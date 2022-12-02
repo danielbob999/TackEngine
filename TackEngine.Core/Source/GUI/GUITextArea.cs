@@ -5,10 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
 
-using TackEngineLib.Main;
-using TackEngineLib.Input;
+using TackEngine.Core.Main;
+using TackEngine.Core.Input;
 
-namespace TackEngineLib.GUI {
+namespace TackEngine.Core.GUI {
     public class GUITextArea : GUIObject, IGUIScrollable {
 
         /// <summary>

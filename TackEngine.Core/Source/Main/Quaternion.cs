@@ -24,9 +24,9 @@ using System;
 using System.Diagnostics.Contracts;
 using System.Runtime.InteropServices;
 using System.Xml.Serialization;
-using TackEngineLib.Math;
+using TackEngine.Core.Math;
 
-namespace TackEngineLib.Main
+namespace TackEngine.Core.Main
 {
     /// <summary>
     /// Represents a Quaternion.

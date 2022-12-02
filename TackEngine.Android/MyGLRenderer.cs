@@ -7,12 +7,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TackEngineLib.Engine;
-using TackEngineLib.Input;
-using TackEngineLib.Main;
-using TackEngineLib.Objects;
-using TackEngineLib.Physics;
-using TackEngineLib.Renderer;
+using TackEngine.Core.Engine;
+using TackEngine.Core.Input;
+using TackEngine.Core.Main;
+using TackEngine.Core.Objects;
+using TackEngine.Core.Physics;
+using TackEngine.Core.Renderer;
 using static Android.Icu.Text.ListFormatter;
 
 namespace TackEngine.Android {
@@ -22,10 +22,10 @@ namespace TackEngine.Android {
             // Create your application here
 
             //gl.GlEnableClientState(IGL10.GlColorArray);
+
             //gl.GlEnableClientState(IGL10.GlVertexArray);
             //gl.GlEnableClientState(IGL10.GlTextureCoordArray);
 
-            TackEngineActivity.Instance.mTackConsole = new TackConsole();
             TackEngineActivity.Instance.m_engineTimer = new EngineTimer();
             TackEngineActivity.Instance.m_engineTimer.OnStart();
 

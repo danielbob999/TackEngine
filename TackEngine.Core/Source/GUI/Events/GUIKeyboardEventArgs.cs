@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TackEngineLib.Input;
+using TackEngine.Core.Input;
 
-namespace TackEngineLib.GUI.Events {
+namespace TackEngine.Core.GUI.Events {
     public class GUIKeyboardEventArgs : GUIEventArgs {
 
         public KeyboardKey Key { get; internal set; }

@@ -4,11 +4,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TackEngineLib.Engine;
-using TackEngineLib.Main;
-using TackEngineLib.Renderer;
+using TackEngine.Core.Engine;
+using TackEngine.Core.Main;
+using TackEngine.Core.Renderer;
 
-namespace TackEngineLib.Renderer
+namespace TackEngine.Core.Renderer
 {
     internal class RenderObject
     {

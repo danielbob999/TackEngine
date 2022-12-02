@@ -4,10 +4,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TackEngineLib.Engine;
-using TackEngineLib.Main;
+using TackEngine.Core.Engine;
+using TackEngine.Core.Main;
 
-namespace TackEngineLib.Objects.Components
+namespace TackEngine.Core.Objects.Components
 {
     /// <summary>
     /// The component that draws the world view to the screen
@@ -68,7 +68,7 @@ namespace TackEngineLib.Objects.Components
             set { m_zoomFactor = Math.TackMath.Clamp(value, 0, float.PositiveInfinity); } }
 
         public Camera() {
-            RenderTarget = new RectangleShape(0, 0, TackEngine.Instance.Window.WindowSize.X, TackEngine.Instance.Window.WindowSize.Y);
+            RenderTarget = new RectangleShape(0, 0, TackEngineInstance.Instance.Window.WindowSize.X, TackEngineInstance.Instance.Window.WindowSize.Y);
             m_zoomFactor = 1f;
         }
     }

@@ -1,15 +1,15 @@
 ﻿/* Copyright (c) 2019 Daniel Phillip Robinson */
 using System;
 using System.Collections.Generic;
-using TackEngineLib.Engine;
-using TackEngineLib.Main;
-using TackEngineLib.Objects;
-using TackEngineLib.Objects.Components;
+using TackEngine.Core.Engine;
+using TackEngine.Core.Main;
+using TackEngine.Core.Objects;
+using TackEngine.Core.Objects.Components;
 
 using tainicom.Aether.Physics2D.Common;
 using tainicom.Aether.Physics2D.Dynamics;
 
-namespace TackEngineLib.Physics {
+namespace TackEngine.Core.Physics {
     public class TackPhysics : EngineModule {
         public static TackPhysics Instance = null;
 

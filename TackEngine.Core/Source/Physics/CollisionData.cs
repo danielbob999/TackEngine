@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using TackEngineLib.Main;
-using TackEngineLib.Objects;
-using TackEngineLib.Objects.Components;
+using TackEngine.Core.Main;
+using TackEngine.Core.Objects;
+using TackEngine.Core.Objects.Components;
 
-namespace TackEngineLib.Physics {
+namespace TackEngine.Core.Physics {
     public class CollisionData {
         public BasePhysicsComponent OtherComponent { get; private set; }
         internal CollisionData(BasePhysicsComponent otherComp) {

@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using TackEngineLib.Main;
+using TackEngine.Core.Main;
 
-namespace TackEngineLib.Engine
+namespace TackEngine.Core.Engine
 {
     /// <summary>
     /// The base class of every module used in TackEngine

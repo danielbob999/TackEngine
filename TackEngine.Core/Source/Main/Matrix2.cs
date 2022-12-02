@@ -25,7 +25,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Contracts;
 using System.Runtime.InteropServices;
 
-namespace TackEngineLib.Main
+namespace TackEngine.Core.Main
 {
     /// <summary>
     /// Represents a 2x2 matrix.

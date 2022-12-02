@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using TackEngineLib.Main;
-using TackEngineLib.Objects;
-using TackEngineLib.Objects.Components;
+using TackEngine.Core.Main;
+using TackEngine.Core.Objects;
+using TackEngine.Core.Objects.Components;
 
-namespace TackEngineLib.Renderer {
+namespace TackEngine.Core.Renderer {
     public class TackLightingSystem {
         public static TackLightingSystem Instance = null;
 

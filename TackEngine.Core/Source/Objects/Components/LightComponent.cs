@@ -5,11 +5,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using TackEngineLib.Main;
-using TackEngineLib.Engine;
-using TackEngineLib.Renderer;
+using TackEngine.Core.Main;
+using TackEngine.Core.Engine;
+using TackEngine.Core.Renderer;
 
-namespace TackEngineLib.Objects.Components
+namespace TackEngine.Core.Objects.Components
 {
     public class LightComponent : TackComponent {
 

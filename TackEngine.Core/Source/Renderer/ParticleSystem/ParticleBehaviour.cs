@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TackEngineLib.Renderer.ParticleSystem {
+namespace TackEngine.Core.Renderer.ParticleSystem {
     public abstract class ParticleBehaviour {
         protected float MaxAliveTime { get; private set; }
 

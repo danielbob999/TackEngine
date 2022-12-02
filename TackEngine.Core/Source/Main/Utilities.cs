@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TackEngineLib.Main {
+namespace TackEngine.Core.Main {
     public static class Utilities {
         public static object FirstNotNull(params object[] objects) {
             for (int i = 0; i < objects.Length; i++) {

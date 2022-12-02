@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TackEngineLib.Input
+namespace TackEngine.Core.Input
 {
     public enum KeyboardKey
     {

@@ -5,10 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
 
-using TackEngineLib.Main;
-using TackEngineLib.GUI;
+using TackEngine.Core.Main;
+using TackEngine.Core.GUI;
 
-namespace TackEngineLib.Engine {
+namespace TackEngine.Core.Engine {
     public class TackProfiler {
         public static TackProfiler Instance { get; private set; } = null;
 

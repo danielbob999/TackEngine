@@ -8,10 +8,10 @@ using System.Diagnostics;
 using System.IO;
 using System.Drawing;
 
-using TackEngineLib.Main;
-using TackEngineLib.Engine;
+using TackEngine.Core.Main;
+using TackEngine.Core.Engine;
 
-namespace TackEngineLib.Main {
+namespace TackEngine.Core.Main {
 
     public class SpriteSheet {
 

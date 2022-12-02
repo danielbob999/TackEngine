@@ -1,6 +1,6 @@
 ﻿/* Copyright (c) 2019 Daniel Phillip Robinson */
 
-namespace TackEngineLib.Main {
+namespace TackEngine.Core.Main {
     public class RectangleShape {
 
         public float X { get; set; }

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TackEngineLib.GUI {
+namespace TackEngine.Core.GUI {
     internal interface IGUIScrollable {
         float HorizontalScrollPosition { get; set; }
         float VerticalScrollPosition { get; set; }

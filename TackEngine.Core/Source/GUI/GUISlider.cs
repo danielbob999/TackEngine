@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using TackEngineLib.Main;
-using TackEngineLib.Input;
-using TackEngineLib.GUI.Events;
+using TackEngine.Core.Main;
+using TackEngine.Core.Input;
+using TackEngine.Core.GUI.Events;
 
-namespace TackEngineLib.GUI {
+namespace TackEngine.Core.GUI {
     public class GUISlider : GUIObject {
 
         /// <summary>
@@ -207,7 +207,7 @@ namespace TackEngineLib.GUI {
             base.OnMouseEvent(args);
 
             if (args.MouseButton == MouseButtonKey.Left && args.MouseAction == MouseButtonAction.Down) {
-                if (TackEngineLib.Physics.AABB.IsPointInAABB(new Physics.AABB(m_handleBounds), TackEngineLib.Input.TackInput.Instance.MousePosition.ToVector2f())) {
+                if (TackEngine.Core.Physics.AABB.IsPointInAABB(new Physics.AABB(m_handleBounds), TackEngine.Core.Input.TackInput.Instance.MousePosition.ToVector2f())) {
                     if (IsMouseHovering) {
                         m_isDragging = true;
                         m_mouseDownOffset = args.MousePosition - new Vector2i((int)m_handleBounds.X, (int)m_handleBounds.Y);

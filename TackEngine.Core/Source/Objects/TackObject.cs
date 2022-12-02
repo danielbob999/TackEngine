@@ -5,14 +5,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using TackEngineLib.Main;
-using TackEngineLib.Objects.Components;
-using TackEngineLib.Engine;
-using TackEngineLib.Math;
+using TackEngine.Core.Main;
+using TackEngine.Core.Objects.Components;
+using TackEngine.Core.Engine;
+using TackEngine.Core.Math;
 
-namespace TackEngineLib.Objects {
+namespace TackEngine.Core.Objects {
     /// <summary>
-    /// The main class used by the TackEngineLib to represent and object
+    /// The main class used by the TackEngine.Core to represent and object
     /// </summary>
     public class TackObject {
         private Vector2f m_scale;

@@ -8,15 +8,15 @@ using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 
-using TackEngineLib.Main;
-using TackEngineLib.Objects;
-using TackEngineLib.Input;
-using TackEngineLib.Renderer;
-using TackEngineLib.GUI;
-using TackEngineLib.Physics;
+using TackEngine.Core.Main;
+using TackEngine.Core.Objects;
+using TackEngine.Core.Input;
+using TackEngine.Core.Renderer;
+using TackEngine.Core.GUI;
+using TackEngine.Core.Physics;
 using OpenTK.Platform;
 using OpenTK.Input;
-using TackEngineLib.Engine;
+using TackEngine.Core.Engine;
 using System.Diagnostics;
 using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.Common;
@@ -38,7 +38,7 @@ namespace TackEngine.Desktop {
         private TackObjectManager mTackObjectManager;
         private TackRenderer mTackRender;
         private TackLightingSystem mTackLightingSystem;
-        private TackEngineLib.Main.EngineTimer m_engineTimer;
+        private TackEngine.Core.Main.EngineTimer m_engineTimer;
         private TackProfiler m_tackProfiler;
         private TackInput m_tackInput;
         private DesktopSpriteManager m_spriteManager;
@@ -48,13 +48,13 @@ namespace TackEngine.Desktop {
         public double TimeSinceLastUpdate { get; private set; }
         public double TimeSinceLastRender { get; private set; }
 
-        public TackGameWindow(TackEngineLib.Engine.TackEngine.InitalisationSettings settings, EngineDelegates.OnStart startFn, EngineDelegates.OnUpdate updateFn, EngineDelegates.OnClose closeFn) 
+        public TackGameWindow(TackEngine.Core.Engine.TackEngineInstance.InitalisationSettings settings, EngineDelegates.OnStart startFn, EngineDelegates.OnUpdate updateFn, EngineDelegates.OnClose closeFn) 
             : base(new GameWindowSettings() { RenderFrequency = settings.TargetRenderFrequency, UpdateFrequency = settings.TargetUpdateFrequency }, new NativeWindowSettings() { Size = new OpenTK.Mathematics.Vector2i(settings.WindowSize.X, settings.WindowSize.Y), NumberOfSamples = settings.MSAASampleCount, Title = settings.WindowTitle, WindowBorder = (OpenTK.Windowing.Common.WindowBorder)settings.WindowBorder, WindowState = (OpenTK.Windowing.Common.WindowState)settings.WindowState }) {
 
             // We must initialise a TackConsole instance before doing anything
             mTackConsole = new TackConsole();
 
-            TackEngineLib.Engine.TackEngine.Initialise(this);
+            TackEngine.Core.Engine.TackEngineInstance.Initialise(this);
 
             // Set all implementations
             TackFont.FontLoadingImplementation = new DesktopTackFontLoadingImpl();
@@ -154,7 +154,7 @@ namespace TackEngine.Desktop {
         protected override void OnResize(ResizeEventArgs e) {
             base.OnResize(e);
 
-            TackEngineLib.Objects.Components.Camera.MainCamera.RenderTarget = new RectangleShape(0, 0, base.Size.X, base.Size.Y);
+            TackEngine.Core.Objects.Components.Camera.MainCamera.RenderTarget = new RectangleShape(0, 0, base.Size.X, base.Size.Y);
             GL.Viewport(0, 0, base.Size.X, base.Size.Y);
 
             Debug.WriteLine(new Vector2f(base.Size.X, base.Size.Y).ToString());

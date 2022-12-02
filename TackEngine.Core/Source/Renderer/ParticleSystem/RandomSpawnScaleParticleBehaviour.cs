@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using TackEngineLib.Main;
+using TackEngine.Core.Main;
 
-namespace TackEngineLib.Renderer.ParticleSystem {
+namespace TackEngine.Core.Renderer.ParticleSystem {
     public class RandomSpawnScaleParticleBehaviour : ParticleBehaviour {
         private Random m_rand;
 

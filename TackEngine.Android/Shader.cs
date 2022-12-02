@@ -5,8 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 
 using OpenTK.Graphics.ES30;
-using TackEngineLib.Renderer;
-using TackEngineLib.Main;
+using TackEngine.Core.Renderer;
+using TackEngine.Core.Main;
 using Java.Security.Cert;
 using System.Diagnostics.Tracing;
 
@@ -136,7 +136,7 @@ namespace TackEngine.Android {
             GL.Uniform2(GL.GetUniformLocation(Id, name), ref vec2tk);
         }
 
-        internal override void SetUniformValue(string name, TackEngineLib.Main.Vector3 vec3) {
+        internal override void SetUniformValue(string name, TackEngine.Core.Main.Vector3 vec3) {
             OpenTK.Vector3 vec3tk = vec3.ToOpenTKVec3();
             GL.Uniform3(GL.GetUniformLocation(Id, name), ref vec3tk);
         }

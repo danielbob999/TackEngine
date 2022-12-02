@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TackEngineLib.Engine
+namespace TackEngine.Core.Engine
 {
     public static class EngineDelegates
     {

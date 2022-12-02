@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TackEngineLib.Main
+namespace TackEngine.Core.Main
 {
     /// <summary>
     /// An object representing an RGBA colour

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TackEngineLib.Main;
+using TackEngine.Core.Main;
 
-namespace TackEngineLib.GUI {
+namespace TackEngine.Core.GUI {
     internal class GUIMaskData {
         public static readonly int MAX_MASK_COUNT = 10;
 

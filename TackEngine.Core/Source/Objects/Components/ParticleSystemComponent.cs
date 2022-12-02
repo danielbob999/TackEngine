@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using TackEngineLib.Main;
-using TackEngineLib.Engine;
-using TackEngineLib.Renderer.ParticleSystem;
+using TackEngine.Core.Main;
+using TackEngine.Core.Engine;
+using TackEngine.Core.Renderer.ParticleSystem;
 
-namespace TackEngineLib.Objects.Components {
+namespace TackEngine.Core.Objects.Components {
     public class ParticleSystemComponent : TackComponent {
 
         private float m_timeSinceLastSpawn = 0;

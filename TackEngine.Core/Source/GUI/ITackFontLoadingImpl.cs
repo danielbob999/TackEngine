@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace TackEngineLib.GUI {
+namespace TackEngine.Core.GUI {
     internal interface ITackFontLoadingImpl {
         TackFont LoadFromFile(string path);
         TackFont.FontCharacter LoadCharacter(Face face, uint charCode);

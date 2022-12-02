@@ -10,15 +10,15 @@ using System.Drawing.Text;
 using System.Drawing.Drawing2D;
 using System.IO;
 
-using TackEngineLib.Main;
-using TackEngineLib.Engine;
-using TackEngineLib.Renderer;
-using TackEngineLib.Input;
-using TackEngineLib.Renderer.Operations;
-using TackEngineLib.Objects.Components;
+using TackEngine.Core.Main;
+using TackEngine.Core.Engine;
+using TackEngine.Core.Renderer;
+using TackEngine.Core.Input;
+using TackEngine.Core.Renderer.Operations;
+using TackEngine.Core.Objects.Components;
 using OpenTK.Graphics.ES30;
-using TackEngineLib.GUI;
-using TackEngineLib.Physics;
+using TackEngine.Core.GUI;
+using TackEngine.Core.Physics;
 using Android.Content.Res;
 using Java.Security.Cert;
 using System.Diagnostics.Tracing;
@@ -41,8 +41,8 @@ namespace TackEngine.Android {
         internal override void OnStart() {
 
             //m_fontLibrary = new Library();
-            m_mouseEventQueue = new List<TackEngineLib.GUI.Events.GUIMouseEvent>();
-            m_keyboardEventQueue = new List<TackEngineLib.GUI.Events.GUIKeyboardEvent>();
+            m_mouseEventQueue = new List<TackEngine.Core.GUI.Events.GUIMouseEvent>();
+            m_keyboardEventQueue = new List<TackEngine.Core.GUI.Events.GUIKeyboardEvent>();
             m_guiObjectsToRemove = new List<int>();
             m_preRenderQueue = new List<GUIObject>();
             m_preRenderCheckList = new List<GUIObject>();
@@ -105,7 +105,7 @@ namespace TackEngine.Android {
 
                     RectangleShape shape = m_guiObjects[j].GetShapeWithMask();
 
-                    if (TackEngineLib.Physics.AABB.IsPointInAABB(new TackEngineLib.Physics.AABB(new Vector2f(shape.X, shape.Y + shape.Height), new Vector2f(shape.X + shape.Width, shape.Y)), m_mouseEventQueue[i].Args.MousePosition.ToVector2f())) {
+                    if (TackEngine.Core.Physics.AABB.IsPointInAABB(new TackEngine.Core.Physics.AABB(new Vector2f(shape.X, shape.Y + shape.Height), new Vector2f(shape.X + shape.Width, shape.Y)), m_mouseEventQueue[i].Args.MousePosition.ToVector2f())) {
                         // If the action is down or held, only send the action if its inside a selectable area
                         m_guiObjects[j].OnMouseEvent(m_mouseEventQueue[i].Args);
 
@@ -337,11 +337,11 @@ namespace TackEngine.Android {
             OpenTK.Matrix4 scaleMat = MatrixUtility.CreateScaleMatrix((rect.Width / 2.0f), (rect.Height / 2.0f), 1);
 
             // Generate the view matrix
-            float widthToHeightRatio = TackEngineLib.Engine.TackEngine.Instance.Window.WindowSize.Y / (float)TackEngineLib.Engine.TackEngine.Instance.Window.WindowSize.X;
+            float widthToHeightRatio = TackEngine.Core.Engine.TackEngineInstance.Instance.Window.WindowSize.Y / (float)TackEngine.Core.Engine.TackEngineInstance.Instance.Window.WindowSize.X;
 
             OpenTK.Matrix4 orthoView = new OpenTK.Matrix4(
-                new OpenTK.Vector4(2.0f / (float)TackEngineLib.Engine.TackEngine.Instance.Window.WindowSize.X, 0, 0, 0),
-                new OpenTK.Vector4(0, 2.0f / (float)TackEngineLib.Engine.TackEngine.Instance.Window.WindowSize.Y, 0, 0),
+                new OpenTK.Vector4(2.0f / (float)TackEngine.Core.Engine.TackEngineInstance.Instance.Window.WindowSize.X, 0, 0, 0),
+                new OpenTK.Vector4(0, 2.0f / (float)TackEngine.Core.Engine.TackEngineInstance.Instance.Window.WindowSize.Y, 0, 0),
                 new OpenTK.Vector4(0, 0, 1, 0),
                 new OpenTK.Vector4(0, 0, 0, 1)
                 );
@@ -364,9 +364,9 @@ namespace TackEngine.Android {
             }
 
             // Set camera info
-            GL.Uniform2(GL.GetUniformLocation(Instance.DefaultGUIShader.Id, "uCameraInfo.position"), TackEngineLib.Objects.Components.Camera.MainCamera.GetParent().Position.ToOpenTKVec2());
-            GL.Uniform1(GL.GetUniformLocation(Instance.DefaultGUIShader.Id, "uCameraInfo.zoomFactor"), TackEngineLib.Objects.Components.Camera.MainCamera.ZoomFactor);
-            GL.Uniform2(GL.GetUniformLocation(Instance.DefaultGUIShader.Id, "uCameraInfo.size"), new OpenTK.Vector2(TackEngineLib.Objects.Components.Camera.MainCamera.RenderTarget.Width, TackEngineLib.Objects.Components.Camera.MainCamera.RenderTarget.Height));
+            GL.Uniform2(GL.GetUniformLocation(Instance.DefaultGUIShader.Id, "uCameraInfo.position"), TackEngine.Core.Objects.Components.Camera.MainCamera.GetParent().Position.ToOpenTKVec2());
+            GL.Uniform1(GL.GetUniformLocation(Instance.DefaultGUIShader.Id, "uCameraInfo.zoomFactor"), TackEngine.Core.Objects.Components.Camera.MainCamera.ZoomFactor);
+            GL.Uniform2(GL.GetUniformLocation(Instance.DefaultGUIShader.Id, "uCameraInfo.size"), new OpenTK.Vector2(TackEngine.Core.Objects.Components.Camera.MainCamera.RenderTarget.Width, TackEngine.Core.Objects.Components.Camera.MainCamera.RenderTarget.Height));
 
             for (int m = 0; m < maskData.Masks.Count; m++) {
                 OpenTK.Vector2 topRight = new OpenTK.Vector2(
@@ -594,8 +594,8 @@ namespace TackEngine.Android {
 
                 // Generate the view matrix
                 OpenTK.Matrix4 orthoView = new OpenTK.Matrix4(
-                    new OpenTK.Vector4(2.0f / (float)TackEngineLib.Engine.TackEngine.Instance.Window.WindowSize.X, 0, 0, 0),
-                    new OpenTK.Vector4(0, 2.0f / (float)TackEngineLib.Engine.TackEngine.Instance.Window.WindowSize.Y, 0, 0),
+                    new OpenTK.Vector4(2.0f / (float)TackEngine.Core.Engine.TackEngineInstance.Instance.Window.WindowSize.X, 0, 0, 0),
+                    new OpenTK.Vector4(0, 2.0f / (float)TackEngine.Core.Engine.TackEngineInstance.Instance.Window.WindowSize.Y, 0, 0),
                     new OpenTK.Vector4(0, 0, 1, 0),
                     new OpenTK.Vector4(0, 0, 0, 1)
                     );
@@ -608,9 +608,9 @@ namespace TackEngine.Android {
                 GL.Uniform4(GL.GetUniformLocation(TackGUI.Instance.DefaultTextShader.Id, "uColour"), style.FontColour.R / 255f, style.FontColour.G / 255f, style.FontColour.B / 255f, style.FontColour.A / 255f); ;
 
                 // Set camera info
-                GL.Uniform2(GL.GetUniformLocation(TackGUI.Instance.DefaultTextShader.Id, "uCameraInfo.position"), TackEngineLib.Objects.Components.Camera.MainCamera.GetParent().Position.ToOpenTKVec2());
-                GL.Uniform1(GL.GetUniformLocation(TackGUI.Instance.DefaultTextShader.Id, "uCameraInfo.zoomFactor"), TackEngineLib.Objects.Components.Camera.MainCamera.ZoomFactor);
-                GL.Uniform2(GL.GetUniformLocation(TackGUI.Instance.DefaultTextShader.Id, "uCameraInfo.size"), new OpenTK.Vector2(TackEngineLib.Objects.Components.Camera.MainCamera.RenderTarget.Width, TackEngineLib.Objects.Components.Camera.MainCamera.RenderTarget.Height));
+                GL.Uniform2(GL.GetUniformLocation(TackGUI.Instance.DefaultTextShader.Id, "uCameraInfo.position"), TackEngine.Core.Objects.Components.Camera.MainCamera.GetParent().Position.ToOpenTKVec2());
+                GL.Uniform1(GL.GetUniformLocation(TackGUI.Instance.DefaultTextShader.Id, "uCameraInfo.zoomFactor"), TackEngine.Core.Objects.Components.Camera.MainCamera.ZoomFactor);
+                GL.Uniform2(GL.GetUniformLocation(TackGUI.Instance.DefaultTextShader.Id, "uCameraInfo.size"), new OpenTK.Vector2(TackEngine.Core.Objects.Components.Camera.MainCamera.RenderTarget.Width, TackEngine.Core.Objects.Components.Camera.MainCamera.RenderTarget.Height));
 
                 for (int m = 0; m < maskData.Masks.Count; m++) {
                     OpenTK.Vector2 topRight = new OpenTK.Vector2(

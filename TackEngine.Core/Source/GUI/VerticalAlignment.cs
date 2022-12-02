@@ -1,7 +1,7 @@
 ﻿/* Copyright (c) 2019 Daniel Phillip Robinson */
 using System;
 
-namespace TackEngineLib.GUI
+namespace TackEngine.Core.GUI
 {
     public enum VerticalAlignment
     {

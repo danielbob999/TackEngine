@@ -5,12 +5,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using TackEngineLib.Main;
-using TackEngineLib.Engine;
-using TackEngineLib.Renderer;
-using TackEngineLib.Math;
+using TackEngine.Core.Main;
+using TackEngine.Core.Engine;
+using TackEngine.Core.Renderer;
+using TackEngine.Core.Math;
 
-namespace TackEngineLib.Objects.Components
+namespace TackEngine.Core.Objects.Components
 {
     /// <summary>
     /// The TackComponent that is used to render a TackObject on screen

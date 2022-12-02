@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Text;
-using TackEngineLib.GUI;
-using TackEngineLib.Input;
-using TackEngineLib.Main;
-using TackEngineLib.Renderer.Operations;
-using TackEngineLib.Renderer;
+using TackEngine.Core.GUI;
+using TackEngine.Core.Input;
+using TackEngine.Core.Main;
+using TackEngine.Core.Renderer.Operations;
+using TackEngine.Core.Renderer;
 using SharpFont;
 
-namespace TackEngineLib.GUI {
+namespace TackEngine.Core.GUI {
     public abstract class BaseTackGUI {
         public static BaseTackGUI Instance { get; protected set; }
 

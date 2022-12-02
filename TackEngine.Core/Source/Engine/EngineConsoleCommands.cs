@@ -5,13 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 
-using TackEngineLib.Main;
-using TackEngineLib.Objects;
-using TackEngineLib.Objects.Components;
-using TackEngineLib.GUI;
-using TackEngineLib.Physics;
+using TackEngine.Core.Main;
+using TackEngine.Core.Objects;
+using TackEngine.Core.Objects.Components;
+using TackEngine.Core.GUI;
+using TackEngine.Core.Physics;
 
-namespace TackEngineLib.Engine
+namespace TackEngine.Core.Engine
 {
     /// <summary>
     /// The holder class for all TackConsole commands
@@ -138,7 +138,7 @@ namespace TackEngineLib.Engine
         [CommandMethod("renderer.backgroundColour", "", "red:byte green:byte blue:byte")]
         public static void ChangeBackgroundColour(string[] args) {
             if (args.Length == 1) {
-                TackConsole.EngineLog(TackConsole.LogType.Message, "Value: " + TackEngineLib.Renderer.TackRenderer.BackgroundColour.ToString());
+                TackConsole.EngineLog(TackConsole.LogType.Message, "Value: " + TackEngine.Core.Renderer.TackRenderer.BackgroundColour.ToString());
                 return;
             }
 
@@ -146,7 +146,7 @@ namespace TackEngineLib.Engine
                 if (byte.TryParse(args[1], out byte r)) {
                     if (byte.TryParse(args[2], out byte g)) {
                         if (byte.TryParse(args[3], out byte b)) {
-                            TackEngineLib.Renderer.TackRenderer.BackgroundColour = new Colour4b(r, g, b);
+                            TackEngine.Core.Renderer.TackRenderer.BackgroundColour = new Colour4b(r, g, b);
                             TackConsole.EngineLog(TackConsole.LogType.Message, "Set tackrenderer.backgroundColour to value: " + Renderer.TackRenderer.BackgroundColour.ToString());
                         } else {
                             TackConsole.EngineLog(TackConsole.LogType.Error, "Failed to convert '{0}' to type: byte", args[3]);

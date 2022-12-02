@@ -1,15 +1,15 @@
 ﻿using System;
-using TackEngineLib.GUI;
-using TackEngineLib.Main;
-using TackEngineLib.Objects;
-using TackEngineLib.Objects.Components;
+using TackEngine.Core.GUI;
+using TackEngine.Core.Main;
+using TackEngine.Core.Objects;
+using TackEngine.Core.Objects.Components;
 
 namespace GameApp.Desktop {
     internal class Program {
         static void Main(string[] args) {
             Console.WriteLine("Hello, World!");
 
-            TackEngine.Desktop.TackGameWindow window = new TackEngine.Desktop.TackGameWindow(new TackEngineLib.Engine.TackEngine.InitalisationSettings(),
+            TackEngine.Desktop.TackGameWindow window = new TackEngine.Desktop.TackGameWindow(new TackEngine.Core.Engine.TackEngineInstance.InitalisationSettings(),
                 Start, Update, Close);
             window.Run();
         }

@@ -6,12 +6,12 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
 
-using TackEngineLib.Main;
-using TackEngineLib.Engine;
-using TackEngineLib.Renderer;
-using TackEngineLib.Objects.Components;
+using TackEngine.Core.Main;
+using TackEngine.Core.Engine;
+using TackEngine.Core.Renderer;
+using TackEngine.Core.Objects.Components;
 
-namespace TackEngineLib.Objects {
+namespace TackEngine.Core.Objects {
     internal class TackObjectManager {
         public static TackObjectManager Instance;
 

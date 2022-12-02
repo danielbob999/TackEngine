@@ -8,13 +8,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using TackEngineLib.Engine;
-using TackEngineLib.GUI;
-using TackEngineLib.Input;
-using TackEngineLib.Main;
-using TackEngineLib.Objects;
-using TackEngineLib.Physics;
-using TackEngineLib.Renderer;
+using TackEngine.Core.Engine;
+using TackEngine.Core.GUI;
+using TackEngine.Core.Input;
+using TackEngine.Core.Main;
+using TackEngine.Core.Objects;
+using TackEngine.Core.Physics;
+using TackEngine.Core.Renderer;
 
 namespace TackEngine.Android {
     [Activity(Label = "TackEngineActivity")]
@@ -29,14 +29,14 @@ namespace TackEngine.Android {
         internal TackObjectManager mTackObjectManager;
         internal TackRenderer mTackRender;
         internal TackLightingSystem mTackLightingSystem;
-        internal TackEngineLib.Main.EngineTimer m_engineTimer;
+        internal TackEngine.Core.Main.EngineTimer m_engineTimer;
         internal TackProfiler m_tackProfiler;
         internal TackInput m_tackInput;
         internal AndroidSpriteManager m_spriteManager;
 
-        internal TackEngineLib.Engine.EngineDelegates.OnStart onStartFunction;
-        internal TackEngineLib.Engine.EngineDelegates.OnStart onUpdateFunction;
-        internal TackEngineLib.Engine.EngineDelegates.OnStart onCloseFunction;
+        internal TackEngine.Core.Engine.EngineDelegates.OnStart onStartFunction;
+        internal TackEngine.Core.Engine.EngineDelegates.OnStart onUpdateFunction;
+        internal TackEngine.Core.Engine.EngineDelegates.OnStart onCloseFunction;
 
         private MySurfaceView m_glView;
 
@@ -47,6 +47,8 @@ namespace TackEngine.Android {
             onUpdateFunction = OnEngineUpdate;
             onCloseFunction = OnEngineClose;
 
+            mTackConsole = new TackConsole();
+
             // Set implementations
             TackFont.FontLoadingImplementation = new AndroidTackFontLoadingImpl();
 
@@ -54,7 +56,7 @@ namespace TackEngine.Android {
             AndroidContext.CurrentContext = this;
             AndroidContext.CurrentAssetManager = Assets;
 
-            TackEngineLib.Engine.TackEngine.Initialise(this);
+            TackEngine.Core.Engine.TackEngineInstance.Initialise(this);
 
             m_glView = new MySurfaceView(this);
 
@@ -72,7 +74,7 @@ namespace TackEngine.Android {
             // removes the android status bar (battery icon/notifications)
             this.Window.AddFlags(WindowManagerFlags.Fullscreen);
 
-            System.Diagnostics.Debug.WriteLine("-------------- Started TackEngineActivity " + TackEngineLib.Engine.TackEngine.Instance.Window.WindowSize.ToString());
+            System.Diagnostics.Debug.WriteLine("-------------- Started TackEngineActivity " + TackEngine.Core.Engine.TackEngineInstance.Instance.Window.WindowSize.ToString());
         }
 
         public virtual void OnEngineStart() {

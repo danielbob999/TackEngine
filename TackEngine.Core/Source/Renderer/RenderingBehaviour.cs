@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TackEngineLib.Main;
-using TackEngineLib.Engine;
-using TackEngineLib.Renderer;
+using TackEngine.Core.Main;
+using TackEngine.Core.Engine;
+using TackEngine.Core.Renderer;
 
-namespace TackEngineLib.Renderer {
+namespace TackEngine.Core.Renderer {
     public abstract class RenderingBehaviour {
 
         protected float[] m_vertexData;

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TackEngineLib.Renderer.ParticleSystem {
+namespace TackEngine.Core.Renderer.ParticleSystem {
     public class RandomSpawnRotationParticleBehaviour : ParticleBehaviour {
         private Random m_rand;
 

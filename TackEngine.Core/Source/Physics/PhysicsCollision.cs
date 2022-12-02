@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using TackEngineLib.Main;
-using TackEngineLib.Objects.Components;
+using TackEngine.Core.Main;
+using TackEngine.Core.Objects.Components;
 
-namespace TackEngineLib.Physics {
+namespace TackEngine.Core.Physics {
     internal class PhysicsCollision {
         private BasePhysicsComponent m_body1;
         private BasePhysicsComponent m_body2;

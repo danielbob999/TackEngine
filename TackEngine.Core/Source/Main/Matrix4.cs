@@ -35,7 +35,7 @@ using System.Runtime.Intrinsics;
 using System.Runtime.Intrinsics.X86;
 #endif
 
-namespace TackEngineLib.Main
+namespace TackEngine.Core.Main
 {
     /// <summary>
     /// Represents a 4x4 matrix containing 3D rotation, scale, transform, and projection.

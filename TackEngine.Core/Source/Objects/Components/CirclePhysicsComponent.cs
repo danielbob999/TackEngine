@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using TackEngineLib.Physics;
-using TackEngineLib.Main;
-using TackEngineLib.Math;
+using TackEngine.Core.Physics;
+using TackEngine.Core.Main;
+using TackEngine.Core.Math;
 using tainicom.Aether.Physics2D.Common;
 
-namespace TackEngineLib.Objects.Components {
+namespace TackEngine.Core.Objects.Components {
     public class CirclePhysicsComponent : BasePhysicsComponent {
 
         /// <summary>

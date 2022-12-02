@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using TackEngineLib.Main;
-using TackEngineLib.Input;
-using TackEngineLib.GUI.Events;
+using TackEngine.Core.Main;
+using TackEngine.Core.Input;
+using TackEngine.Core.GUI.Events;
 
-namespace TackEngineLib.GUI {
+namespace TackEngine.Core.GUI {
     public class GUIInputField : GUIObject {
 
         /// <summary>

@@ -3,15 +3,15 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using TackEngineLib.Main;
+using TackEngine.Core.Main;
 
-using TackEngineLib.Renderer;
-using TackEngineLib.Engine;
-using TackEngineLib.Objects;
-using TackEngineLib.Objects.Components;
-using TackEngineLib.Physics;
+using TackEngine.Core.Renderer;
+using TackEngine.Core.Engine;
+using TackEngine.Core.Objects;
+using TackEngine.Core.Objects.Components;
+using TackEngine.Core.Physics;
 using OpenTK;
-using TackEngineLib.GUI;
+using TackEngine.Core.GUI;
 
 namespace TackEngine.Desktop {
     internal class DesktopRenderer : TackRenderer {

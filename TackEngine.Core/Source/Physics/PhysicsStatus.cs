@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TackEngineLib.Physics
+namespace TackEngine.Core.Physics
 {
     public enum PhysicsStatus
     {

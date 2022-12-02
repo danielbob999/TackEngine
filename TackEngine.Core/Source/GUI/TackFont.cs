@@ -5,9 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using SharpFont;
 
-using TackEngineLib.Main;
+using TackEngine.Core.Main;
 
-namespace TackEngineLib.GUI {
+namespace TackEngine.Core.GUI {
 	public class TackFont {
 		internal static ITackFontLoadingImpl FontLoadingImplementation;
 

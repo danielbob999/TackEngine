@@ -4,13 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using TackEngineLib.Main;
+using TackEngine.Core.Main;
 
-namespace TackEngineLib.GUI.Events {
+namespace TackEngine.Core.GUI.Events {
     public class GUIMouseEvent {
         public GUIMouseEventArgs Args { get; private set; }
 
-        public GUIMouseEvent(Vector2i pos, TackEngineLib.Input.MouseButtonKey mouseButton, Input.MouseButtonAction action) {
+        public GUIMouseEvent(Vector2i pos, TackEngine.Core.Input.MouseButtonKey mouseButton, Input.MouseButtonAction action) {
             Args = new GUIMouseEventArgs(pos, mouseButton, action);
         }
     }

@@ -10,16 +10,16 @@ using System.Drawing.Text;
 using System.Drawing.Drawing2D;
 using System.IO;
 
-using TackEngineLib.Main;
-using TackEngineLib.Engine;
-using TackEngineLib.Renderer;
-using TackEngineLib.Input;
-using TackEngineLib.Renderer.Operations;
-using TackEngineLib.Objects.Components;
+using TackEngine.Core.Main;
+using TackEngine.Core.Engine;
+using TackEngine.Core.Renderer;
+using TackEngine.Core.Input;
+using TackEngine.Core.Renderer.Operations;
+using TackEngine.Core.Objects.Components;
 using OpenTK.Graphics.OpenGL;
 using TackEngine.Desktop;
 
-namespace TackEngineLib.GUI {
+namespace TackEngine.Core.GUI {
     /// <summary>
     /// The main class for rendering GUI elements to the screen
     /// </summary>
@@ -321,11 +321,11 @@ namespace TackEngineLib.GUI {
             OpenTK.Mathematics.Matrix4 scaleMat = OpenTK.Mathematics.Matrix4.CreateScale((rect.Width / 2.0f), (rect.Height / 2.0f), 1);
 
             // Generate the view matrix
-            float widthToHeightRatio = TackEngineLib.Engine.TackEngine.Instance.Window.WindowSize.Y / (float)TackEngineLib.Engine.TackEngine.Instance.Window.WindowSize.X;
+            float widthToHeightRatio = TackEngine.Core.Engine.TackEngineInstance.Instance.Window.WindowSize.Y / (float)TackEngine.Core.Engine.TackEngineInstance.Instance.Window.WindowSize.X;
 
             OpenTK.Mathematics.Matrix4 orthoView = new OpenTK.Mathematics.Matrix4(
-                new OpenTK.Mathematics.Vector4(2.0f / (float)TackEngineLib.Engine.TackEngine.Instance.Window.WindowSize.X, 0, 0, 0),
-                new OpenTK.Mathematics.Vector4(0, 2.0f / (float)TackEngineLib.Engine.TackEngine.Instance.Window.WindowSize.Y, 0, 0),
+                new OpenTK.Mathematics.Vector4(2.0f / (float)TackEngine.Core.Engine.TackEngineInstance.Instance.Window.WindowSize.X, 0, 0, 0),
+                new OpenTK.Mathematics.Vector4(0, 2.0f / (float)TackEngine.Core.Engine.TackEngineInstance.Instance.Window.WindowSize.Y, 0, 0),
                 new OpenTK.Mathematics.Vector4(0, 0, 1, 0),
                 new OpenTK.Mathematics.Vector4(0, 0, 0, 1)
                 );
@@ -348,9 +348,9 @@ namespace TackEngineLib.GUI {
             }
 
             // Set camera info
-            GL.Uniform2(GL.GetUniformLocation(Instance.DefaultGUIShader.Id, "uCameraInfo.position"), TackEngineLib.Objects.Components.Camera.MainCamera.GetParent().Position.ToOpenTKVec2());
-            GL.Uniform1(GL.GetUniformLocation(Instance.DefaultGUIShader.Id, "uCameraInfo.zoomFactor"), TackEngineLib.Objects.Components.Camera.MainCamera.ZoomFactor);
-            GL.Uniform2(GL.GetUniformLocation(Instance.DefaultGUIShader.Id, "uCameraInfo.size"), new OpenTK.Mathematics.Vector2(TackEngineLib.Objects.Components.Camera.MainCamera.RenderTarget.Width, TackEngineLib.Objects.Components.Camera.MainCamera.RenderTarget.Height));
+            GL.Uniform2(GL.GetUniformLocation(Instance.DefaultGUIShader.Id, "uCameraInfo.position"), TackEngine.Core.Objects.Components.Camera.MainCamera.GetParent().Position.ToOpenTKVec2());
+            GL.Uniform1(GL.GetUniformLocation(Instance.DefaultGUIShader.Id, "uCameraInfo.zoomFactor"), TackEngine.Core.Objects.Components.Camera.MainCamera.ZoomFactor);
+            GL.Uniform2(GL.GetUniformLocation(Instance.DefaultGUIShader.Id, "uCameraInfo.size"), new OpenTK.Mathematics.Vector2(TackEngine.Core.Objects.Components.Camera.MainCamera.RenderTarget.Width, TackEngine.Core.Objects.Components.Camera.MainCamera.RenderTarget.Height));
 
             for (int m = 0; m < maskData.Masks.Count; m++) {
                 OpenTK.Mathematics.Vector2 topRight = new OpenTK.Mathematics.Vector2(
@@ -581,8 +581,8 @@ namespace TackEngineLib.GUI {
 
                 // Generate the view matrix
                 OpenTK.Mathematics.Matrix4 orthoView = new OpenTK.Mathematics.Matrix4(
-                    new OpenTK.Mathematics.Vector4(2.0f / (float)TackEngineLib.Engine.TackEngine.Instance.Window.WindowSize.X, 0, 0, 0),
-                    new OpenTK.Mathematics.Vector4(0, 2.0f / (float)TackEngineLib.Engine.TackEngine.Instance.Window.WindowSize.Y, 0, 0),
+                    new OpenTK.Mathematics.Vector4(2.0f / (float)TackEngine.Core.Engine.TackEngineInstance.Instance.Window.WindowSize.X, 0, 0, 0),
+                    new OpenTK.Mathematics.Vector4(0, 2.0f / (float)TackEngine.Core.Engine.TackEngineInstance.Instance.Window.WindowSize.Y, 0, 0),
                     new OpenTK.Mathematics.Vector4(0, 0, 1, 0),
                     new OpenTK.Mathematics.Vector4(0, 0, 0, 1)
                     );
@@ -595,9 +595,9 @@ namespace TackEngineLib.GUI {
                 GL.Uniform4(GL.GetUniformLocation(TackGUI.Instance.DefaultTextShader.Id, "uColour"), style.FontColour.R / 255f, style.FontColour.G / 255f, style.FontColour.B / 255f, style.FontColour.A / 255f); ;
 
                 // Set camera info
-                GL.Uniform2(GL.GetUniformLocation(TackGUI.Instance.DefaultTextShader.Id, "uCameraInfo.position"), TackEngineLib.Objects.Components.Camera.MainCamera.GetParent().Position.ToOpenTKVec2());
-                GL.Uniform1(GL.GetUniformLocation(TackGUI.Instance.DefaultTextShader.Id, "uCameraInfo.zoomFactor"), TackEngineLib.Objects.Components.Camera.MainCamera.ZoomFactor);
-                GL.Uniform2(GL.GetUniformLocation(TackGUI.Instance.DefaultTextShader.Id, "uCameraInfo.size"), new OpenTK.Mathematics.Vector2(TackEngineLib.Objects.Components.Camera.MainCamera.RenderTarget.Width, TackEngineLib.Objects.Components.Camera.MainCamera.RenderTarget.Height));
+                GL.Uniform2(GL.GetUniformLocation(TackGUI.Instance.DefaultTextShader.Id, "uCameraInfo.position"), TackEngine.Core.Objects.Components.Camera.MainCamera.GetParent().Position.ToOpenTKVec2());
+                GL.Uniform1(GL.GetUniformLocation(TackGUI.Instance.DefaultTextShader.Id, "uCameraInfo.zoomFactor"), TackEngine.Core.Objects.Components.Camera.MainCamera.ZoomFactor);
+                GL.Uniform2(GL.GetUniformLocation(TackGUI.Instance.DefaultTextShader.Id, "uCameraInfo.size"), new OpenTK.Mathematics.Vector2(TackEngine.Core.Objects.Components.Camera.MainCamera.RenderTarget.Width, TackEngine.Core.Objects.Components.Camera.MainCamera.RenderTarget.Height));
 
                 for (int m = 0; m < maskData.Masks.Count; m++) {
                     OpenTK.Mathematics.Vector2 topRight = new OpenTK.Mathematics.Vector2(

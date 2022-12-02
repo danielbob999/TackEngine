@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using TackEngineLib.Engine;
-using TackEngineLib.Main;
-using TackEngineLib.Objects.Components;
-using TackEngineLib.Objects;
-using TackEngineLib.Renderer;
+using TackEngine.Core.Engine;
+using TackEngine.Core.Main;
+using TackEngine.Core.Objects.Components;
+using TackEngine.Core.Objects;
+using TackEngine.Core.Renderer;
 using OpenTK.Graphics.ES30;
-using TackEngineLib.Physics;
+using TackEngine.Core.Physics;
 using Android.Opengl;
 using Java.Security.Cert;
 using Java.Lang;
@@ -67,7 +67,7 @@ namespace TackEngine.Android {
             GL.Enable(EnableCap.Blend);
             GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
 
-            //GL.Viewport(0, 0, (int)TackEngineLib.Engine.TackEngine.Instance.Window.Size.X, (int)TackEngineLib.Engine.TackEngine.Instance.Window.Size.Y);
+            //GL.Viewport(0, 0, (int)TackEngine.Core.Engine.TackEngine.Instance.Window.Size.X, (int)TackEngine.Core.Engine.TackEngine.Instance.Window.Size.Y);
 
             //GL.EnableVertexAttribArray(0);
 
@@ -334,16 +334,16 @@ namespace TackEngine.Android {
             OpenTK.Matrix4 scaleMat = MatrixUtility.CreateScaleMatrix(scale.X / 2.0f, scale.Y / 2.0f, 1);
 
             // Generate rotation matrix
-            OpenTK.Matrix4 rotationMat = OpenTK.Matrix4.CreateRotationZ((float)TackEngineLib.Math.TackMath.DegToRad(rotation));
+            OpenTK.Matrix4 rotationMat = OpenTK.Matrix4.CreateRotationZ((float)TackEngine.Core.Math.TackMath.DegToRad(rotation));
 
             // Generate the view matrix
-            float widthToHeightRatio = TackEngineLib.Engine.TackEngine.Instance.Window.WindowSize.Y / (float)TackEngineLib.Engine.TackEngine.Instance.Window.WindowSize.X;
+            float widthToHeightRatio = TackEngine.Core.Engine.TackEngineInstance.Instance.Window.WindowSize.Y / (float)TackEngine.Core.Engine.TackEngineInstance.Instance.Window.WindowSize.X;
 
-            Vector2f s = TackEngineLib.Engine.TackEngine.Instance.Window.WindowSize;
+            Vector2f s = TackEngine.Core.Engine.TackEngineInstance.Instance.Window.WindowSize;
 
             OpenTK.Matrix4 orthoView = new OpenTK.Matrix4(
-                new OpenTK.Vector4((1 * Camera.MainCamera.ZoomFactor) * (1f / ((float)TackEngineLib.Engine.TackEngine.Instance.Window.WindowSize.X / 2.0f)), 0, 0, 0),
-                new OpenTK.Vector4(0, (1 * Camera.MainCamera.ZoomFactor) * (1f / ((float)TackEngineLib.Engine.TackEngine.Instance.Window.WindowSize.Y / 2.0f)), 0, 0),
+                new OpenTK.Vector4((1 * Camera.MainCamera.ZoomFactor) * (1f / ((float)TackEngine.Core.Engine.TackEngineInstance.Instance.Window.WindowSize.X / 2.0f)), 0, 0, 0),
+                new OpenTK.Vector4(0, (1 * Camera.MainCamera.ZoomFactor) * (1f / ((float)TackEngine.Core.Engine.TackEngineInstance.Instance.Window.WindowSize.Y / 2.0f)), 0, 0),
                 new OpenTK.Vector4(0, 0, 1, 0),
                 new OpenTK.Vector4(0, 0, 0, 1)
                 );

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using TackEngineLib.Engine;
-using TackEngineLib.Main;
+using TackEngine.Core.Engine;
+using TackEngine.Core.Main;
 using OpenTK.Graphics.OpenGL;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -61,7 +61,7 @@ namespace TackEngine.Desktop {
 
             newSprite.PixelFormat = (Sprite.SpritePixelFormat)bmpData.PixelFormat;
             //newSprite.m_stride = bmpData.Stride;
-            newSprite.Data = new byte[TackEngineLib.Math.TackMath.Abs(bmpData.Stride) * newBp.Height];
+            newSprite.Data = new byte[TackEngine.Core.Math.TackMath.Abs(bmpData.Stride) * newBp.Height];
 
             System.Runtime.InteropServices.Marshal.Copy(bmpData.Scan0, newSprite.Data, 0, newSprite.Data.Length);
 
@@ -86,7 +86,7 @@ namespace TackEngine.Desktop {
 
             Sprite.DefaultSprite.PixelFormat = (Sprite.SpritePixelFormat)bmpData.PixelFormat;
             //Sprite.DefaultSprite.m_stride = bmpData.Stride;
-            Sprite.DefaultSprite.Data = new byte[TackEngineLib.Math.TackMath.Abs(bmpData.Stride) * defaultBitmap.Height];
+            Sprite.DefaultSprite.Data = new byte[TackEngine.Core.Math.TackMath.Abs(bmpData.Stride) * defaultBitmap.Height];
 
             System.Runtime.InteropServices.Marshal.Copy(bmpData.Scan0, Sprite.DefaultSprite.Data, 0, Sprite.DefaultSprite.Data.Length);
 
@@ -104,7 +104,7 @@ namespace TackEngine.Desktop {
             Sprite.DefaultUISprite = LoadFromFile("tackresources/sprites/ui/ui_panel.png");
             Sprite.DefaultUISprite.Create();
             Sprite.DefaultUISprite.IsNineSliced = true;
-            Sprite.DefaultUISprite.NineSlicedData = new TackEngineLib.Main.Sprite.SliceData(20);
+            Sprite.DefaultUISprite.NineSlicedData = new TackEngine.Core.Main.Sprite.SliceData(20);
 
             TackConsole.EngineLog(TackConsole.LogType.Message, "Loaded the default UI sprite into Sprite.DefaultUISprite");
         }

@@ -7,15 +7,15 @@ using System.Threading.Tasks;
 using System.Diagnostics;
 using System.Drawing;
 
-using TackEngineLib.Main;
-using TackEngineLib.Engine;
-using TackEngineLib.Objects;
-using TackEngineLib.Objects.Components;
-using TackEngineLib.Renderer;
-using TackEngineLib.GUI;
-using TackEngineLib.Physics;
+using TackEngine.Core.Main;
+using TackEngine.Core.Engine;
+using TackEngine.Core.Objects;
+using TackEngine.Core.Objects.Components;
+using TackEngine.Core.Renderer;
+using TackEngine.Core.GUI;
+using TackEngine.Core.Physics;
 
-namespace TackEngineLib.Renderer
+namespace TackEngine.Core.Renderer
 {
     internal abstract class TackRenderer
     {
@@ -75,8 +75,8 @@ namespace TackEngineLib.Renderer
         {
             Vector2f vec = new Vector2f()
             {
-                X = ((_pos.X - Camera.MainCamera.GetParent().Position.X) / (TackEngine.Instance.Window.WindowSize.X / 2)),
-                Y = ((_pos.Y + Camera.MainCamera.GetParent().Position.Y) / (TackEngine.Instance.Window.WindowSize.Y / 2))
+                X = ((_pos.X - Camera.MainCamera.GetParent().Position.X) / (TackEngineInstance.Instance.Window.WindowSize.X / 2)),
+                Y = ((_pos.Y + Camera.MainCamera.GetParent().Position.Y) / (TackEngineInstance.Instance.Window.WindowSize.Y / 2))
             };
 
             return vec;

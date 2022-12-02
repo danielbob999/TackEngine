@@ -4,13 +4,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TackEngineLib.GUI;
-using TackEngineLib.Main;
+using TackEngine.Core.GUI;
+using TackEngine.Core.Main;
 using OpenTK.Graphics.OpenGL;
 
 namespace TackEngine.Desktop {
     internal class DesktopTackFontLoadingImpl : ITackFontLoadingImpl {
-        public TackEngineLib.GUI.TackFont LoadFromFile(string path) {
+        public TackEngine.Core.GUI.TackFont LoadFromFile(string path) {
             byte[] fileData = System.IO.File.ReadAllBytes(path);
 
             TackFont newFont = new TackFont();

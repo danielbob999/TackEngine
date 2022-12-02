@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TackEngineLib.GUI {
+namespace TackEngine.Core.GUI {
     internal class GUIMouseEvent {
 
         public int EventType { get; }       // The type of event that this instance represents

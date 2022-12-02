@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TackEngineLib.Renderer {
+namespace TackEngine.Core.Renderer {
     public enum TackShaderType {
         World,
         GUI

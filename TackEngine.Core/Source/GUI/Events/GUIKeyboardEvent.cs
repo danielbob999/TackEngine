@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TackEngineLib.Main;
-using TackEngineLib.Input;
+using TackEngine.Core.Main;
+using TackEngine.Core.Input;
 
-namespace TackEngineLib.GUI.Events {
+namespace TackEngine.Core.GUI.Events {
     public class GUIKeyboardEvent {
         public GUIKeyboardEventArgs Args { get; private set; }
 

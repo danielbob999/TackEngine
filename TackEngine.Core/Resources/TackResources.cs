@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 
-namespace TackEngineLib.Resources
+namespace TackEngine.Core.Resources
 {
     /// <summary>
     /// Main class used to load resources into TackEngine

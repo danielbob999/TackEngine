@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using TackEngineLib.Main;
-using TackEngineLib.Engine;
-using TackEngineLib.Input;
+using TackEngine.Core.Main;
+using TackEngine.Core.Engine;
+using TackEngine.Core.Input;
 
-namespace TackEngineLib.GUI {
+namespace TackEngine.Core.GUI {
     public class GUIContentScrollArea : GUIObject, IGUIScrollable {
 
         public float HorizontalScrollPosition { get; set; }

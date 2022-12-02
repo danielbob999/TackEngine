@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using TackEngineLib.Main;
-using TackEngineLib.Input;
-using TackEngineLib.GUI.Events;
+using TackEngine.Core.Main;
+using TackEngine.Core.Input;
+using TackEngine.Core.GUI.Events;
 
-namespace TackEngineLib.GUI {
+namespace TackEngine.Core.GUI {
     public class GUIToggle : GUIObject {
 
         /// <summary>
@@ -109,7 +109,7 @@ namespace TackEngineLib.GUI {
             base.OnMouseEvent(args);
 
             if (args.MouseButton == MouseButtonKey.Left && args.MouseAction == MouseButtonAction.Up) {
-                if (TackEngineLib.Physics.AABB.IsPointInAABB(new Physics.AABB(m_toggleBounds), TackEngineLib.Input.TackInput.Instance.MousePosition.ToVector2f())) {
+                if (TackEngine.Core.Physics.AABB.IsPointInAABB(new Physics.AABB(m_toggleBounds), TackEngine.Core.Input.TackInput.Instance.MousePosition.ToVector2f())) {
                     if (IsMouseHovering) {
                         IsSelected = !IsSelected;
 

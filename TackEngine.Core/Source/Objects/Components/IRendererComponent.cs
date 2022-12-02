@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TackEngineLib.Main;
-using TackEngineLib.Renderer;
+using TackEngine.Core.Main;
+using TackEngine.Core.Renderer;
 
-namespace TackEngineLib.Objects.Components {
+namespace TackEngine.Core.Objects.Components {
     interface IRendererComponent {
         BaseShader Shader { get; }
         Sprite Sprite { get; }

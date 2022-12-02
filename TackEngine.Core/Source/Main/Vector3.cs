@@ -26,9 +26,9 @@ using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Xml.Serialization;
-using TackEngineLib.Math;
+using TackEngine.Core.Math;
 
-namespace TackEngineLib.Main {
+namespace TackEngine.Core.Main {
     /// <summary>
     /// Represents a 3D vector using three single-precision floating-point numbers.
     /// </summary>

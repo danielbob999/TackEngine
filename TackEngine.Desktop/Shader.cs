@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 using OpenTK.Graphics.OpenGL;
 using TackEngine.Desktop;
-using TackEngineLib.Main;
+using TackEngine.Core.Main;
 using tainicom.Aether.Physics2D.Common;
 
-namespace TackEngineLib.Renderer {
+namespace TackEngine.Core.Renderer {
     public class Shader : BaseShader {
         internal Shader(string shaderName, TackShaderType type, string vertexSoure, string fragmentSource) : 
             base(shaderName, type, vertexSoure, fragmentSource) {
@@ -133,7 +133,7 @@ namespace TackEngineLib.Renderer {
             GL.Uniform2(GL.GetUniformLocation(Id, name), ref vec2tk);
         }
 
-        internal override void SetUniformValue(string name, TackEngineLib.Main.Vector3 vec3) {
+        internal override void SetUniformValue(string name, TackEngine.Core.Main.Vector3 vec3) {
             OpenTK.Mathematics.Vector3 vec3tk = vec3.ToOpenTKVec3();
             GL.Uniform3(GL.GetUniformLocation(Id, name), ref vec3tk);
         }
