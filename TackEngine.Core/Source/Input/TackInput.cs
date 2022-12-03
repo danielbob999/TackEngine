@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using TackEngine.Core.Main;
 using TackEngine.Core.Engine;
 using TackEngine.Core.Objects.Components;
+using System.Diagnostics;
 
 namespace TackEngine.Core.Input {
     public class TackInput {
@@ -24,6 +25,12 @@ namespace TackEngine.Core.Input {
         private bool[] mMouseKeysDownPerFrame;
         private bool[] mMouseKeysUpPerFrame;
         private bool[] mLastFrameMouseKeys;
+
+        // Touch Input
+        private bool mTouchUpPerFrame;
+        private bool mTouchDownPerFrame;
+        private bool mTouchDownLock;
+        private bool mTouchHeld;
 
         // Gamepads
         //private List<GamepadData> m_connectedGamepads;
@@ -76,6 +83,22 @@ namespace TackEngine.Core.Input {
             }
         }
 
+        public Vector2i TouchPosition { get; internal set; }
+
+        public Vector2f TouchPositionInWorld {
+            get {
+                Vector2f clampedTouchPos = new Vector2f(
+                (TouchPosition.X / (TackEngineInstance.Instance.Window.WindowSize.X / 2.0f)) - 1f,
+                ((TouchPosition.Y / (TackEngineInstance.Instance.Window.WindowSize.Y / 2.0f)) - 1f) * -1f);
+
+                Vector2f cameraPosition = Camera.MainCamera.GetParent().Position;
+
+                return new Vector2f(
+                    (clampedTouchPos.X * (TackEngineInstance.Instance.Window.WindowSize.X / (2.0f * Camera.MainCamera.ZoomFactor))) + cameraPosition.X,
+                    (clampedTouchPos.Y * (TackEngineInstance.Instance.Window.WindowSize.Y / (2.0f * Camera.MainCamera.ZoomFactor))) + cameraPosition.Y);
+            }
+        }
+
         public int MouseScrollWheelChange { get; private set; }
 
         internal TackInput() {
@@ -121,6 +144,10 @@ namespace TackEngine.Core.Input {
             mMouseKeysUpPerFrame = new bool[1024];
 
             MouseScrollWheelChange = 0;
+
+            mTouchDownLock = false;
+            mTouchDownPerFrame = false;
+            mTouchUpPerFrame = false;
         }
 
         internal void KeyDownEvent(KeyboardKey _key) {
@@ -224,6 +251,34 @@ namespace TackEngine.Core.Input {
             GUI.BaseTackGUI.Instance.RegisterMouseEvent(new GUI.Events.GUIMouseEvent(MousePosition, _key, MouseButtonAction.Up));
         }
 
+        internal void TouchDownEvent(Vector2i touchPosition) {
+            TouchPosition = touchPosition;
+
+            if (!mTouchDownLock) { // if the touch down var isn't locked
+                mTouchDownPerFrame = true;
+                mTouchDownLock = true;
+
+                GUI.BaseTackGUI.Instance.RegisterMouseEvent(new GUI.Events.GUIMouseEvent(TouchPosition, MouseButtonKey.Right, MouseButtonAction.Down));
+            }
+
+            mTouchHeld = true;
+        }
+
+        internal void TouchUpEvent(Vector2i touchPosition) {
+            TouchPosition = touchPosition;
+
+            mTouchUpPerFrame = true;
+            mTouchHeld = false;
+
+            mTouchDownLock = false; // Unlock the touch var
+
+            GUI.BaseTackGUI.Instance.RegisterMouseEvent(new GUI.Events.GUIMouseEvent(TouchPosition, MouseButtonKey.Right, MouseButtonAction.Up));
+        }
+
+        internal void TouchDragEvent(Vector2i touchPosition) {
+            TouchPosition = touchPosition;
+        }
+
         public static bool KeyDown(KeyboardKey _keyCode) {
             if (Instance == null) {
                 return false;
@@ -311,6 +366,18 @@ namespace TackEngine.Core.Input {
             }
 
             return Instance.mMouseKeysUpPerFrame[(int)_key];
+        }
+
+        public static bool TouchUp() {
+            return Instance.mTouchUpPerFrame;
+        }
+
+        public static bool TouchDown() {
+            return Instance.mTouchDownPerFrame;
+        }
+
+        public static bool TouchHeld() {
+            return Instance.mTouchHeld;
         }
 
         internal string GetInputBuffer() {

@@ -5,10 +5,13 @@ using TackEngine.Core.Objects;
 using Android.OS;
 using TackEngine.Android;
 using TackEngine.Core.GUI;
+using TackEngine.Core.Input;
 
 namespace GameApp.Android {
     [Activity(Label = "@string/app_name", MainLauncher = true)]
     public class MainActivity : TackEngine.Android.TackEngineActivity {
+        TackObject obj4;
+
         protected override void OnCreate(Bundle? savedInstanceState) {
             base.OnCreate(savedInstanceState);
         }
@@ -36,7 +39,7 @@ namespace GameApp.Android {
             */
 
             
-            TackObject obj4 = TackObject.Create("TackObject3", new Vector2f(0, 0));
+            obj4 = TackObject.Create("TackObject3", new Vector2f(0, 0));
             obj4.Scale = new Vector2f(100, 100);
             obj4.AddComponent(new SpriteRendererComponent() { Colour = Colour4b.Green, Sprite = s });
             
