@@ -54,7 +54,7 @@ namespace TackEngine.Android {
 
             TackProfiler.Instance.StartTimer("Renderer.GUIRender");
             // Render GUI
-            //GUIInstance.OnGUIRender();
+            GUIInstance.OnGUIRender();
             TackProfiler.Instance.StopTimer("Renderer.GUIRender");
         }
 

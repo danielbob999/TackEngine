@@ -6,11 +6,14 @@ using Android.OS;
 using TackEngine.Android;
 using TackEngine.Core.GUI;
 using TackEngine.Core.Input;
+using Android.Content.PM;
 
 namespace GameApp.Android {
-    [Activity(Label = "@string/app_name", MainLauncher = true)]
+    [Activity(Label = "@string/app_name", MainLauncher = true, ConfigurationChanges = (ConfigChanges.ScreenSize | ConfigChanges.Orientation))]
     public class MainActivity : TackEngine.Android.TackEngineActivity {
         TackObject obj4;
+        private Vector2f m_dragStart;
+        private bool m_isDragging = false;
 
         protected override void OnCreate(Bundle? savedInstanceState) {
             base.OnCreate(savedInstanceState);
@@ -41,24 +44,63 @@ namespace GameApp.Android {
             
             obj4 = TackObject.Create("TackObject3", new Vector2f(0, 0));
             obj4.Scale = new Vector2f(100, 100);
-            obj4.AddComponent(new SpriteRendererComponent() { Colour = Colour4b.Green, Sprite = s });
+            //obj4.AddComponent(new SpriteRendererComponent() { Colour = Colour4b.Green, Sprite = s });
+            obj4.AddComponent(new SpriteRendererComponent() { Colour = Colour4b.Green });
             
             
 
 
-            //GUIBox ta = new GUIBox();
-            //ta.Size = new Vector2f(100, 100f);
-            //ta.Position = new Vector2f(5, 100);
+            GUIBox ta = new GUIBox();
+            ta.Size = new Vector2f(100, 100f);
+            ta.Position = new Vector2f(200, 200);
+
+            GUITextArea ta1 = new GUITextArea();
+            ta1.Size = new Vector2f(500f, 500f);
+            ta1.Text = "This is some text\nOn a new line!";
+            ta1.Position = new Vector2f(400, 200);
+            //ta1.NormalStyle.Colour = new Colour4b(0, 0, 0, 0);
+            ta1.NormalStyle.FontColour = new Colour4b(255, 0, 0, 255);
+
+            GUIButton but = new GUIButton();
+            but.Size = new Vector2f(400, 100);
+            but.Position = new Vector2f(400, 800);
+            but.OnClickedEvent += OnButtonPress;
         }
 
         public override void OnEngineUpdate() {
             base.OnEngineStart();
+
+            Vector2f camMoveAmnt = new Vector2f();
+
+            // touch drag logic
+            if (TackInput.TouchDown()) {
+                //System.Diagnostics.Debug.WriteLine("Touch down");
+                m_isDragging = true;
+                m_dragStart = TackInput.Instance.TouchPosition.ToVector2f();
+            }
+
+            if (m_isDragging) {
+                Vector2f mouseDragAmount = TackInput.Instance.TouchPosition.ToVector2f() - m_dragStart;
+                camMoveAmnt += (mouseDragAmount * new Vector2f(-0.5f, 0.5f));
+                m_dragStart = TackInput.Instance.TouchPosition.ToVector2f();
+            }
+
+            if (TackInput.TouchUp()) {
+                m_isDragging = false;
+                //System.Diagnostics.Debug.WriteLine("Touch down");
+            }
+
+            Camera.MainCamera.GetParent().Position += camMoveAmnt;
 
             //TackObject.Get("TackObject1").Rotation = TackObject.Get("TackObject2").Rotation = TackObject.Get("TackObject3").Rotation += ((float)EngineTimer.Instance.LastUpdateTime * 25f);
         }
 
         public override void OnEngineClose() {
             base.OnEngineStart();
+        }
+
+        public void OnButtonPress(object sender, EventArgs e) {
+            System.Diagnostics.Debug.WriteLine("Button pressed");
         }
     }
 }

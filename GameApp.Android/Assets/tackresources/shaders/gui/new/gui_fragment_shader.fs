@@ -1,4 +1,4 @@
-#version 320 es
+#version 300 es
 out mediump vec4 FragColor;
 
 in mediump vec2 fTexCoord;

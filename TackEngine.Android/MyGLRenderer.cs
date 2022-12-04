@@ -1,4 +1,5 @@
-﻿using Android.Hardware.Lights;
+﻿using Android.Graphics;
+using Android.Hardware.Lights;
 using Android.Opengl;
 using Android.Util;
 using Java.Lang;
@@ -11,6 +12,7 @@ using TackEngine.Core.Engine;
 using TackEngine.Core.Input;
 using TackEngine.Core.Main;
 using TackEngine.Core.Objects;
+using TackEngine.Core.Objects.Components;
 using TackEngine.Core.Physics;
 using TackEngine.Core.Renderer;
 using static Android.Icu.Text.ListFormatter;
@@ -100,11 +102,21 @@ namespace TackEngine.Android {
             TackEngineActivity.Instance.mTackRender.OnRender(TackEngineActivity.Instance.m_engineTimer.LastRenderTime);
 
             // swap buffers was called here
+
+
+            // ------ testing
         }
 
         public void OnSurfaceChanged(IGL10? unused, int width, int height) {
-            unused.GlViewport(0, 0, width, height);
-            System.Diagnostics.Debug.WriteLine("============= surface changed " + width + " " + height);
+            //unused.GlViewport(0, 0, width, height);
+
+            OpenTK.Graphics.ES30.GL.Viewport(0, 0, width, height);
+            //System.Diagnostics.Debug.WriteLine("============= surface changed " + width + " " + height);
+
+            TackEngineActivity.Instance.WindowSize = new Vector2f(width, height);
+
+            TackEngine.Core.Objects.Components.Camera c = TackEngine.Core.Objects.Components.Camera.MainCamera;
+            c.RenderTarget = new RectangleShape(0, 0, width, height);
         }
     }
 }

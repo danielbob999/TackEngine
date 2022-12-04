@@ -4,10 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.Drawing.Text;
-using System.Drawing.Drawing2D;
 using System.IO;
 
 using TackEngine.Core.Main;
@@ -22,6 +18,10 @@ using TackEngine.Core.Physics;
 using Android.Content.Res;
 using Java.Security.Cert;
 using System.Diagnostics.Tracing;
+using Android.Graphics;
+using Android.Opengl;
+using Javax.Microedition.Khronos.Opengles;
+using System.Runtime.InteropServices;
 
 namespace TackEngine.Android {
     /// <summary>
@@ -47,9 +47,9 @@ namespace TackEngine.Android {
             m_preRenderQueue = new List<GUIObject>();
             m_preRenderCheckList = new List<GUIObject>();
 
-            //m_defaultFont = TackFont.LoadFromFile(Environment.GetFolderPath(Environment.SpecialFolder.Fonts) + "\\Arial.ttf");
+            m_defaultFont = TackFont.LoadFromFile("tackresources/fonts/Roboto/Roboto-Regular.ttf");
 
-            TackConsole.EngineLog(TackConsole.LogType.Message, string.Format("Added default font file from: {0}\\Arial.ttf", Environment.GetFolderPath(Environment.SpecialFolder.Fonts)));
+            //TackConsole.EngineLog(TackConsole.LogType.Message, string.Format("Added default font file from: {0}\\Arial.ttf", Environment.GetFolderPath(Environment.SpecialFolder.Fonts)));
 
             m_guiOperations = new List<GUIOperation>();
 
@@ -103,9 +103,14 @@ namespace TackEngine.Android {
                         continue;
                     }
 
+                    // Debugging
+                    GUIObject debugObject = m_guiObjects[j];
+
                     RectangleShape shape = m_guiObjects[j].GetShapeWithMask();
 
-                    if (TackEngine.Core.Physics.AABB.IsPointInAABB(new TackEngine.Core.Physics.AABB(new Vector2f(shape.X, shape.Y + shape.Height), new Vector2f(shape.X + shape.Width, shape.Y)), m_mouseEventQueue[i].Args.MousePosition.ToVector2f())) {
+                    TackEngine.Core.Physics.AABB guiObjAABB = new TackEngine.Core.Physics.AABB(new Vector2f(shape.X, shape.Y + shape.Height), new Vector2f(shape.X + shape.Width, shape.Y));
+
+                    if (TackEngine.Core.Physics.AABB.IsPointInAABB(guiObjAABB, m_mouseEventQueue[i].Args.MousePosition.ToVector2f())) {
                         // If the action is down or held, only send the action if its inside a selectable area
                         m_guiObjects[j].OnMouseEvent(m_mouseEventQueue[i].Args);
 
@@ -276,7 +281,12 @@ namespace TackEngine.Android {
             GL.Enable(EnableCap.Blend);
             GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
 
-            GL.EnableVertexAttribArray(0);
+            int posHandle = GL.GetAttribLocation(m_defaultGUIShader.Id, "aPos");
+            int uvHandle = GL.GetAttribLocation(m_defaultGUIShader.Id, "aTexCoord");
+
+            GL.UseProgram(m_defaultGUIShader.Id);
+
+            //GL.EnableVertexAttribArray(0);
 
             // Call 1 or more draw element calls depending on a maxGUIDrawCallAmount variable 
 
@@ -289,29 +299,22 @@ namespace TackEngine.Android {
             };
 
             int[] indiceData = new int[] {
-                    0, 1, 3, // first triangle
-                    1, 2, 3  // second triangle
+                    0, 1, 3, // first triangle 
+                    1, 2, 3  // second triangle - 1, 2, 3
             };
 
-            GL.GenVertexArrays(1, out int VAO);
             GL.GenBuffers(1, out int VBO);
-            GL.GenBuffers(1, out int EBO);
-
-            GL.BindVertexArray(VAO);
 
             GL.BindBuffer(BufferTarget.ArrayBuffer, VBO);
             GL.BufferData(BufferTarget.ArrayBuffer, new IntPtr(sizeof(float) * 20), vertexData, BufferUsage.StaticDraw);
 
-            GL.BindBuffer(BufferTarget.ElementArrayBuffer, EBO);
-            GL.BufferData(BufferTarget.ElementArrayBuffer, new IntPtr(sizeof(int) * 6), indiceData, BufferUsage.StaticDraw);
-
             // position attribute
-            GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 5 * sizeof(float), 0);
-            GL.EnableVertexAttribArray(0);
+            GL.VertexAttribPointer(posHandle, 3, VertexAttribPointerType.Float, false, 5 * sizeof(float), 0);
+            GL.EnableVertexAttribArray(posHandle);
 
-            // texture coords attribute
-            GL.VertexAttribPointer(1, 2, VertexAttribPointerType.Float, false, 5 * sizeof(float), 3 * sizeof(float));
-            GL.EnableVertexAttribArray(1);
+            // uv attribute
+            GL.VertexAttribPointer(uvHandle, 2, VertexAttribPointerType.Float, false, 5 * sizeof(float), 3 * sizeof(float));
+            GL.EnableVertexAttribArray(uvHandle);
 
             // Set texture attributes
             GL.ActiveTexture(TextureUnit.Texture0);
@@ -328,7 +331,7 @@ namespace TackEngine.Android {
             GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, style.Texture.Width, style.Texture.Height, 0, OpenTK.Graphics.ES30.PixelFormat.Rgba, PixelType.UnsignedByte, style.Texture.Data);
             //GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
 
-            Instance.DefaultGUIShader.Use();
+            m_defaultGUIShader.Use();
 
             // Generate translation matrix
             OpenTK.Matrix4 transMat = OpenTK.Matrix4.CreateTranslation(rect.X + (rect.Width / 2.0f), -rect.Y - (rect.Height / 2.0f), 0);
@@ -370,12 +373,12 @@ namespace TackEngine.Android {
 
             for (int m = 0; m < maskData.Masks.Count; m++) {
                 OpenTK.Vector2 topRight = new OpenTK.Vector2(
-                    ((maskData.Masks[m].X + maskData.Masks[m].Width) / (Camera.MainCamera.RenderTarget.Width / 2f)) - 1f,
-                    (((maskData.Masks[m].Y) / (Camera.MainCamera.RenderTarget.Height / 2f)) - 1f));
+                    ((maskData.Masks[m].X + maskData.Masks[m].Width) / (TackEngine.Core.Objects.Components.Camera.MainCamera.RenderTarget.Width / 2f)) - 1f,
+                    (((maskData.Masks[m].Y) / (TackEngine.Core.Objects.Components.Camera.MainCamera.RenderTarget.Height / 2f)) - 1f));
 
                 OpenTK.Vector2 bottomLeft = new OpenTK.Vector2(
-                    ((maskData.Masks[m].X) / (Camera.MainCamera.RenderTarget.Width / 2f)) - 1f,
-                    ((maskData.Masks[m].Y + maskData.Masks[m].Height) / (Camera.MainCamera.RenderTarget.Height / 2f)) - 1f);
+                    ((maskData.Masks[m].X) / (TackEngine.Core.Objects.Components.Camera.MainCamera.RenderTarget.Width / 2f)) - 1f,
+                    ((maskData.Masks[m].Y + maskData.Masks[m].Height) / (TackEngine.Core.Objects.Components.Camera.MainCamera.RenderTarget.Height / 2f)) - 1f);
 
                 GL.Uniform2(GL.GetUniformLocation(Instance.DefaultGUIShader.Id, "uMaskList[" + m + "].topRight"), topRight);
                 GL.Uniform2(GL.GetUniformLocation(Instance.DefaultGUIShader.Id, "uMaskList[" + m + "].bottomLeft"), bottomLeft);
@@ -383,13 +386,13 @@ namespace TackEngine.Android {
 
             GL.Uniform1(GL.GetUniformLocation(Instance.DefaultGUIShader.Id, "uMaskCount"), maskData.Masks.Count);
 
-            GL.BindVertexArray(VAO);
+            unsafe {
+                fixed (void* ptr = indiceData) {
+                    GL.DrawElements(BeginMode.Triangles, 6, DrawElementsType.UnsignedInt, new IntPtr(ptr));
+                }
+            }
 
-            GL.DrawElements(BeginMode.Triangles, 6, DrawElementsType.UnsignedInt, IntPtr.Zero);
-
-            GL.DeleteBuffers(1, ref EBO);
             GL.DeleteBuffers(1, ref VBO);
-            GL.DeleteVertexArrays(1, ref VAO);
         }
 
         /// <summary>
@@ -401,10 +404,14 @@ namespace TackEngine.Android {
         internal override void InternalTextArea(RectangleShape rect, string text, GUITextArea.GUITextAreaStyle style, Vector2f scrollPosition, GUIMaskData maskData, int caretCharacterIndex) {
             GL.Enable(EnableCap.Texture2D);
             GL.Enable(EnableCap.Blend);
-            //GL.BlendFunc(BlendingFactor.One, BlendingFactor.OneMinusSrcAlpha);
             GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
 
-            GL.EnableVertexAttribArray(0);
+            int posHandle = GL.GetAttribLocation(m_defaultGUIShader.Id, "aPos");
+            int uvHandle = GL.GetAttribLocation(m_defaultGUIShader.Id, "aTexCoord");
+
+            GL.UseProgram(m_defaultGUIShader.Id);
+
+            //GL.EnableVertexAttribArray(0);
 
             // Call 1 or more draw element calls depending on a maxGUIDrawCallAmount variable 
 
@@ -417,29 +424,193 @@ namespace TackEngine.Android {
             };
 
             int[] indiceData = new int[] {
-                    0, 1, 3, // first triangle
-                    1, 2, 3  // second triangle
+                    0, 1, 3, // first triangle 
+                    1, 2, 3  // second triangle - 1, 2, 3
             };
 
-            GL.GenVertexArrays(1, out int VAO);
             GL.GenBuffers(1, out int VBO);
-            GL.GenBuffers(1, out int EBO);
-
-            GL.BindVertexArray(VAO);
 
             GL.BindBuffer(BufferTarget.ArrayBuffer, VBO);
             GL.BufferData(BufferTarget.ArrayBuffer, new IntPtr(sizeof(float) * 20), vertexData, BufferUsage.StaticDraw);
 
-            GL.BindBuffer(BufferTarget.ElementArrayBuffer, EBO);
-            GL.BufferData(BufferTarget.ElementArrayBuffer, new IntPtr(sizeof(int) * 6), indiceData, BufferUsage.StaticDraw);
+            // position attribute
+            GL.VertexAttribPointer(posHandle, 3, VertexAttribPointerType.Float, false, 5 * sizeof(float), 0);
+            GL.EnableVertexAttribArray(posHandle);
+
+            // uv attribute
+            GL.VertexAttribPointer(uvHandle, 2, VertexAttribPointerType.Float, false, 5 * sizeof(float), 3 * sizeof(float));
+            GL.EnableVertexAttribArray(uvHandle);
+
+            float padding = 5f;
+
+            TackFont font = style.Font;
+
+            // If a font hasn't been set, use the default GUI font
+            if (font == null) {
+                font = Instance.DefaultFont;
+            }
+
+            Vector2f totalTextSize = MeasureStringSize(text, font, style.FontSize, rect);
+
+            Vector2f minPos = new Vector2f(rect.X + padding, rect.Y + padding);
+
+            // If the horizontal alignment is in the middle, set the char_x offset
+            if (style.HorizontalAlignment == HorizontalAlignment.Middle) {
+                float widthDelta = rect.Width - totalTextSize.X;
+
+                minPos.X = rect.X + (widthDelta / 2.0f);
+            }
+
+            // If the horizontal alignment is on the right, set the char_x offset
+            if (style.HorizontalAlignment == HorizontalAlignment.Right) {
+                float widthDelta = rect.Width - totalTextSize.X;
+
+                minPos.X = rect.X + widthDelta;
+            }
+
+            // If the vertical alignment is in the middle, set the char_y offset
+            if (style.VerticalAlignment == VerticalAlignment.Middle) {
+                float heightDelta = rect.Height - totalTextSize.Y;
+
+                minPos.Y = rect.Y + (heightDelta / 2f);
+            }
+
+            // If the vertical alignment is at the bottom, set the char_y offset
+            if (style.VerticalAlignment == VerticalAlignment.Bottom) {
+                float heightDelta = rect.Height - totalTextSize.Y;
+
+                minPos.Y = rect.Y + heightDelta;
+            }
+
+            maskData.AddMask(rect);
+
+            Vector2f charPos = new Vector2f(minPos.X, minPos.Y);
+
+            for (int i = 0; i < text.Length; i++) {
+                if (text[i] == '\n') {
+                    charPos.Y += style.Font.GetFontCharacter('B').size.Y;
+                    charPos.X = minPos.X;
+                    continue;
+                }
+
+                TackFont.FontCharacter fchar = style.Font.GetFontCharacter(text[i]);
+
+                // set default (4 byte) pixel alignment 
+                GL.BindTexture(TextureTarget.Texture2D, 0);
+                GL.ActiveTexture(TextureUnit.Texture0);
+
+                // Set texture attributes
+                //GL.ActiveTexture(TextureUnit.Texture0);
+                GL.BindTexture(TextureTarget.Texture2D, fchar.texId);
+                GL.PixelStore(PixelStoreParameter.UnpackAlignment, 4);
+
+                m_defaultGUIShader.Use();
+
+                // Generate translation matrix
+                OpenTK.Matrix4 transMat = OpenTK.Matrix4.CreateTranslation(charPos.X + (fchar.size.X / 2.0f), -charPos.Y - (fchar.size.Y / 2.0f), 0);
+
+                // Generate scale matrix
+                OpenTK.Matrix4 scaleMat = MatrixUtility.CreateScaleMatrix((fchar.size.X / 2.0f), (fchar.size.Y / 2.0f), 1);
+
+                // Generate the view matrix
+                float widthToHeightRatio = TackEngine.Core.Engine.TackEngineInstance.Instance.Window.WindowSize.Y / (float)TackEngine.Core.Engine.TackEngineInstance.Instance.Window.WindowSize.X;
+
+                OpenTK.Matrix4 orthoView = new OpenTK.Matrix4(
+                    new OpenTK.Vector4(2.0f / (float)TackEngine.Core.Engine.TackEngineInstance.Instance.Window.WindowSize.X, 0, 0, 0),
+                    new OpenTK.Vector4(0, 2.0f / (float)TackEngine.Core.Engine.TackEngineInstance.Instance.Window.WindowSize.Y, 0, 0),
+                    new OpenTK.Vector4(0, 0, 1, 0),
+                    new OpenTK.Vector4(0, 0, 0, 1)
+                    );
+
+                // Multiply the above matrices to generate the final model matrix
+                OpenTK.Matrix4 modelMatrix = ((scaleMat) * transMat) * orthoView;
+
+                GL.UniformMatrix4(GL.GetUniformLocation(TackGUI.Instance.DefaultGUIShader.Id, "uModelMat"), false, ref modelMatrix);
+                GL.Uniform1(GL.GetUniformLocation(TackGUI.Instance.DefaultGUIShader.Id, "uTexture"), 0);
+                GL.Uniform4(GL.GetUniformLocation(TackGUI.Instance.DefaultGUIShader.Id, "uColour"), style.FontColour.R / 255f, style.FontColour.G / 255f, style.FontColour.B / 255f, style.FontColour.A / 255f); ;
+
+                if (style.Texture.IsNineSliced && style.Texture.NineSlicedData != null) {
+                    float slice = style.Texture.NineSlicedData.BorderSize;
+
+                    GL.Uniform2(GL.GetUniformLocation(Instance.DefaultGUIShader.Id, "uSliceDimensions"), new Vector2f(slice / rect.Width, slice / rect.Height).ToOpenTKVec2());
+                    GL.Uniform2(GL.GetUniformLocation(Instance.DefaultGUIShader.Id, "uSliceBorder"), new Vector2f(slice / style.Texture.Width, slice / style.Texture.Height).ToOpenTKVec2());
+                    GL.Uniform1(GL.GetUniformLocation(Instance.DefaultGUIShader.Id, "uIsNineSlicedTexture"), 1);
+                } else {
+                    GL.Uniform1(GL.GetUniformLocation(Instance.DefaultGUIShader.Id, "uIsNineSlicedTexture"), 0);
+                }
+
+                // Set camera info
+                GL.Uniform2(GL.GetUniformLocation(Instance.DefaultGUIShader.Id, "uCameraInfo.position"), TackEngine.Core.Objects.Components.Camera.MainCamera.GetParent().Position.ToOpenTKVec2());
+                GL.Uniform1(GL.GetUniformLocation(Instance.DefaultGUIShader.Id, "uCameraInfo.zoomFactor"), TackEngine.Core.Objects.Components.Camera.MainCamera.ZoomFactor);
+                GL.Uniform2(GL.GetUniformLocation(Instance.DefaultGUIShader.Id, "uCameraInfo.size"), new OpenTK.Vector2(TackEngine.Core.Objects.Components.Camera.MainCamera.RenderTarget.Width, TackEngine.Core.Objects.Components.Camera.MainCamera.RenderTarget.Height));
+
+                for (int m = 0; m < maskData.Masks.Count; m++) {
+                    OpenTK.Vector2 topRight = new OpenTK.Vector2(
+                        ((maskData.Masks[m].X + maskData.Masks[m].Width) / (TackEngine.Core.Objects.Components.Camera.MainCamera.RenderTarget.Width / 2f)) - 1f,
+                        (((maskData.Masks[m].Y) / (TackEngine.Core.Objects.Components.Camera.MainCamera.RenderTarget.Height / 2f)) - 1f));
+
+                    OpenTK.Vector2 bottomLeft = new OpenTK.Vector2(
+                        ((maskData.Masks[m].X) / (TackEngine.Core.Objects.Components.Camera.MainCamera.RenderTarget.Width / 2f)) - 1f,
+                        ((maskData.Masks[m].Y + maskData.Masks[m].Height) / (TackEngine.Core.Objects.Components.Camera.MainCamera.RenderTarget.Height / 2f)) - 1f);
+
+                    GL.Uniform2(GL.GetUniformLocation(Instance.DefaultGUIShader.Id, "uMaskList[" + m + "].topRight"), topRight);
+                    GL.Uniform2(GL.GetUniformLocation(Instance.DefaultGUIShader.Id, "uMaskList[" + m + "].bottomLeft"), bottomLeft);
+                }
+
+                GL.Uniform1(GL.GetUniformLocation(Instance.DefaultGUIShader.Id, "uMaskCount"), maskData.Masks.Count);
+
+                unsafe {
+                    fixed (void* ptr = indiceData) {
+                        GL.DrawElements(BeginMode.Triangles, 6, DrawElementsType.UnsignedInt, new IntPtr(ptr));
+                    }
+                }
+
+                charPos.X += fchar.size.X;
+            }
+
+            GL.DeleteBuffers(1, ref VBO);
+
+            /*
+             * --------------------------------- old
+            GL.Enable(EnableCap.Texture2D);
+            GL.Enable(EnableCap.Blend);
+            //GL.BlendFunc(BlendingFactor.One, BlendingFactor.OneMinusSrcAlpha);
+            GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
+
+            int posHandle = GL.GetAttribLocation(m_defaultTextShader.Id, "aPos");
+            int uvHandle = GL.GetAttribLocation(m_defaultTextShader.Id, "aTexCoord");
+
+            GL.UseProgram(m_defaultTextShader.Id);
+
+            //GL.EnableVertexAttribArray(0);
+
+            // Call 1 or more draw element calls depending on a maxGUIDrawCallAmount variable 
+
+            float[] vertexData = new float[20] {
+                    //       Position (XYZ)                                                                                                      Colours (RGB)                                                                                  TexCoords (XY)
+                      1f, -1f, 1.0f,       1.0f, 1.0f,
+                      1f,  1f, 1.0f,       1.0f, 0.0f,
+                    -1f,  1f, 1.0f,       0.0f, 0.0f,
+                     -1f, -1f, 1.0f,       0.0f, 1.0f
+            };
+
+            int[] indiceData = new int[] {
+                    0, 1, 3, // first triangle 
+                    1, 2, 3  // second triangle - 1, 2, 3
+            };
+
+            GL.GenBuffers(1, out int VBO);
+
+            GL.BindBuffer(BufferTarget.ArrayBuffer, VBO);
+            GL.BufferData(BufferTarget.ArrayBuffer, new IntPtr(sizeof(float) * 20), vertexData, BufferUsage.StaticDraw);
 
             // position attribute
-            GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 5 * sizeof(float), 0);
-            GL.EnableVertexAttribArray(0);
+            GL.VertexAttribPointer(posHandle, 3, VertexAttribPointerType.Float, false, 5 * sizeof(float), 0);
+            GL.EnableVertexAttribArray(posHandle);
 
-            // texture coords attribute
-            GL.VertexAttribPointer(1, 2, VertexAttribPointerType.Float, false, 5 * sizeof(float), 3 * sizeof(float));
-            GL.EnableVertexAttribArray(1);
+            // uv attribute
+            GL.VertexAttribPointer(uvHandle, 2, VertexAttribPointerType.Float, false, 5 * sizeof(float), 3 * sizeof(float));
+            GL.EnableVertexAttribArray(uvHandle);
 
             float padding = 5f;
             float char_x = padding;
@@ -614,12 +785,12 @@ namespace TackEngine.Android {
 
                 for (int m = 0; m < maskData.Masks.Count; m++) {
                     OpenTK.Vector2 topRight = new OpenTK.Vector2(
-                        ((maskData.Masks[m].X + maskData.Masks[m].Width) / (Camera.MainCamera.RenderTarget.Width / 2f)) - 1f,
-                        (((maskData.Masks[m].Y) / (Camera.MainCamera.RenderTarget.Height / 2f)) - 1f));
+                        ((maskData.Masks[m].X + maskData.Masks[m].Width) / (TackEngine.Core.Objects.Components.Camera.MainCamera.RenderTarget.Width / 2f)) - 1f,
+                        (((maskData.Masks[m].Y) / (TackEngine.Core.Objects.Components.Camera.MainCamera.RenderTarget.Height / 2f)) - 1f));
 
                     OpenTK.Vector2 bottomLeft = new OpenTK.Vector2(
-                        ((maskData.Masks[m].X) / (Camera.MainCamera.RenderTarget.Width / 2f)) - 1f,
-                        ((maskData.Masks[m].Y + maskData.Masks[m].Height) / (Camera.MainCamera.RenderTarget.Height / 2f)) - 1f);
+                        ((maskData.Masks[m].X) / (TackEngine.Core.Objects.Components.Camera.MainCamera.RenderTarget.Width / 2f)) - 1f,
+                        ((maskData.Masks[m].Y + maskData.Masks[m].Height) / (TackEngine.Core.Objects.Components.Camera.MainCamera.RenderTarget.Height / 2f)) - 1f);
 
                     GL.Uniform2(GL.GetUniformLocation(TackGUI.Instance.DefaultTextShader.Id, "uMaskList[" + m + "].topRight"), topRight);
                     GL.Uniform2(GL.GetUniformLocation(TackGUI.Instance.DefaultTextShader.Id, "uMaskList[" + m + "].bottomLeft"), bottomLeft);
@@ -627,10 +798,11 @@ namespace TackEngine.Android {
 
                 GL.Uniform1(GL.GetUniformLocation(TackGUI.Instance.DefaultTextShader.Id, "uMaskCount"), maskData.Masks.Count);
 
-
-                GL.BindVertexArray(VAO);
-
-                GL.DrawElements(BeginMode.Triangles, 6, DrawElementsType.UnsignedInt, IntPtr.Zero);
+                unsafe {
+                    fixed (void* ptr = indiceData) {
+                        GL.DrawElements(BeginMode.Triangles, 6, DrawElementsType.UnsignedInt, new IntPtr(ptr));
+                    }
+                }
 
                 if (!wordSplit) {
                     char_x += (((int)ch.advance >> 6) * finalFontSize) * 1.05f; // Bitshift by 6 to get value in pixels (2^6 = 64 (divide amount of 1/64th pixels by 64 to get amount of pixels))
@@ -656,9 +828,8 @@ namespace TackEngine.Android {
                 InternalBox(shape, new GUIBox.GUIBoxStyle() { Border = null, Colour = Colour4b.Black, Texture = Sprite.DefaultSprite }, maskData);
             }
 
-            GL.DeleteBuffers(1, ref EBO);
             GL.DeleteBuffers(1, ref VBO);
-            GL.DeleteVertexArrays(1, ref VAO);
+            */
         }
 
         private static float MeasureStringLength(string text, TackFont font, float finalFontSize) {
@@ -671,7 +842,7 @@ namespace TackEngine.Android {
 
                 TackFont.FontCharacter ch = font.GetFontCharacter(text[i]);
 
-                length += (((int)ch.advance >> 6) * finalFontSize) * 1.1f; // Bitshift by 6 to get value in pixels (2^6 = 64 (divide amount of 1/64th pixels by 64 to get amount of pixels))
+                length += ch.size.X;
             }
 
             return length;

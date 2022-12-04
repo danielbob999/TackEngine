@@ -54,7 +54,7 @@ namespace TackEngine.Android {
             newSprite.Height = newBp.Height;
             newSprite.PixelFormat = (Sprite.SpritePixelFormat)newBp.GetBitmapInfo().Format;
 
-            int size = newBp.Width * newBp.Width * 4; // 4 bytes per pixel
+            int size = newBp.Width * newBp.Height * 4; // 4 bytes per pixel
             newSprite.Data = new byte[size]; 
             var byteBuffer = Java.Nio.ByteBuffer.AllocateDirect(size);
             newBp.CopyPixelsToBuffer(byteBuffer);
@@ -65,6 +65,7 @@ namespace TackEngine.Android {
         }
 
         internal void LoadDefaultSprite() {
+            /*
             Bitmap defaultBitmap = Bitmap.CreateBitmap(32, 32, Bitmap.Config.Argb8888);
             Canvas canvas = new Canvas(defaultBitmap);
             canvas.DrawColor(Color.White);
@@ -94,7 +95,12 @@ namespace TackEngine.Android {
             Sprite.DefaultSprite.Create();
             Sprite.DefaultSprite.IsNineSliced = false;
 
-            //defaultBitmap.Dispose();
+            //defaultBitmap.Dispose();*/
+
+            Sprite defaultSprite = LoadFromFile("tackresources/sprites/default_sprite.png");
+            defaultSprite.Create();
+
+            Sprite.DefaultSprite = defaultSprite;
 
             TackConsole.EngineLog(TackConsole.LogType.Message, "Loaded the default sprite into Sprite.DefaultSprite");
         }

@@ -258,7 +258,7 @@ namespace TackEngine.Core.Input {
                 mTouchDownPerFrame = true;
                 mTouchDownLock = true;
 
-                GUI.BaseTackGUI.Instance.RegisterMouseEvent(new GUI.Events.GUIMouseEvent(TouchPosition, MouseButtonKey.Right, MouseButtonAction.Down));
+                GUI.BaseTackGUI.Instance.RegisterMouseEvent(new GUI.Events.GUIMouseEvent(TouchPosition, MouseButtonKey.Left, MouseButtonAction.Down));
             }
 
             mTouchHeld = true;
@@ -272,7 +272,7 @@ namespace TackEngine.Core.Input {
 
             mTouchDownLock = false; // Unlock the touch var
 
-            GUI.BaseTackGUI.Instance.RegisterMouseEvent(new GUI.Events.GUIMouseEvent(TouchPosition, MouseButtonKey.Right, MouseButtonAction.Up));
+            GUI.BaseTackGUI.Instance.RegisterMouseEvent(new GUI.Events.GUIMouseEvent(TouchPosition, MouseButtonKey.Left, MouseButtonAction.Up));
         }
 
         internal void TouchDragEvent(Vector2i touchPosition) {

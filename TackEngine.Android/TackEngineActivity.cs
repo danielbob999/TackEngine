@@ -1,5 +1,6 @@
 ﻿using Android.App;
 using Android.Content;
+using Android.Content.PM;
 using Android.OS;
 using Android.Runtime;
 using Android.Views;
@@ -17,9 +18,9 @@ using TackEngine.Core.Physics;
 using TackEngine.Core.Renderer;
 
 namespace TackEngine.Android {
-    [Activity(Label = "TackEngineActivity")]
+    [Activity(Label = "TackEngineActivity", ConfigurationChanges = (ConfigChanges.ScreenSize | ConfigChanges.Orientation))]
     public class TackEngineActivity : Activity, IBaseTackWindow {
-        public Vector2f WindowSize { get { return new Vector2f(Resources.DisplayMetrics.WidthPixels, Resources.DisplayMetrics.HeightPixels); } }
+        public Vector2f WindowSize { get; set; }
 
         public static TackEngineActivity Instance { get; private set; }
 

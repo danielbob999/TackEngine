@@ -13,6 +13,7 @@ using Android.Opengl;
 using System.Runtime.InteropServices;
 
 namespace TackEngine.Android {
+    [Obsolete("This is not used")]
     public class AndroidRenderingBehaviour : RenderingBehaviour {
         private Shader m_defaultWorldShader;
 

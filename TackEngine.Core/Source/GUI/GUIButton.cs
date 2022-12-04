@@ -158,11 +158,18 @@ namespace TackEngine.Core.GUI {
             if (args.MouseButton == MouseButtonKey.Left && args.MouseAction == MouseButtonAction.Up) {
                 m_pressing = false;
 
+                /*
                 if (IsMouseHovering) {
                     if (OnClickedEvent != null) {
                         if (OnClickedEvent.GetInvocationList().Length > 0) {
                             OnClickedEvent.Invoke(this, EventArgs.Empty);
                         }
+                    }
+                }*/
+
+                if (OnClickedEvent != null) {
+                    if (OnClickedEvent.GetInvocationList().Length > 0) {
+                        OnClickedEvent.Invoke(this, EventArgs.Empty);
                     }
                 }
             }
