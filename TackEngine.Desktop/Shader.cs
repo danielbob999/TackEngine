@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using OpenTK.Graphics.OpenGL;
 using TackEngine.Desktop;
 using TackEngine.Core.Main;
-using tainicom.Aether.Physics2D.Common;
 
 namespace TackEngine.Core.Renderer {
     public class Shader : BaseShader {

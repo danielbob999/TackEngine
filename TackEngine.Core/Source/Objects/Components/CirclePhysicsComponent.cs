@@ -140,6 +140,8 @@ namespace TackEngine.Core.Objects.Components {
             m_physicsBody = TackPhysics.Instance.GetWorld().CreateBody(new Vector2(GetParent().Position.X, GetParent().Position.Y), TackMath.DegToRad(GetParent().Rotation), GetBodyType());
             m_physicsBody.FixedRotation = false;
             m_physicsBody.SleepingAllowed = false;
+            m_physicsBody.AngularDamping = 0f;
+            m_physicsBody.LinearDamping = 0;
             m_physicsBody.IgnoreGravity = !IsAffectedByGravity;
             m_physicsBody.Tag = GetParent().Hash;
             m_fixture = m_physicsBody.CreateCircle(GetParent().Scale.X / 2f, 10);

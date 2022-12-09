@@ -50,10 +50,10 @@ namespace TackEngine.Core.Physics {
             m_gravityForce = new Vector2f(0, -9.8f);
             m_physicBodyComponents = new List<BasePhysicsComponent>();
             m_runBroadphaseAlgorithm = true;
-            //m_timeToSimulate = 1f / TackEngine.Instance.Settings.TargetUpdateFrequency;
+            m_timeToSimulate = 1f / 60f;
             m_solverIterations = new SolverIterations();
-            m_solverIterations.PositionIterations = 6;
-            m_solverIterations.VelocityIterations = 6;
+            m_solverIterations.PositionIterations = 10;
+            m_solverIterations.VelocityIterations = 10;
 
             Instance = this;
         }
