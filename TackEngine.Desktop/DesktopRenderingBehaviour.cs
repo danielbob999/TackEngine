@@ -62,13 +62,14 @@ namespace TackEngine.Desktop {
 
             TackProfiler.Instance.StartTimer("Renderer.CreateBindBuffers");
 
-            //int VAO;
-            //int VBO;
-            //int EBO;
+            int VAO = GL.GenVertexArray();
+            int VBO = GL.GenBuffer();
+            int EBO = GL.GenBuffer();
 
-            GL.GenBuffers(1, out int VAO);
-            GL.GenBuffers(1, out int VBO);
-            GL.GenBuffers(1, out int EBO);
+            // DO NOT USE THIS CRAP
+            //GL.GenBuffers(1, out int VAO);
+            //GL.GenBuffers(1, out int VBO);
+            //GL.GenBuffers(1, out int EBO);
 
             GL.BindVertexArray(VAO);
 
@@ -152,7 +153,7 @@ namespace TackEngine.Desktop {
                 TackProfiler.Instance.StopTimer("Renderer.Loop.BuildMatrix");
 
                 connectedShader.SetUniformValue("uModelMat", false, modelMatrix.ToTEMat4());
-                //GL.UniformMatrix4(GL.GetUniformLocation(m_defaultWorldShader.Id, "uModelMat"), false, ref modelMatrix);
+                //GL.UniformMatrix4(GL.GetUniformLocation(connectedShader.Id, "uModelMat"), false, ref modelMatrix);
 
                 TackProfiler.Instance.StartTimer("Renderer.Loop.BindTextureData");
 

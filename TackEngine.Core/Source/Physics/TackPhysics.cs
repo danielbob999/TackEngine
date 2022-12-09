@@ -46,11 +46,11 @@ namespace TackEngine.Core.Physics {
             set { m_runBroadphaseAlgorithm = value; }
         }
 
-        internal TackPhysics() {
+        internal TackPhysics(int targetSimulationRate) {
             m_gravityForce = new Vector2f(0, -9.8f);
             m_physicBodyComponents = new List<BasePhysicsComponent>();
             m_runBroadphaseAlgorithm = true;
-            m_timeToSimulate = 1f / 60f;
+            m_timeToSimulate = 1f / (float)targetSimulationRate;
             m_solverIterations = new SolverIterations();
             m_solverIterations.PositionIterations = 10;
             m_solverIterations.VelocityIterations = 10;

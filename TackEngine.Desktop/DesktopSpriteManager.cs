@@ -72,30 +72,8 @@ namespace TackEngine.Desktop {
         }
 
         internal void LoadDefaultSprite() {
-            Bitmap defaultBitmap = new Bitmap(32, 32);
-            Graphics g = Graphics.FromImage(defaultBitmap);
-            g.Clear(Color.White);
-
-            Sprite.DefaultSprite = new Sprite();
-
-            Sprite.DefaultSprite.Width = defaultBitmap.Width;
-            Sprite.DefaultSprite.Height = defaultBitmap.Height;
-
-            BitmapData bmpData = defaultBitmap.LockBits(new System.Drawing.Rectangle(0, 0, defaultBitmap.Width, defaultBitmap.Height),
-                ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-
-            Sprite.DefaultSprite.PixelFormat = (Sprite.SpritePixelFormat)bmpData.PixelFormat;
-            //Sprite.DefaultSprite.m_stride = bmpData.Stride;
-            Sprite.DefaultSprite.Data = new byte[TackEngine.Core.Math.TackMath.Abs(bmpData.Stride) * defaultBitmap.Height];
-
-            System.Runtime.InteropServices.Marshal.Copy(bmpData.Scan0, Sprite.DefaultSprite.Data, 0, Sprite.DefaultSprite.Data.Length);
-
-            defaultBitmap.UnlockBits(bmpData);
-
+            Sprite.DefaultSprite = LoadFromFile("tackresources/sprites/default_sprite.png");
             Sprite.DefaultSprite.Create();
-            Sprite.DefaultSprite.IsNineSliced = false;
-
-            defaultBitmap.Dispose();
 
             TackConsole.EngineLog(TackConsole.LogType.Message, "Loaded the default sprite into Sprite.DefaultSprite");
         }

@@ -22,6 +22,7 @@ using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.Common;
 
 namespace TackEngine.Desktop {
+    [Obsolete]
     public class TackGameWindow : GameWindow, IBaseTackWindow {
         // Reference to the current GameWindow instance. CANNOT BE CHANGED
         private GameWindow gameWindowRef;
@@ -48,8 +49,10 @@ namespace TackEngine.Desktop {
         public double TimeSinceLastUpdate { get; private set; }
         public double TimeSinceLastRender { get; private set; }
 
-        public TackGameWindow(TackEngine.Core.Engine.TackEngineInstance.InitalisationSettings settings, EngineDelegates.OnStart startFn, EngineDelegates.OnUpdate updateFn, EngineDelegates.OnClose closeFn) 
-            : base(new GameWindowSettings() { RenderFrequency = settings.TargetRenderFrequency, UpdateFrequency = settings.TargetUpdateFrequency }, new NativeWindowSettings() { Size = new OpenTK.Mathematics.Vector2i(settings.WindowSize.X, settings.WindowSize.Y), NumberOfSamples = settings.MSAASampleCount, Title = settings.WindowTitle, WindowBorder = (OpenTK.Windowing.Common.WindowBorder)settings.WindowBorder, WindowState = (OpenTK.Windowing.Common.WindowState)settings.WindowState }) {
+        public TackGameWindow(TackEngine.Core.Engine.TackEngineInstance.InitalisationSettings settings, EngineDelegates.OnStart startFn, EngineDelegates.OnUpdate updateFn, EngineDelegates.OnClose closeFn)
+            : base(new GameWindowSettings() { RenderFrequency = 60, UpdateFrequency = 60, IsMultiThreaded = true }, new NativeWindowSettings() { Size = new OpenTK.Mathematics.Vector2i(settings.WindowSize.X, settings.WindowSize.Y), NumberOfSamples = settings.MSAASampleCount, Title = settings.WindowTitle, WindowBorder = (OpenTK.Windowing.Common.WindowBorder)settings.WindowBorder, WindowState = (OpenTK.Windowing.Common.WindowState)settings.WindowState }) {
+
+            //throw new Exception("This class should not be used. Use TackDesktopNativeWindow instead. Please and Thank you");
 
             // We must initialise a TackConsole instance before doing anything
             mTackConsole = new TackConsole();
@@ -91,7 +94,7 @@ namespace TackEngine.Desktop {
             m_tackProfiler = new TackProfiler();
             m_tackProfiler.OnStart();
 
-            mTackPhysics = new TackPhysics();
+            mTackPhysics = new TackPhysics(60);
             mTackPhysics.Start();
 
             m_tackInput = new TackInput();

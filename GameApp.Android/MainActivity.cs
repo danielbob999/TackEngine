@@ -40,20 +40,21 @@ namespace GameApp.Android {
             obj3.Scale = new Vector2f(35, 35);
             obj3.AddComponent(new SpriteRendererComponent() { Colour = Colour4b.Green });
             */
-
             
             obj4 = TackObject.Create("Floor", new Vector2f(100, -100));
             obj4.Scale = new Vector2f(1000, 50);
-            obj4.Rotation = 35f;
+            obj4.Rotation = 0f;
             //obj4.AddComponent(new SpriteRendererComponent() { Colour = Colour4b.Green, Sprite = s });
             obj4.AddComponent(new SpriteRendererComponent() { Colour = Colour4b.Green });
             obj4.AddComponent(new RectanglePhysicsComponent(1f, true, false, true, 1, 0f));
 
+            /*
             TackObject floor2 = TackObject.Create("Box1", new Vector2f(-100, -100));
             floor2.Scale = new Vector2f(1000, 50);
             floor2.Rotation = -35f;
             floor2.AddComponent(new SpriteRendererComponent() { Colour = Colour4b.Green });
             floor2.AddComponent(new RectanglePhysicsComponent(1f, true, false, true, 1, 0f));
+            */
 
             /*
             TackObject box = TackObject.Create("Box1", new Vector2f(0, 0));

@@ -17,8 +17,8 @@ namespace TackEngine.Core.Engine
     /// </summary>
     public class TackEngineInstance
     {
-        private const int VERSION_MAJOR = 1;
-        private const int VERSION_MINOR = 8;
+        private const int VERSION_MAJOR = 2;
+        private const int VERSION_MINOR = 0;
         private const int VERSION_PATCH = 0;
 
         public class InitalisationSettings {
@@ -55,13 +55,9 @@ namespace TackEngine.Core.Engine
             /// </summary>
             public TackWindowState WindowState { get; set; }
             /// <summary>
-            /// The target update frequency (per second)
+            /// The target update/render frequency (per second)
             /// </summary>
-            public int TargetUpdateFrequency { get; set; }
-            /// <summary>
-            /// The target render frequency (per second). This is overrided if VSync == true
-            /// </summary>
-            public int TargetRenderFrequency { get; set; }
+            public int TargetUpdateRenderFrequency { get; set; }
             /// <summary>
             /// Whether or not vsync is used
             /// </summary>
@@ -77,9 +73,8 @@ namespace TackEngine.Core.Engine
                 WindowTitle = "TackEngine Game";
                 WindowBorder = TackWindowBorder.Resizable;
                 WindowState = TackWindowState.Normal;
-                TargetUpdateFrequency = 60;
-                TargetRenderFrequency = 60;
-                VSync = false;
+                TargetUpdateRenderFrequency = 60;
+                VSync = true;
                 MSAASampleCount = 4;
             }
         }
