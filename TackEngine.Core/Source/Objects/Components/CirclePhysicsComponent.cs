@@ -137,14 +137,14 @@ namespace TackEngine.Core.Objects.Components {
             // Destroy the body before we regenerate it
             DestroyBody();
 
-            m_physicsBody = TackPhysics.Instance.GetWorld().CreateBody(new Vector2(GetParent().Position.X, GetParent().Position.Y), TackMath.DegToRad(GetParent().Rotation), GetBodyType());
+            m_physicsBody = TackPhysics.Instance.GetWorld().CreateBody(new Vector2(GetParent().Position.X / 100f, GetParent().Position.Y / 100f), TackMath.DegToRad(GetParent().Rotation), GetBodyType());
             m_physicsBody.FixedRotation = false;
             m_physicsBody.SleepingAllowed = false;
-            m_physicsBody.AngularDamping = 0f;
-            m_physicsBody.LinearDamping = 0;
+            //m_physicsBody.AngularDamping = 0f;
+            //m_physicsBody.LinearDamping = 0;
             m_physicsBody.IgnoreGravity = !IsAffectedByGravity;
             m_physicsBody.Tag = GetParent().Hash;
-            m_fixture = m_physicsBody.CreateCircle(GetParent().Scale.X / 2f, 10);
+            m_fixture = m_physicsBody.CreateCircle((GetParent().Scale.X / 2f) / 100f, 10);
             m_fixture.Restitution = Restitution;
             m_fixture.Friction = Friction;
 

@@ -47,26 +47,27 @@ namespace GameApp.Android {
             obj4.Rotation = 35f;
             //obj4.AddComponent(new SpriteRendererComponent() { Colour = Colour4b.Green, Sprite = s });
             obj4.AddComponent(new SpriteRendererComponent() { Colour = Colour4b.Green });
-            obj4.AddComponent(new RectanglePhysicsComponent(1f, true, false, true, 100f, 0f));
+            obj4.AddComponent(new RectanglePhysicsComponent(1f, true, false, true, 1, 0f));
 
             TackObject floor2 = TackObject.Create("Box1", new Vector2f(-100, -100));
             floor2.Scale = new Vector2f(1000, 50);
             floor2.Rotation = -35f;
             floor2.AddComponent(new SpriteRendererComponent() { Colour = Colour4b.Green });
-            floor2.AddComponent(new RectanglePhysicsComponent(1f, true, false, true, 100f, 0f));
+            floor2.AddComponent(new RectanglePhysicsComponent(1f, true, false, true, 1, 0f));
 
+            /*
             TackObject box = TackObject.Create("Box1", new Vector2f(0, 0));
             box.Scale = new Vector2f(35, 35);
             box.AddComponent(new SpriteRendererComponent() { Colour = Colour4b.Red });
-            box.AddComponent(new RectanglePhysicsComponent(100000f, false, true, false, 0f, 0f));
-
+            box.AddComponent(new RectanglePhysicsComponent(1f, false, true, false, 1f, 0f));
+            */
             Sprite circleSprite = Sprite.LoadFromFile("resources/circle.png");
             circleSprite.Create();
 
             TackObject circle = TackObject.Create("Circle1", new Vector2f(-60, 0));
             circle.Scale = new Vector2f(35, 35);
             circle.AddComponent(new SpriteRendererComponent() { Colour = Colour4b.Blue, Sprite = circleSprite });
-            circle.AddComponent(new CirclePhysicsComponent(0.001f, false, true, false, 0f, 0f));
+            circle.AddComponent(new CirclePhysicsComponent(1f, false, true, false, 1f, 0f));
 
 
             /*

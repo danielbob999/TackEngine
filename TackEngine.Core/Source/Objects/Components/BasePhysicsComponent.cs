@@ -117,7 +117,7 @@ namespace TackEngine.Core.Objects.Components {
             base.OnUpdate();
 
             if (m_physicsBody != null && m_fixture != null) {
-                GetParent().ChangePosition(new Vector2f(m_physicsBody.Position.X, m_physicsBody.Position.Y));
+                GetParent().ChangePosition(new Vector2f(m_physicsBody.Position.X * 100f, m_physicsBody.Position.Y * 100f));
                 GetParent().ChangeRotation(Math.TackMath.RadToDeg(m_physicsBody.Rotation));
 
                 //Console.WriteLine(m_physicsBody.Rotation);
@@ -165,7 +165,7 @@ namespace TackEngine.Core.Objects.Components {
             base.OnPositionChanged();
 
             // Change the body position. This will only get called if the user manually changes the position
-            m_physicsBody.Position = new Vector2(GetParent().Position.X, GetParent().Position.Y);
+            m_physicsBody.Position = new Vector2(GetParent().Position.X / 100f, GetParent().Position.Y / 100f);
         }
 
         public override void OnScaleChanged() {
@@ -224,12 +224,12 @@ namespace TackEngine.Core.Objects.Components {
             // Destroy the body before we regenerate it
             DestroyBody();
 
-            m_physicsBody = TackPhysics.Instance.GetWorld().CreateBody(new Vector2(GetParent().Position.X, GetParent().Position.Y), Math.TackMath.DegToRad(GetParent().Rotation), GetBodyType());
+            m_physicsBody = TackPhysics.Instance.GetWorld().CreateBody(new Vector2((GetParent().Position.X / 100f), (GetParent().Position.Y / 100f)), Math.TackMath.DegToRad(GetParent().Rotation), GetBodyType());
             m_physicsBody.FixedRotation = false;
             m_physicsBody.SleepingAllowed = false;
             m_physicsBody.IgnoreGravity = !IsAffectedByGravity;
             m_physicsBody.Tag = GetParent().Hash;
-            m_fixture = m_physicsBody.CreateRectangle(GetParent().Scale.X, GetParent().Scale.Y, 1, new Vector2(0, 0));
+            m_fixture = m_physicsBody.CreateRectangle((GetParent().Scale.X / 100f), (GetParent().Scale.Y / 100f), 1, new Vector2(0, 0));
             m_fixture.Restitution = Restitution;
             m_fixture.Friction = Friction;
 
