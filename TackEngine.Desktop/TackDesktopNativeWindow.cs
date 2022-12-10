@@ -162,8 +162,6 @@ namespace TackEngine.Desktop {
                         System.Threading.Thread.Sleep(sleepTime);
                     }
                 }
-
-                Console.WriteLine(loopWatch.Elapsed.TotalSeconds);
             }
 
             m_engineTimer.OnClose();

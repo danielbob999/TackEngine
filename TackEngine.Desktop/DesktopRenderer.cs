@@ -1,5 +1,4 @@
-﻿using OpenTK.Graphics.ES30;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,6 +11,7 @@ using TackEngine.Core.Objects.Components;
 using TackEngine.Core.Physics;
 using OpenTK;
 using TackEngine.Core.GUI;
+using OpenTK.Graphics.OpenGL;
 
 namespace TackEngine.Desktop {
     internal class DesktopRenderer : TackRenderer {
@@ -65,7 +65,8 @@ namespace TackEngine.Desktop {
             TackProfiler.Instance.StopTimer("Renderer.RenderToScreen");
 
             // Render TackPhysics debug objects
-            TackPhysics.GetInstance().Render();
+            //TackPhysics.GetInstance().Render();
+            PhysicsDebugDraw();
 
             TackProfiler.Instance.StartTimer("Renderer.GUIRender");
             // Render GUI
@@ -79,6 +80,22 @@ namespace TackEngine.Desktop {
             }
 
             GUIInstance.OnClose();
+        }
+
+        public void PhysicsDebugDraw() {
+            TackObject[] objs = TackObject.Get();
+
+            List<TackObject> physObjs = new List<TackObject>();
+
+            for (int i = 0; i < objs.Length; i++) {
+                if (objs[i].GetComponent<BasePhysicsComponent>() != null) {
+                    physObjs.Add(objs[i]);
+                }
+            }
+
+            for (int i = 0; i < physObjs.Count; i++) {
+                BasePhysicsComponent comp = physObjs[i].GetComponent<BasePhysicsComponent>();
+            }
         }
     }
 }

@@ -101,8 +101,6 @@ namespace TackEngine.Core.Physics {
 
         internal override void Render() {
             base.Render();
-
-            //DrawPhysicsObjects();
         }
 
         /// <summary>
