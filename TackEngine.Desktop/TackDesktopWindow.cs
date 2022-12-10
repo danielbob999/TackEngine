@@ -57,7 +57,7 @@ namespace TackEngine.Desktop {
             // We must initialise a TackConsole instance before doing anything
             mTackConsole = new TackConsole();
 
-            TackEngine.Core.Engine.TackEngineInstance.Initialise(this);
+            TackEngine.Core.Engine.TackEngineInstance.Initialise(this, TackEngineInstance.TackEnginePlatform.Windows);
 
             // Set all implementations
             TackFont.FontLoadingImplementation = new DesktopTackFontLoadingImpl();

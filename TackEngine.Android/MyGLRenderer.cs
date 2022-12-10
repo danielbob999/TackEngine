@@ -49,7 +49,7 @@ namespace TackEngine.Android {
             TackEngineActivity.Instance.m_tackProfiler = new TackProfiler();
             TackEngineActivity.Instance.m_tackProfiler.OnStart();
 
-            TackEngineActivity.Instance.mTackPhysics = new TackPhysics();
+            TackEngineActivity.Instance.mTackPhysics = new TackPhysics(60);
             TackEngineActivity.Instance.mTackPhysics.Start();
 
             TackEngineActivity.Instance.m_tackInput = new TackInput();

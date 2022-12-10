@@ -21,6 +21,14 @@ namespace TackEngine.Core.Engine
         private const int VERSION_MINOR = 0;
         private const int VERSION_PATCH = 0;
 
+        public enum TackEnginePlatform {
+            Windows,
+            Android,
+            iOS,
+            Linux,
+            MacOS
+        }
+
         public class InitalisationSettings {
             public enum TackWindowBorder {
                 Resizable = 0,
@@ -83,14 +91,17 @@ namespace TackEngine.Core.Engine
 
         //internal TackGameWindow Window { get; private set; }
         internal IBaseTackWindow Window { get; private set; }
+        public TackEnginePlatform Platform { get; private set; }
         public InitalisationSettings Settings { get; private set; }
 
         public TackEngineInstance() { }
 
-        public static void Initialise(object window) {
+        public static void Initialise(object window, TackEnginePlatform platform) {
             // Create a new instance of TackEngine. This is tracked and used by calling TackEngine.Instance
             Instance = new TackEngineInstance();
             Instance.Window = (IBaseTackWindow)window;
+
+            Instance.Platform = platform;
 
             Instance.Settings = new InitalisationSettings();           
 

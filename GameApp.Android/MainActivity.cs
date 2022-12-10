@@ -114,6 +114,8 @@ namespace GameApp.Android {
 
             Camera.MainCamera.GetParent().Position += camMoveAmnt;
 
+            TackObject.Get("Floor").Rotation = TackInput.Instance.GyroscopeRotation.Z;
+
             //TackObject.Get("TackObject1").Rotation = TackObject.Get("TackObject2").Rotation = TackObject.Get("TackObject3").Rotation += ((float)EngineTimer.Instance.LastUpdateTime * 25f);
         }
 

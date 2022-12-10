@@ -17,6 +17,7 @@ namespace TackEngine.Android {
 
         public AndroidRenderer() {
             Instance = this;
+            mRenderFpsCounter = true;
         }
 
         public override void OnStart() {
@@ -28,6 +29,22 @@ namespace TackEngine.Android {
         }
 
         public override void OnUpdate() {
+            if (m_fpsCounterTextArea == null) {
+                m_fpsCounterTextArea = new GUITextArea();
+                m_fpsCounterTextArea.Position = new Vector2f(Camera.MainCamera.RenderTarget.Width - 150, 5);
+                m_fpsCounterTextArea.Size = new Vector2f(145, 53);
+
+                GUITextArea.GUITextAreaStyle style = new GUITextArea.GUITextAreaStyle() {
+                    Border = null,
+                    Colour = new Colour4b(0, 0, 0, 100),
+                    Font = GUIInstance.DefaultFont,
+                    FontColour = Colour4b.White,
+                    FontSize = 8f,
+                };
+
+                m_fpsCounterTextArea.NormalStyle = style;
+            }
+
             if (mRenderFpsCounter) {
                 m_fpsCounterTextArea.Active = mRenderFpsCounter;
                 m_fpsCounterTextArea.Position = new Vector2f(Camera.MainCamera.RenderTarget.Width - 150, 5);

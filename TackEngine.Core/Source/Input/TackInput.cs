@@ -9,6 +9,7 @@ using TackEngine.Core.Main;
 using TackEngine.Core.Engine;
 using TackEngine.Core.Objects.Components;
 using System.Diagnostics;
+using TackEngine.Core.Math;
 
 namespace TackEngine.Core.Input {
     public class TackInput {
@@ -31,6 +32,11 @@ namespace TackEngine.Core.Input {
         private bool mTouchDownPerFrame;
         private bool mTouchDownLock;
         private bool mTouchHeld;
+
+        // Mobile sensor data
+        private float mGyroscopeMinChange;
+        private Vector3 mGyroscopeRotation;
+        private long mGyroscopeTimestamp;
 
         // Gamepads
         //private List<GamepadData> m_connectedGamepads;
@@ -99,6 +105,8 @@ namespace TackEngine.Core.Input {
             }
         }
 
+        public Vector3 GyroscopeRotation { get { return mGyroscopeRotation; } }
+
         public int MouseScrollWheelChange { get; private set; }
 
         internal TackInput() {
@@ -129,6 +137,9 @@ namespace TackEngine.Core.Input {
             mMouseKeysUpPerFrame = new bool[1024];
 
             locker_mMouseKeysDownPerFrame = new bool[1024];
+
+            mGyroscopeMinChange = 0.05f;
+            mGyroscopeRotation = new Vector3(0, 0, 0);
 
             GUIInputRequired = false;
         }
@@ -277,6 +288,20 @@ namespace TackEngine.Core.Input {
 
         internal void TouchDragEvent(Vector2i touchPosition) {
             TouchPosition = touchPosition;
+        }
+
+        internal void GyroscopeChangeEvent(Vector3 change, long timestamp) {
+            if (TackMath.Abs(change.X) > mGyroscopeMinChange) {
+                mGyroscopeRotation.X += change.X;
+            }
+
+            if (TackMath.Abs(change.Y) > mGyroscopeMinChange) {
+                mGyroscopeRotation.Y += change.Y;
+            }
+
+            if (TackMath.Abs(change.Z) > mGyroscopeMinChange) {
+                mGyroscopeRotation.Z += change.Z;
+            }
         }
 
         public static bool KeyDown(KeyboardKey _keyCode) {
