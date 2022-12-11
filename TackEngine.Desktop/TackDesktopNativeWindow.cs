@@ -38,6 +38,7 @@ namespace TackEngine.Desktop {
         private TackProfiler m_tackProfiler;
         private TackInput m_tackInput;
         private DesktopSpriteManager m_spriteManager;
+        private DebugLineRenderer m_debugLineRenderer;
 
         private EngineDelegates.OnStart onStartFunction;
         private EngineDelegates.OnUpdate onUpdateFunction;
@@ -107,6 +108,9 @@ namespace TackEngine.Desktop {
             m_tackInput = new TackInput();
             m_tackInput.OnStart();
 
+            m_debugLineRenderer = new DesktopDebugLineRenderer();
+            m_debugLineRenderer.OnStart();
+
             onStartFunction();
 
             mTackObjectManager.OnStart();
@@ -150,6 +154,8 @@ namespace TackEngine.Desktop {
 
                 // All OnRender here
                 mTackRender.OnRender(1f);
+
+                m_debugLineRenderer.OnRender();
 
                 Context.SwapBuffers();
 

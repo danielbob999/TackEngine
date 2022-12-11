@@ -5,6 +5,8 @@ using TackEngine.Core.Main;
 using TackEngine.Core.Math;
 using TackEngine.Core.Objects;
 using TackEngine.Core.Objects.Components;
+using TackEngine.Core.Renderer;
+using TackEngine.Core.Source.Objects;
 using tainicom.Aether.Physics2D.Dynamics;
 
 namespace GameApp.Desktop {
@@ -59,6 +61,7 @@ namespace GameApp.Desktop {
                 floor2.AddComponent(new RectanglePhysicsComponent(1f, true, false, true, 1, 0f));
             }
 
+            /*
             Sprite wheelSprite = Sprite.LoadFromFile("resources/tyre.png");
             wheelSprite.Create();
 
@@ -122,9 +125,15 @@ namespace GameApp.Desktop {
 
             // joint
             TackObject.Get("Body").AddComponent(new RevoluteJointComponent() { BodyB = TackObject.Get("TrailerBody").GetComponent<RectanglePhysicsComponent>(), LimitEnabled = true, LowerLimit = -2f, UpperLimit = 2f, Anchor = (TackObject.Get("Body").Position + new Vector2f(100f, 0f)) });
+            */
+
+            FunFactory.CreateCar(new Vector2f(0, 75));
+
         }
 
         public static void Update() {
+            //DebugLineRenderer.DrawLine(new Vector2f(0, 0), new Vector2f(100, -100), Colour4b.Blue);
+
             //TackObject.Get("TackObject1").Rotation = TackObject.Get("TackObject2").Rotation = TackObject.Get("TackObject3").Rotation += ((float)EngineTimer.Instance.LastUpdateTime * 25f);
 
             float motorSpeed = 5f;
@@ -141,11 +150,11 @@ namespace GameApp.Desktop {
                 }
             }
 
-            TackObject.Get("BackWheel").GetComponent<WheelPhysicsComponent>().MotorSpeed = m_motorSpeed;
-            TackObject.Get("FrontWheel").GetComponent<WheelPhysicsComponent>().MotorEnabled = false;
+            TackObject.Get("CarBackWheel").GetComponent<WheelPhysicsComponent>().MotorSpeed = m_motorSpeed;
+            TackObject.Get("CarFrontWheel").GetComponent<WheelPhysicsComponent>().MotorEnabled = false;
 
-            TackObject.Get("BackWheel").GetComponent<WheelPhysicsComponent>().MaxTorque = 50f;
-            TackObject.Get("FrontWheel").GetComponent<WheelPhysicsComponent>().MaxTorque = 50f;
+            TackObject.Get("CarBackWheel").GetComponent<WheelPhysicsComponent>().MaxTorque = 50f;
+            TackObject.Get("CarFrontWheel").GetComponent<WheelPhysicsComponent>().MaxTorque = 50f;
         }
 
         public static void Close() {

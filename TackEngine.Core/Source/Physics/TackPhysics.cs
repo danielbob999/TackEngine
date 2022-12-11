@@ -11,6 +11,11 @@ using tainicom.Aether.Physics2D.Dynamics;
 
 namespace TackEngine.Core.Physics {
     public class TackPhysics : EngineModule {
+        public static readonly Colour4b BoundsColour = new Colour4b(150, 255, 150, 255); // Light pastey green
+        public static readonly Colour4b WheelColour = new Colour4b(255, 175, 0, 255); // Orange
+        public static readonly Colour4b JointColour = new Colour4b(255, 0, 255, 255); // Pink
+        public static readonly Colour4b AnchorColour = new Colour4b(0, 0, 0, 255); // Black
+
         public static TackPhysics Instance = null;
 
         private Vector2f m_gravityForce;
@@ -89,6 +94,8 @@ namespace TackEngine.Core.Physics {
                     m_bodiesToBeDeleted.Clear();
                 }
             }
+
+            DebugDraw();
 
             TackProfiler.Instance.StopTimer("TackPhysics.OnUpdate.RemoveBodies");
 
@@ -200,6 +207,18 @@ namespace TackEngine.Core.Physics {
 
         public void Shutdown() {
             Instance.Close();
+        }
+
+        private void DebugDraw() {
+            TackObject[] physObjects = TackObject.Get();
+
+            for (int i = 0; i < physObjects.Length; i++) {
+                BasePhysicsComponent comp = physObjects[i].GetComponent<BasePhysicsComponent>();
+
+                if (comp != null) {
+                    comp.OnDebugDraw();
+                }
+            }
         }
     }
 }

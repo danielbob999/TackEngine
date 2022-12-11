@@ -8,6 +8,7 @@ using TackEngine.Core.Physics;
 using TackEngine.Core.Main;
 using TackEngine.Core.Math;
 using tainicom.Aether.Physics2D.Common;
+using TackEngine.Core.Renderer;
 
 namespace TackEngine.Core.Objects.Components {
     public class CirclePhysicsComponent : BasePhysicsComponent {
@@ -149,6 +150,31 @@ namespace TackEngine.Core.Objects.Components {
             m_fixture.Friction = Friction;
 
             m_physicsBody.OnCollision += InternalOnCollision;
+        }
+
+        internal override void OnDebugDraw() {
+            int numOfSegments = 10;
+            int segAngle = 360 / numOfSegments;
+
+            Vector2f prevPoint = new Vector2f();
+            for (int i = 0; i <= numOfSegments; i++) {
+                if (i == 0) {
+                    prevPoint = new Vector2f(
+                            GetParent().Position.X + (GetParent().Scale.X / 2f) * (float)System.Math.Cos(TackMath.DegToRad(i * segAngle)),
+                            GetParent().Position.Y + (GetParent().Scale.X / 2f) * (float)System.Math.Sin(TackMath.DegToRad(i * segAngle)));
+
+                    continue;
+                }
+
+                Vector2f posOnCircle = new Vector2f(
+                    GetParent().Position.X + (GetParent().Scale.X / 2f) * (float)System.Math.Cos(TackMath.DegToRad(i * segAngle)),
+                    GetParent().Position.Y + (GetParent().Scale.X / 2f) * (float)System.Math.Sin(TackMath.DegToRad(i * segAngle)));
+
+                DebugLineRenderer.DrawLine(prevPoint, posOnCircle, TackPhysics.BoundsColour);
+
+                prevPoint = posOnCircle;
+
+            }
         }
     }
 }

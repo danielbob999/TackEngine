@@ -55,6 +55,9 @@ namespace TackEngine.Android {
             TackEngineActivity.Instance.m_tackInput = new TackInput();
             TackEngineActivity.Instance.m_tackInput.OnStart();
 
+            TackEngineActivity.Instance.m_debugLineRenderer = new AndroidDebugLineRenderer();
+            TackEngineActivity.Instance.m_debugLineRenderer.OnStart();
+
             //OnEngineStart();
             TackEngineActivity.Instance.onStartFunction();
 
@@ -100,6 +103,8 @@ namespace TackEngine.Android {
 
             // All OnRender here
             TackEngineActivity.Instance.mTackRender.OnRender(TackEngineActivity.Instance.m_engineTimer.LastRenderTime);
+
+            TackEngineActivity.Instance.m_debugLineRenderer.OnRender();
 
             // swap buffers was called here
 

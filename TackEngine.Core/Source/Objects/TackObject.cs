@@ -169,7 +169,7 @@ namespace TackEngine.Core.Objects {
 
         public T GetComponent<T>() where T : TackComponent {
             foreach (object comp in m_components) {
-                if (comp.GetType() == typeof(T))
+                if (comp.GetType() == typeof(T) || comp.GetType().IsSubclassOf(typeof(T)))
                     return (T)comp;
             }
 
@@ -178,7 +178,7 @@ namespace TackEngine.Core.Objects {
 
         public T GetComponent<T>(int componentId) where T : TackComponent {
             foreach (object comp in m_components) {
-                if (comp.GetType() == typeof(T) && ((TackComponent)comp).Id == componentId)
+                if ((comp.GetType() == typeof(T) || comp.GetType().IsSubclassOf(typeof(T))) && ((TackComponent)comp).Id == componentId)
                     return (T)comp;
             }
 

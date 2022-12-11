@@ -8,6 +8,7 @@ using tainicom.Aether.Physics2D.Dynamics;
 
 using TackEngine.Core.Main;
 using TackEngine.Core.Physics;
+using TackEngine.Core.Renderer;
 
 namespace TackEngine.Core.Objects.Components {
     public abstract class BasePhysicsComponent : TackComponent {
@@ -234,6 +235,9 @@ namespace TackEngine.Core.Objects.Components {
             m_fixture.Friction = Friction;
 
             m_physicsBody.OnCollision += InternalOnCollision;
+        }
+
+        internal virtual void OnDebugDraw() {
         }
     }
 }

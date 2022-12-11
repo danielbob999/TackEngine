@@ -8,6 +8,7 @@ using TackEngine.Core.Physics;
 using TackEngine.Core.Main;
 using TackEngine.Core.Math;
 using tainicom.Aether.Physics2D.Common;
+using TackEngine.Core.Renderer;
 
 namespace TackEngine.Core.Objects.Components {
     public class RectanglePhysicsComponent : BasePhysicsComponent {
@@ -128,6 +129,34 @@ namespace TackEngine.Core.Objects.Components {
 
         public override void OnClose() {
             base.OnClose();
+        }
+
+        internal override void OnDebugDraw() {
+            Vector2f pos = GetParent().Position;
+            Vector2f halfSize = GetParent().Scale / 2f;
+
+            // top line
+            DebugLineRenderer.DrawLine(new Vector2f(pos.X, pos.Y + halfSize.Y), GetParent().Rotation, TackPhysics.BoundsColour, GetParent().Scale.X);
+
+            // bottom line
+            DebugLineRenderer.DrawLine(new Vector2f(pos.X, pos.Y - halfSize.Y), GetParent().Rotation, TackPhysics.BoundsColour, GetParent().Scale.X);
+
+            // left line
+            Vector2f rotatedPosLeft = new Vector2f(
+                (float)(System.Math.Cos(TackMath.DegToRad(GetParent().Rotation)) * ((pos.X - halfSize.X) - pos.X) - System.Math.Sin(TackMath.DegToRad(GetParent().Rotation)) * (pos.Y - pos.Y) + pos.X),
+                (float)(System.Math.Sin(TackMath.DegToRad(GetParent().Rotation)) * ((pos.X - halfSize.X) - pos.X) + System.Math.Cos(TackMath.DegToRad(GetParent().Rotation)) * (pos.Y - pos.Y) + pos.Y)
+                );
+            DebugLineRenderer.DrawLine(rotatedPosLeft, GetParent().Rotation + 90f, TackPhysics.BoundsColour, GetParent().Scale.Y);
+
+            // right line
+            Vector2f rotatedPosRight = new Vector2f(
+                (float)(System.Math.Cos(TackMath.DegToRad(GetParent().Rotation)) * ((pos.X + halfSize.X) - pos.X) - System.Math.Sin(TackMath.DegToRad(GetParent().Rotation)) * (pos.Y - pos.Y) + pos.X),
+                (float)(System.Math.Sin(TackMath.DegToRad(GetParent().Rotation)) * ((pos.X + halfSize.X) - pos.X) + System.Math.Cos(TackMath.DegToRad(GetParent().Rotation)) * (pos.Y - pos.Y) + pos.Y)
+                );
+            DebugLineRenderer.DrawLine(rotatedPosRight, GetParent().Rotation + 90f, TackPhysics.BoundsColour, GetParent().Scale.Y);
+
+            // Diagonal lines
+
         }
     }
 }

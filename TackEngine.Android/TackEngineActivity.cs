@@ -36,6 +36,7 @@ namespace TackEngine.Android {
         internal TackProfiler m_tackProfiler;
         internal TackInput m_tackInput;
         internal AndroidSpriteManager m_spriteManager;
+        internal DebugLineRenderer m_debugLineRenderer;
 
         internal TackEngine.Core.Engine.EngineDelegates.OnStart onStartFunction;
         internal TackEngine.Core.Engine.EngineDelegates.OnStart onUpdateFunction;
@@ -110,11 +111,6 @@ namespace TackEngine.Android {
 
                 if (m_tackInput != null) {
                     m_tackInput.GyroscopeChangeEvent(new Vector3(e.Values[0], e.Values[1], e.Values[2]), e.Timestamp);
-
-                    System.Diagnostics.Debug.WriteLine(
-                        TackInput.Instance.GyroscopeRotation.X.ToString() + " " +
-                        TackInput.Instance.GyroscopeRotation.Y.ToString() + " " +
-                        TackInput.Instance.GyroscopeRotation.Z.ToString() + " ");
                 }
 
             }

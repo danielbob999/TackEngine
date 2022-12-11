@@ -457,6 +457,16 @@ namespace TackEngine.Core.Main {
             result = (float)System.Math.Sqrt(((vec2.X - vec1.X) * (vec2.X - vec1.X)) + ((vec2.Y - vec1.Y) * (vec2.Y - vec1.Y)));
         }
 
+        public static float Angle(Vector2f from, Vector2f to) {
+            // sqrt(a) * sqrt(b) = sqrt(a * b) -- valid for real numbers
+            float denominator = (float)System.Math.Sqrt(from.LengthSquared * to.LengthSquared);
+            if (denominator < 1e-15f)
+                return 0F;
+
+            float dot = TackMath.Clamp(Dot(from, to) / denominator, -1F, 1F);
+            return TackMath.RadToDeg((float)System.Math.Acos(dot));
+        }
+
         /// <summary>
         /// Compute the squared euclidean distance between two vectors.
         /// </summary>

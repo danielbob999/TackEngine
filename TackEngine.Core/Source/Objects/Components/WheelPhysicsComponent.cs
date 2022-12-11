@@ -7,6 +7,7 @@ using tainicom.Aether.Physics2D.Common;
 using tainicom.Aether.Physics2D.Dynamics.Joints;
 using tainicom.Aether.Physics2D.Dynamics;
 using TackEngine.Core.Main;
+using TackEngine.Core.Renderer;
 
 namespace TackEngine.Core.Objects.Components {
     public class WheelPhysicsComponent : BasePhysicsComponent {
@@ -94,6 +95,37 @@ namespace TackEngine.Core.Objects.Components {
             m_wheelJoint.Enabled = true;
 
             TackPhysics.Instance.GetWorld().Add(m_wheelJoint);
+        }
+
+        internal override void OnDebugDraw() {
+            int numOfSegments = 10;
+            int segAngle = 360 / numOfSegments;
+
+            Vector2f prevPoint = new Vector2f();
+            for (int i = 0; i <= numOfSegments; i++) {
+                if (i == 0) {
+                    prevPoint = new Vector2f(
+                            GetParent().Position.X + (GetParent().Scale.X / 2f) * (float)System.Math.Cos(TackMath.DegToRad(i * segAngle)),
+                            GetParent().Position.Y + (GetParent().Scale.X / 2f) * (float)System.Math.Sin(TackMath.DegToRad(i * segAngle)));
+
+                    continue;
+                }
+
+                Vector2f posOnCircle = new Vector2f(
+                    GetParent().Position.X + (GetParent().Scale.X / 2f) * (float)System.Math.Cos(TackMath.DegToRad(i * segAngle)),
+                    GetParent().Position.Y + (GetParent().Scale.X / 2f) * (float)System.Math.Sin(TackMath.DegToRad(i * segAngle)));
+
+                DebugLineRenderer.DrawLine(prevPoint, posOnCircle, TackPhysics.WheelColour);
+
+                prevPoint = posOnCircle;
+
+            }
+
+            Vector2f posOnCircle1 = new Vector2f(
+                    GetParent().Position.X + (GetParent().Scale.X / 2f) * (float)System.Math.Cos(TackMath.DegToRad(GetParent().Rotation)),
+                    GetParent().Position.Y + (GetParent().Scale.X / 2f) * (float)System.Math.Sin(TackMath.DegToRad(GetParent().Rotation)));
+
+            DebugLineRenderer.DrawLine(GetParent().Position, posOnCircle1, TackPhysics.WheelColour);
         }
     }
 }
