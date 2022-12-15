@@ -367,5 +367,47 @@ namespace TackEngine.Core.Objects {
         public static TackObject Create(string name, Vector2f position, Vector2f scale, float rotation) {
             return new TackObject(name, position, scale, rotation);
         }
+
+        /// <summary>
+        /// Determines whether a TackObject is active in world (taking into account parent active status)
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        internal static bool IsActiveInHierarchy(TackObject obj) {
+            TackObject nextObject = obj;
+
+            while (nextObject != null) {
+                if (!nextObject.Active) {
+                    return false;
+                }
+
+                nextObject = nextObject.Parent;
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Determines whether a TackComponent is active in world (taking into account parent active status)
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        internal static bool IsComponentActiveInHierarchy(TackComponent comp) {
+            if (!comp.Active) {
+                return false;
+            }
+
+            TackObject nextObject = comp.GetParent();
+
+            while (nextObject != null) {
+                if (!nextObject.Active) {
+                    return false;
+                }
+
+                nextObject = nextObject.Parent;
+            }
+
+            return true;
+        }
     }
 }

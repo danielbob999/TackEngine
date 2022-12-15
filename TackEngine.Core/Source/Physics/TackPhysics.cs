@@ -210,6 +210,10 @@ namespace TackEngine.Core.Physics {
         }
 
         private void DebugDraw() {
+            if (!m_debugDrawBodies) {
+                return;
+            }
+
             TackObject[] physObjects = TackObject.Get();
 
             for (int i = 0; i < physObjects.Length; i++) {

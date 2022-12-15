@@ -5,6 +5,7 @@ using TackEngine.Core.Main;
 using TackEngine.Core.Math;
 using TackEngine.Core.Objects;
 using TackEngine.Core.Objects.Components;
+using TackEngine.Core.Physics;
 using TackEngine.Core.Renderer;
 using TackEngine.Core.Source.Objects;
 using tainicom.Aether.Physics2D.Dynamics;
@@ -39,6 +40,7 @@ namespace GameApp.Desktop {
             float yOffset = 10f;
             // floor stuff
             {
+                /*
                 TackObject obj4 = TackObject.Create("Floor", new Vector2f(300, -100));
                 obj4.Scale = new Vector2f(1200, 50);
                 obj4.Rotation = 0f;
@@ -59,6 +61,7 @@ namespace GameApp.Desktop {
                 //obj4.AddComponent(new SpriteRendererComponent() { Colour = Colour4b.Green, Sprite = s });
                 floor2.AddComponent(new SpriteRendererComponent() { Colour = Colour4b.Green });
                 floor2.AddComponent(new RectanglePhysicsComponent(1f, true, false, true, 1, 0f));
+                */
             }
 
             /*
@@ -127,7 +130,24 @@ namespace GameApp.Desktop {
             TackObject.Get("Body").AddComponent(new RevoluteJointComponent() { BodyB = TackObject.Get("TrailerBody").GetComponent<RectanglePhysicsComponent>(), LimitEnabled = true, LowerLimit = -2f, UpperLimit = 2f, Anchor = (TackObject.Get("Body").Position + new Vector2f(100f, 0f)) });
             */
 
+            TackPhysics.Instance.ShouldDebugDrawBodies = true;
+
             FunFactory.CreateCar(new Vector2f(0, 75));
+
+            TackObject edge = TackObject.Create("Floor", new Vector2f(0, 0));
+            edge.Scale = new Vector2f(1200, 50);
+            edge.Rotation = 0f;
+            //obj4.AddComponent(new SpriteRendererComponent() { Colour = Colour4b.Green, Sprite = s });
+            //edge.AddComponent(new SpriteRendererComponent() { Colour = Colour4b.Green });
+            edge.AddComponent(new EdgePhysicsComponent() {
+                Points = new System.Collections.Generic.List<Vector2f>() { 
+                    new Vector2f(-200, -200),
+                    new Vector2f(-150, -190),
+                    new Vector2f(-0, -180),
+                    new Vector2f(150, -190),
+                    new Vector2f(200, -200)
+                    } 
+            });
 
         }
 

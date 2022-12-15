@@ -9,6 +9,7 @@ using TackEngine.Core.Main;
 using TackEngine.Core.Math;
 using tainicom.Aether.Physics2D.Common;
 using TackEngine.Core.Renderer;
+using tainicom.Aether.Physics2D.Dynamics;
 
 namespace TackEngine.Core.Objects.Components {
     public class CirclePhysicsComponent : BasePhysicsComponent {
@@ -145,9 +146,12 @@ namespace TackEngine.Core.Objects.Components {
             //m_physicsBody.LinearDamping = 0;
             m_physicsBody.IgnoreGravity = !IsAffectedByGravity;
             m_physicsBody.Tag = GetParent().Hash;
-            m_fixture = m_physicsBody.CreateCircle((GetParent().Scale.X / 2f) / 100f, 10);
-            m_fixture.Restitution = Restitution;
-            m_fixture.Friction = Friction;
+
+            Fixture fixture = m_physicsBody.CreateCircle((GetParent().Scale.X / 2f) / 100f, 10);
+            fixture.Restitution = Restitution;
+            fixture.Friction = Friction;
+
+            m_fixtures.Add(fixture);
 
             m_physicsBody.OnCollision += InternalOnCollision;
         }

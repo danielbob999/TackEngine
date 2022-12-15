@@ -17,7 +17,7 @@ namespace TackEngine.Core.Objects.Components {
         private float m_friction;
         private float m_restitution;
         protected Body m_physicsBody = null;
-        protected Fixture m_fixture = null;
+        protected List<Fixture> m_fixtures = null;
 
         private bool m_affectedByGravity;
         private bool m_isStatic;
@@ -105,9 +105,10 @@ namespace TackEngine.Core.Objects.Components {
         public event OnCollisionMethodPrototype OnCollision;
 
         internal Body PhysicsBody { get { return m_physicsBody; } }
-        internal Fixture PhysicsFixture { get { return m_fixture; } }
+        internal List<Fixture> PhysicsFixture { get { return m_fixtures; } }
 
         protected BasePhysicsComponent() {
+            m_fixtures = new List<Fixture>();
         }
 
         public override void OnStart() {
@@ -117,18 +118,23 @@ namespace TackEngine.Core.Objects.Components {
         public override void OnUpdate() {
             base.OnUpdate();
 
-            if (m_physicsBody != null && m_fixture != null) {
+            if (m_physicsBody != null) {
                 GetParent().ChangePosition(new Vector2f(m_physicsBody.Position.X * 100f, m_physicsBody.Position.Y * 100f));
                 GetParent().ChangeRotation(Math.TackMath.RadToDeg(m_physicsBody.Rotation));
+
+                m_physicsBody.Mass = Mass;
+                m_physicsBody.BodyType = GetBodyType();
+                m_physicsBody.FixedRotation = FixedRotation;
 
                 //Console.WriteLine(m_physicsBody.Rotation);
             }
 
-            m_fixture.Friction = Friction;
-            m_fixture.Restitution = Restitution;
-            m_physicsBody.Mass = Mass;
-            m_physicsBody.BodyType = GetBodyType();
-            m_physicsBody.FixedRotation = FixedRotation;
+            if (m_fixtures != null) {
+                foreach (Fixture f in m_fixtures) {
+                    f.Friction = Friction;
+                    f.Restitution = Restitution;
+                }
+            }
         }
 
         public override void OnGUIRender() {
@@ -203,16 +209,19 @@ namespace TackEngine.Core.Objects.Components {
             return BodyType.Dynamic;
         }
 
-        protected void DestroyBody() {
+        protected virtual void DestroyBody() {
             if (m_physicsBody == null) {
                 return;
             }
 
-            if (m_fixture == null) {
+            if (m_fixtures == null) {
                 return;
             }
 
-            m_physicsBody.Remove(m_fixture);
+            foreach (Fixture f in m_fixtures) {
+                m_physicsBody.Remove(f);
+            }
+
             TackPhysics.Instance.GetWorld().Remove(m_physicsBody);
 
             m_physicsBody = null;
@@ -230,9 +239,12 @@ namespace TackEngine.Core.Objects.Components {
             m_physicsBody.SleepingAllowed = false;
             m_physicsBody.IgnoreGravity = !IsAffectedByGravity;
             m_physicsBody.Tag = GetParent().Hash;
-            m_fixture = m_physicsBody.CreateRectangle((GetParent().Scale.X / 100f), (GetParent().Scale.Y / 100f), 1, new Vector2(0, 0));
-            m_fixture.Restitution = Restitution;
-            m_fixture.Friction = Friction;
+
+            Fixture fixture = m_physicsBody.CreateRectangle((GetParent().Scale.X / 100f), (GetParent().Scale.Y / 100f), 1, new Vector2(0, 0));
+            fixture.Restitution = Restitution;
+            fixture.Friction = Friction;
+
+            m_fixtures.Add(fixture);
 
             m_physicsBody.OnCollision += InternalOnCollision;
         }

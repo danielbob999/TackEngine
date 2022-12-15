@@ -68,6 +68,16 @@ namespace TackEngine.Core.Objects.Components {
             }
         }
 
+        protected override void DestroyBody() {
+            base.DestroyBody();
+
+            if (m_wheelJoint == null) {
+                return;
+            }
+
+            TackPhysics.Instance.GetWorld().Remove(m_wheelJoint);
+        }
+
         protected override void GenerateBody() {
             // Destroy the body before we regenerate it
             DestroyBody();
@@ -77,9 +87,12 @@ namespace TackEngine.Core.Objects.Components {
             m_physicsBody.SleepingAllowed = false;
             m_physicsBody.IgnoreGravity = !IsAffectedByGravity;
             m_physicsBody.Tag = GetParent().Hash;
-            m_fixture = m_physicsBody.CreateCircle((GetParent().Scale.X / 2f) / 100f, 1);
-            m_fixture.Restitution = 0f;
-            m_fixture.Friction = Friction;
+            
+            Fixture fixture = m_physicsBody.CreateCircle((GetParent().Scale.X / 2f) / 100f, 1);
+            fixture.Restitution = 0f;
+            fixture.Friction = Friction;
+
+            m_fixtures.Add(fixture);
 
             m_physicsBody.OnCollision += InternalOnCollision;
 
