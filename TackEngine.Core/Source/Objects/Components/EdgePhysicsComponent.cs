@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using TackEngine.Core.Main;
 using TackEngine.Core.Math;
@@ -88,6 +89,45 @@ namespace TackEngine.Core.Objects.Components {
                     new Vector2f(shape.Vertex2.X * 100f, shape.Vertex2.Y * 100f), 
                     TackPhysics.BoundsColour);
             }
+        }
+
+        public static EdgePhysicsComponent GenerateFromSprite(Sprite s, int quality, byte transThreshold, bool flipVertically, bool centre) {
+            EdgePhysicsComponent epc = new EdgePhysicsComponent();
+
+            List<Vector2f> points = new List<Vector2f>();
+
+            byte[] data = s.Data;
+
+            float clampedQual = (TackMath.Clamp(quality, 1, 100) / 100f);
+
+            int columnCount = (int)(s.Width * clampedQual);
+            int columnSkip = s.Width / columnCount;
+
+            float centreV = 0f;
+
+            if (centre) {
+                centreV = 0.5f;
+            }
+
+            for (int x = 0; x < s.Width; x += columnSkip) {
+                for (int y = 0; y < s.Height; y++) {
+                    byte alphaValue = data[3 + 4 * (x + y * s.Width)];
+
+                    if (alphaValue > transThreshold) {
+                        if (flipVertically) {
+                            points.Add(new Vector2f((x / (float)s.Width) - centreV, (1 - (y / (float)s.Height)) - centreV));
+                        } else {
+                            points.Add(new Vector2f((x / (float)s.Width) - centreV, (y / (float)s.Height) - centreV));
+                        }
+
+                        break;
+                    }
+                }
+            }
+
+            epc.Points = points;
+
+            return epc;
         }
     }
 }
