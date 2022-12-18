@@ -83,7 +83,7 @@ namespace TackEngine.Core.Engine
                 WindowState = TackWindowState.Normal;
                 TargetUpdateRenderFrequency = 60;
                 VSync = true;
-                MSAASampleCount = 4;
+                MSAASampleCount = 16;
             }
         }
 
