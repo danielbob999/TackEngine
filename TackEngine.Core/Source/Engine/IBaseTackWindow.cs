@@ -4,7 +4,7 @@ using System.Text;
 using TackEngine.Core.Main;
 
 namespace TackEngine.Core.Engine {
-    internal interface IBaseTackWindow {
+    public interface IBaseTackWindow {
         Vector2f WindowSize { get; }
     }
 }

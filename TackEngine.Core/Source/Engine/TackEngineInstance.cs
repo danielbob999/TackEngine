@@ -90,7 +90,7 @@ namespace TackEngine.Core.Engine
         public static TackEngineInstance Instance = null;
 
         //internal TackGameWindow Window { get; private set; }
-        internal IBaseTackWindow Window { get; private set; }
+        public IBaseTackWindow Window { get; private set; }
         public TackEnginePlatform Platform { get; private set; }
         public InitalisationSettings Settings { get; private set; }
 
