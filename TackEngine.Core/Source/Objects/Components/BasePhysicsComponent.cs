@@ -190,7 +190,9 @@ namespace TackEngine.Core.Objects.Components {
         }
 
         public virtual void AddForce(Vector2f force) {
-            m_physicsBody.ApplyForce(new Vector2(force.X, force.Y));
+            if (m_physicsBody != null) {
+                m_physicsBody.ApplyForce(new Vector2(force.X, force.Y));
+            }
         }
 
         internal void CallOnCollision(CollisionData data) {
