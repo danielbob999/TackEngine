@@ -62,7 +62,7 @@ namespace TackEngine.Core.Objects.Components {
                 return;
             }
 
-            m_joint = new RevoluteJoint(GetParent().GetComponent<RectanglePhysicsComponent>().PhysicsBody, BodyB.PhysicsBody, new tainicom.Aether.Physics2D.Common.Vector2(Anchor.X, Anchor.Y), true);
+            m_joint = new RevoluteJoint(GetParent().GetComponent<RectanglePhysicsComponent>().PhysicsBody, BodyB.PhysicsBody, new tainicom.Aether.Physics2D.Common.Vector2(Anchor.X / 100f, Anchor.Y / 100f), true);
             m_joint.Enabled = true;
 
             TackPhysics.Instance.GetWorld().Add(m_joint);
