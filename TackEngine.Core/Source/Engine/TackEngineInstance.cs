@@ -96,14 +96,14 @@ namespace TackEngine.Core.Engine
 
         public TackEngineInstance() { }
 
-        public static void Initialise(object window, TackEnginePlatform platform) {
+        public static void Initialise(object window, InitalisationSettings settings, TackEnginePlatform platform) {
             // Create a new instance of TackEngine. This is tracked and used by calling TackEngine.Instance
             Instance = new TackEngineInstance();
             Instance.Window = (IBaseTackWindow)window;
 
             Instance.Platform = platform;
 
-            Instance.Settings = new InitalisationSettings();           
+            Instance.Settings = settings;          
 
             TackConsole.EngineLog(TackConsole.LogType.Message, "Starting TackEngine.");
             TackConsole.EngineLog(TackConsole.LogType.Message, string.Format("EngineVersion: {0}", GetEngineVersion().ToString()));

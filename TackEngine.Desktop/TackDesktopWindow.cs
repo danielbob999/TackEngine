@@ -50,14 +50,14 @@ namespace TackEngine.Desktop {
         public double TimeSinceLastRender { get; private set; }
 
         public TackGameWindow(TackEngine.Core.Engine.TackEngineInstance.InitalisationSettings settings, EngineDelegates.OnStart startFn, EngineDelegates.OnUpdate updateFn, EngineDelegates.OnClose closeFn)
-            : base(new GameWindowSettings() { RenderFrequency = 60, UpdateFrequency = 60, IsMultiThreaded = true }, new NativeWindowSettings() { Size = new OpenTK.Mathematics.Vector2i(settings.WindowSize.X, settings.WindowSize.Y), NumberOfSamples = settings.MSAASampleCount, Title = settings.WindowTitle, WindowBorder = (OpenTK.Windowing.Common.WindowBorder)settings.WindowBorder, WindowState = (OpenTK.Windowing.Common.WindowState)settings.WindowState }) {
+            : base(new GameWindowSettings() { RenderFrequency = settings.TargetUpdateRenderFrequency, UpdateFrequency = settings.TargetUpdateRenderFrequency, IsMultiThreaded = true }, new NativeWindowSettings() { Size = new OpenTK.Mathematics.Vector2i(settings.WindowSize.X, settings.WindowSize.Y), NumberOfSamples = settings.MSAASampleCount, Title = settings.WindowTitle, WindowBorder = (OpenTK.Windowing.Common.WindowBorder)settings.WindowBorder, WindowState = (OpenTK.Windowing.Common.WindowState)settings.WindowState }) {
 
             //throw new Exception("This class should not be used. Use TackDesktopNativeWindow instead. Please and Thank you");
 
             // We must initialise a TackConsole instance before doing anything
             mTackConsole = new TackConsole();
 
-            TackEngine.Core.Engine.TackEngineInstance.Initialise(this, TackEngineInstance.TackEnginePlatform.Windows);
+            TackEngine.Core.Engine.TackEngineInstance.Initialise(this, settings, TackEngineInstance.TackEnginePlatform.Windows);
 
             // Set all implementations
             TackFont.FontLoadingImplementation = new DesktopTackFontLoadingImpl();

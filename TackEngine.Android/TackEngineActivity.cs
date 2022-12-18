@@ -60,7 +60,7 @@ namespace TackEngine.Android {
             AndroidContext.CurrentContext = this;
             AndroidContext.CurrentAssetManager = Assets;
 
-            TackEngine.Core.Engine.TackEngineInstance.Initialise(this, TackEngineInstance.TackEnginePlatform.Android);
+            TackEngine.Core.Engine.TackEngineInstance.Initialise(this, new TackEngineInstance.InitalisationSettings(), TackEngineInstance.TackEnginePlatform.Android);
 
             m_glView = new MySurfaceView(this);
 
