@@ -155,27 +155,17 @@ namespace TackEngine.Desktop {
                 connectedShader.SetUniformValue("uModelMat", false, modelMatrix.ToTEMat4());
                 //GL.UniformMatrix4(GL.GetUniformLocation(connectedShader.Id, "uModelMat"), false, ref modelMatrix);
 
-                TackProfiler.Instance.StartTimer("Renderer.Loop.BindTextureData");
+                GL.ActiveTexture(TextureUnit.Texture0);
+                GL.BindTexture(TextureTarget.Texture2D, rendererComp.Sprite.Id);
 
-                if (rendererComp.Sprite.Id != lastBoundSpriteId) {
+                // set texture filtering parameters
+                GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)rendererComp.Sprite.Filter);
+                GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)rendererComp.Sprite.Filter);
 
-                    GL.ActiveTexture(TextureUnit.Texture0);
-                    GL.BindTexture(TextureTarget.Texture2D, rendererComp.Sprite.Id);
+                // set the texture wrapping parameters
+                GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)rendererComp.Sprite.WrapMode);
+                GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)rendererComp.Sprite.WrapMode);
 
-                    // set texture filtering parameters
-                    GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)rendererComp.Sprite.Filter);
-                    GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)rendererComp.Sprite.Filter);
-
-                    // set the texture wrapping parameters
-                    GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)rendererComp.Sprite.WrapMode);
-                    GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)rendererComp.Sprite.WrapMode);
-
-                    GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, rendererComp.Sprite.Width, rendererComp.Sprite.Height, 0, PixelFormat.Bgra, PixelType.UnsignedByte, rendererComp.Sprite.Data);
-
-                    lastBoundSpriteId = rendererComp.Sprite.Id;
-                }
-
-                TackProfiler.Instance.StopTimer("Renderer.Loop.BindTextureData");
                 TackProfiler.Instance.StartTimer("Renderer.Loop.SetUniformData");
 
                 //GL.Uniform1(GL.GetUniformLocation(m_defaultWorldShader.Id, "uTexture"), 0);
