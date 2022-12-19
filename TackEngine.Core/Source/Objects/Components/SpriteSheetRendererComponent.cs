@@ -67,6 +67,11 @@ namespace TackEngine.Core.Objects.Components {
         public bool ShouldLoop { get; set; }
 
         /// <summary>
+        /// If true, this rendering component will ALWAYS be rendered (even if completely off screen)
+        /// </summary>
+        public bool DisableRenderingBoundsCheck { get; set; }
+
+        /// <summary>
         /// Creates a new SpriteSheetRendererComponent
         /// </summary>
         public SpriteSheetRendererComponent() {

@@ -35,6 +35,11 @@ namespace TackEngine.Core.Objects.Components {
         public Dictionary<string, object> ShaderUniformValues { get; private set; }
 
         /// <summary>
+        /// If true, this rendering component will ALWAYS be rendered (even if completely off screen)
+        /// </summary>
+        public bool DisableRenderingBoundsCheck { get; set; }
+
+        /// <summary>
         /// Creates a new SpriteRendererComponent
         /// </summary>
         public SpriteRendererComponent() : base() {

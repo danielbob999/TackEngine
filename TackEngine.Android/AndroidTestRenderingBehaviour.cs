@@ -14,7 +14,7 @@ using Java.Security.Cert;
 using Java.Lang;
 
 namespace TackEngine.Android {
-    public class AndroidTestRenderingBehaviour : RenderingBehaviour {
+    public class AndroidRenderingBehaviour : RenderingBehaviour {
         private Shader m_defaultWorldShader;
 
         private int posHandle;
@@ -22,7 +22,7 @@ namespace TackEngine.Android {
 
         public override BaseShader DefaultWorldShader { get { return m_defaultWorldShader; } }
 
-        public AndroidTestRenderingBehaviour() : base(typeof(AndroidRenderer)) {
+        public AndroidRenderingBehaviour() : base(typeof(AndroidRenderer)) {
             /*
             m_defaultWorldShader = new Shader("shaders.opti_world_shader", TackShaderType.World, System.IO.File.ReadAllText("tackresources/shaders/world/opti/opti_world_vertex_shader.vs"),
                                                                                                  System.IO.File.ReadAllText("tackresources/shaders/world/opti/opti_world_fragment_shader.fs"));
@@ -157,13 +157,15 @@ namespace TackEngine.Android {
                     continue;
                 }
 
-                // Check if the camera view bounding box and the object bounding box intersect
-                // If they don't, skip this object because it is entirely outside the screen
-                AABB camAABB = camera.BoundingBoxInWorld;
-                AABB objAABB = sortedObjects[i].BoundingBox;
+                if (!rendererComp.DisableRenderingBoundsCheck) {
+                    // Check if the camera view bounding box and the object bounding box intersect
+                    // If they don't, skip this object because it is entirely outside the screen
+                    AABB camAABB = camera.BoundingBoxInWorld;
+                    AABB objAABB = sortedObjects[i].BoundingBox;
 
-                if (!AABB.CheckForAABBCollision(objAABB, camAABB)) {
-                    continue;
+                    if (!AABB.CheckForAABBCollision(objAABB, camAABB)) {
+                        continue;
+                    }
                 }
 
                 //Shader connectedShader = m_defaultWorldShader;

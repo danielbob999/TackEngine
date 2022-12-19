@@ -131,13 +131,15 @@ namespace TackEngine.Desktop {
                     continue;
                 }
 
-                // Check if the camera view bounding box and the object bounding box intersect
-                // If they don't, skip this object because it is entirely outside the screen
-                AABB camAABB = camera.BoundingBoxInWorld;
-                AABB objAABB = sortedObjects[i].BoundingBox;
+                if (!rendererComp.DisableRenderingBoundsCheck) {
+                    // Check if the camera view bounding box and the object bounding box intersect
+                    // If they don't, skip this object because it is entirely outside the screen
+                    AABB camAABB = camera.BoundingBoxInWorld;
+                    AABB objAABB = sortedObjects[i].BoundingBox;
 
-                if (!AABB.CheckForAABBCollision(objAABB, camAABB)) {
-                    continue;
+                    if (!AABB.CheckForAABBCollision(objAABB, camAABB)) {
+                        continue;
+                    }
                 }
 
                 //Shader connectedShader = m_defaultWorldShader;

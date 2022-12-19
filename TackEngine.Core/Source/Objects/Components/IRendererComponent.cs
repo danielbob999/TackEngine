@@ -13,6 +13,7 @@ namespace TackEngine.Core.Objects.Components {
         Colour4b Colour { get; set; }
         int RenderLayer { get; set; }
         Dictionary<string, object> ShaderUniformValues { get; }
+        bool DisableRenderingBoundsCheck { get; set; }
 
         void SetShader(BaseShader shader);
     }

@@ -24,8 +24,7 @@ namespace TackEngine.Android {
             GUIInstance = new TackGUI();
             GUIInstance.OnStart();
 
-            //m_currentRenderer = new AndroidRenderingBehaviour();
-            m_currentRenderer = new AndroidTestRenderingBehaviour();
+            m_currentRenderer = new AndroidRenderingBehaviour();
         }
 
         public override void OnUpdate() {
