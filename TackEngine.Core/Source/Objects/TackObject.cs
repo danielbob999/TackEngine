@@ -29,8 +29,8 @@ namespace TackEngine.Core.Objects {
         internal Physics.AABB BoundingBox { 
             get { 
                 return new Physics.AABB(
-                    new Vector2f(Position.X - (m_scale.X / 2f), Position.Y - (m_scale.X / 2f)),
-                    new Vector2f(Position.X + (m_scale.Y / 2f), Position.Y + (m_scale.Y / 2f)));
+                    new Vector2f(Position.X - (m_scale.X / 2f), Position.Y - (m_scale.Y / 2f)),
+                    new Vector2f(Position.X + (m_scale.X / 2f), Position.Y + (m_scale.Y / 2f)));
          } 
         }
 

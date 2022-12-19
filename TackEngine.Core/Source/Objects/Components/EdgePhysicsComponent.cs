@@ -71,11 +71,8 @@ namespace TackEngine.Core.Objects.Components {
             m_physicsBody.IgnoreGravity = true;
             m_physicsBody.Tag = GetParent().Hash;
 
-            int count = 0;
-
             for (int i = 1; i < Points.Count; i ++) {
-                Fixtures.Add(m_physicsBody.CreateEdge(new Vector2(Points[i - 1].X / 100f, Points[i - 1].Y / 100f), new Vector2(Points[i].X / 100f, Points[i].Y / 100f)));
-                count++;
+                Fixtures.Add(m_physicsBody.CreateEdge(new Vector2((Points[i - 1].X * GetParent().Scale.X) / 100f, (Points[i - 1].Y * GetParent().Scale.Y) / 100f), new Vector2((Points[i].X * GetParent().Scale.X) / 100f, (Points[i].Y * GetParent().Scale.Y) / 100f)));
             }
         }
 
@@ -85,8 +82,8 @@ namespace TackEngine.Core.Objects.Components {
                 EdgeShape shape = (EdgeShape)Fixtures[i].Shape;
 
                 DebugLineRenderer.DrawLine(
-                    new Vector2f(shape.Vertex1.X * 100f, shape.Vertex1.Y * 100f), 
-                    new Vector2f(shape.Vertex2.X * 100f, shape.Vertex2.Y * 100f), 
+                    new Vector2f(GetParent().Position.X + (shape.Vertex1.X * 100f), GetParent().Position.Y + (shape.Vertex1.Y * 100f)),
+                    new Vector2f(GetParent().Position.X + (shape.Vertex2.X * 100f), GetParent().Position.Y + (shape.Vertex2.Y * 100f)),
                     TackPhysics.BoundsColour);
             }
         }

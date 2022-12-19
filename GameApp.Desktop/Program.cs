@@ -35,120 +35,15 @@ namespace GameApp.Desktop {
         }
 
         public static void Start() {
-            Camera.MainCamera.ZoomFactor = 0.5f;
+            Camera.MainCamera.ZoomFactor = 1.2f;
 
-            float yOffset = 10f;
-            // floor stuff
-            {
-                /*
-                TackObject obj4 = TackObject.Create("Floor", new Vector2f(300, -100));
-                obj4.Scale = new Vector2f(1200, 50);
-                obj4.Rotation = 0f;
-                //obj4.AddComponent(new SpriteRendererComponent() { Colour = Colour4b.Green, Sprite = s });
-                obj4.AddComponent(new SpriteRendererComponent() { Colour = Colour4b.Green });
-                obj4.AddComponent(new RectanglePhysicsComponent(1f, true, false, true, 1, 0f));
+            // ground rendering object
+            Sprite groundSprite = Sprite.LoadFromFile("mapGround.png");
+            groundSprite.Create();
 
-                TackObject floor1 = TackObject.Create("Floor1", new Vector2f(-200, -100));
-                floor1.Scale = new Vector2f(1200, 50);
-                floor1.Rotation = -7f;
-                //obj4.AddComponent(new SpriteRendererComponent() { Colour = Colour4b.Green, Sprite = s });
-                floor1.AddComponent(new SpriteRendererComponent() { Colour = Colour4b.Green });
-                floor1.AddComponent(new RectanglePhysicsComponent(1f, true, false, true, 1, 0f));
 
-                TackObject floor2 = TackObject.Create("Floor2", new Vector2f(600, -100));
-                floor2.Scale = new Vector2f(1200, 50);
-                floor2.Rotation = 7f;
-                //obj4.AddComponent(new SpriteRendererComponent() { Colour = Colour4b.Green, Sprite = s });
-                floor2.AddComponent(new SpriteRendererComponent() { Colour = Colour4b.Green });
-                floor2.AddComponent(new RectanglePhysicsComponent(1f, true, false, true, 1, 0f));
-                */
-            }
-
-            /*
-            Sprite wheelSprite = Sprite.LoadFromFile("resources/tyre.png");
-            wheelSprite.Create();
-
-            // Car
-            {
-                Sprite circleSprite = Sprite.LoadFromFile("resources/circle.png");
-                circleSprite.Create();
-
-                // Car box
-                Sprite carSprite = Sprite.LoadFromFile("resources/car.png");
-                carSprite.Create();
-
-                float heightRatio = 176f / 564f;
-                TackObject body = TackObject.Create("Body", new Vector2f(0, 75 + yOffset));
-
-                float width = 250f;
-                body.Scale = new Vector2f(width, width * heightRatio);
-                body.Rotation = 0f;
-                body.AddComponent(new SpriteRendererComponent() { Colour = Colour4b.White, Sprite = carSprite });
-                body.AddComponent(new RectanglePhysicsComponent(1f, false, false, false, 1, 0f));
-
-                // Wheel 1
-                TackObject wheel1 = TackObject.Create("BackWheel", new Vector2f(0, 0));
-                wheel1.Scale = new Vector2f(38, 38);
-                wheel1.Rotation = 0f;
-                //wheel1.SetParent(body);
-                wheel1.LocalPosition = new Vector2f(-78, 48 + yOffset);
-                wheel1.AddComponent(new SpriteRendererComponent() { Colour = Colour4b.White, Sprite = wheelSprite });
-                wheel1.AddComponent(new WheelPhysicsComponent(body.GetComponent<RectanglePhysicsComponent>()));
-
-                // Wheel 2
-                TackObject wheel2 = TackObject.Create("FrontWheel", new Vector2f(0, 0));
-                wheel2.Scale = new Vector2f(38, 38);
-                wheel2.Rotation = 0f;
-                //wheel2.SetParent(body);
-                wheel2.LocalPosition = new Vector2f(82, 48 + yOffset);
-                wheel2.AddComponent(new SpriteRendererComponent() { Colour = Colour4b.White, Sprite = wheelSprite });
-                wheel2.AddComponent(new WheelPhysicsComponent(body.GetComponent<RectanglePhysicsComponent>()));
-            }
-
-            // Trailer
-            {
-                float heightRatio = 176f / 564f;
-                TackObject trailerBody = TackObject.Create("TrailerBody", new Vector2f(300, 75 + yOffset));
-
-                float width = 250f;
-                trailerBody.Scale = new Vector2f(width, width * heightRatio);
-                trailerBody.Rotation = 0f;
-                trailerBody.AddComponent(new SpriteRendererComponent() { Colour = Colour4b.White });
-                trailerBody.AddComponent(new RectanglePhysicsComponent(1f, false, false, false, 0f, 0f));
-
-                // Wheel 1
-                TackObject wheel1 = TackObject.Create("BackWheel", new Vector2f(0, 0));
-                wheel1.Scale = new Vector2f(38, 38);
-                wheel1.Rotation = 0f;
-                //wheel1.SetParent(body);
-                wheel1.LocalPosition = new Vector2f(400, 48 + yOffset);
-                wheel1.AddComponent(new SpriteRendererComponent() { Colour = Colour4b.Red, Sprite = wheelSprite });
-                wheel1.AddComponent(new WheelPhysicsComponent(trailerBody.GetComponent<RectanglePhysicsComponent>()) { MotorEnabled = false });
-            }
-
-            // joint
-            TackObject.Get("Body").AddComponent(new RevoluteJointComponent() { BodyB = TackObject.Get("TrailerBody").GetComponent<RectanglePhysicsComponent>(), LimitEnabled = true, LowerLimit = -2f, UpperLimit = 2f, Anchor = (TackObject.Get("Body").Position + new Vector2f(100f, 0f)) });
-            */
-
-            TackPhysics.Instance.ShouldDebugDrawBodies = true;
-
-            FunFactory.CreateCar(new Vector2f(0, 75));
-
-            TackObject edge = TackObject.Create("Floor", new Vector2f(0, 0));
-            edge.Scale = new Vector2f(1200, 50);
-            edge.Rotation = 0f;
-            //obj4.AddComponent(new SpriteRendererComponent() { Colour = Colour4b.Green, Sprite = s });
-            //edge.AddComponent(new SpriteRendererComponent() { Colour = Colour4b.Green });
-            edge.AddComponent(new EdgePhysicsComponent() {
-                Points = new System.Collections.Generic.List<Vector2f>() { 
-                    new Vector2f(-200, -200),
-                    new Vector2f(-150, -190),
-                    new Vector2f(-0, -180),
-                    new Vector2f(150, -190),
-                    new Vector2f(200, -200)
-                    } 
-            });
-
+            TackObject.Create("O", new Vector2f(0, 0), new Vector2f(15000, 2500)).AddComponent(new SpriteRendererComponent() { Colour = Colour4b.White, Sprite = groundSprite });
+            //TackObject.Create("O", new Vector2f(0, 0), new Vector2f(150, 150)).AddComponent(new SpriteRendererComponent() { Colour = Colour4b.Green });
         }
 
         public static void Update() {
@@ -156,25 +51,18 @@ namespace GameApp.Desktop {
 
             //TackObject.Get("TackObject1").Rotation = TackObject.Get("TackObject2").Rotation = TackObject.Get("TackObject3").Rotation += ((float)EngineTimer.Instance.LastUpdateTime * 25f);
 
-            float motorSpeed = 5f;
+            Vector2f move = new Vector2f();
 
-            if (TackInput.KeyHeld(KeyboardKey.A)) {
-                m_motorSpeed = TackMath.Clamp(m_motorSpeed + (3f * (float)EngineTimer.Instance.LastUpdateTime), -motorSpeed, motorSpeed);
-            } else if (TackInput.KeyHeld(KeyboardKey.D)) {
-                m_motorSpeed = TackMath.Clamp(m_motorSpeed - (3f * (float)EngineTimer.Instance.LastUpdateTime), -motorSpeed, motorSpeed);
-            } else {
-                if (m_motorSpeed > 0) {
-                    m_motorSpeed = TackMath.Clamp(m_motorSpeed - (0.7f * (float)EngineTimer.Instance.LastUpdateTime), 0f, motorSpeed);
-                } else {
-                    m_motorSpeed = TackMath.Clamp(m_motorSpeed + (0.7f * (float)EngineTimer.Instance.LastUpdateTime), -motorSpeed, 0f);
-                }
+            if (TackInput.KeyHeld(KeyboardKey.D)) {
+                move.X += 10f;
             }
 
-            TackObject.Get("CarBackWheel").GetComponent<WheelPhysicsComponent>().MotorSpeed = m_motorSpeed;
-            TackObject.Get("CarFrontWheel").GetComponent<WheelPhysicsComponent>().MotorEnabled = false;
+            if (TackInput.KeyHeld(KeyboardKey.A)) {
+                move.X -= 10f;
+            }
 
-            TackObject.Get("CarBackWheel").GetComponent<WheelPhysicsComponent>().MaxTorque = 50f;
-            TackObject.Get("CarFrontWheel").GetComponent<WheelPhysicsComponent>().MaxTorque = 50f;
+
+            Camera.MainCamera.GetParent().Position += move;
         }
 
         public static void Close() {
