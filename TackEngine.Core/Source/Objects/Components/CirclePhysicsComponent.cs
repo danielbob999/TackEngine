@@ -154,6 +154,7 @@ namespace TackEngine.Core.Objects.Components {
             m_fixtures.Add(fixture);
 
             m_physicsBody.OnCollision += InternalOnCollision;
+            m_physicsBody.OnSeparation += InternalOnSeparation;
         }
 
         internal override void OnDebugDraw() {

@@ -95,6 +95,7 @@ namespace TackEngine.Core.Objects.Components {
             m_fixtures.Add(fixture);
 
             m_physicsBody.OnCollision += InternalOnCollision;
+            m_physicsBody.OnSeparation += InternalOnSeparation;
 
             // Create wheel joint
             Vector2 axis = new Vector2(0.0f, 1f);

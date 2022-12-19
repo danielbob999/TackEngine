@@ -74,6 +74,9 @@ namespace TackEngine.Core.Objects.Components {
             for (int i = 1; i < Points.Count; i ++) {
                 Fixtures.Add(m_physicsBody.CreateEdge(new Vector2((Points[i - 1].X * GetParent().Scale.X) / 100f, (Points[i - 1].Y * GetParent().Scale.Y) / 100f), new Vector2((Points[i].X * GetParent().Scale.X) / 100f, (Points[i].Y * GetParent().Scale.Y) / 100f)));
             }
+
+            m_physicsBody.OnCollision += InternalOnCollision;
+            m_physicsBody.OnSeparation += InternalOnSeparation;
         }
 
         internal override void OnDebugDraw() {

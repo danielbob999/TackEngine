@@ -99,10 +99,29 @@ namespace TackEngine.Core.Objects.Components {
         /// </summary>
         public bool FixedRotation { get; set; }
 
+        /// <summary>
+        /// Gets/Sets whether this physics component is a trigger. 
+        /// A trigger component will still return the OnCollision callback methods but will not
+        ///     physically collide with other objects
+        /// </summary>
+        public bool IsTrigger { get; set; } = false;
+
         // Physics Events
         public delegate void OnCollisionMethodPrototype(CollisionData data);
 
+        /// <summary>
+        /// A event that is called when this component collides with another.
+        /// - If either of the components is a trigger component (IsTrigger = true), this will be called every frame until they separate
+        /// - If neither components are a trigger, this will only be called one time (for the initial collision)
+        /// </summary>
         public event OnCollisionMethodPrototype OnCollision;
+
+        /// <summary>
+        /// A event that is called when this component separates from another.
+        /// - If either of the components is a trigger component (IsTrigger = true), this will not be called
+        /// - If neither components are a trigger, this will only be called one time (for the initial separation)
+        /// </summary>
+        public event OnCollisionMethodPrototype OnSeparation;
 
         internal Body PhysicsBody { get { return m_physicsBody; } }
         internal List<Fixture> PhysicsFixture { get { return m_fixtures; } }
@@ -126,13 +145,14 @@ namespace TackEngine.Core.Objects.Components {
                 m_physicsBody.BodyType = GetBodyType();
                 m_physicsBody.FixedRotation = FixedRotation;
 
-                //Console.WriteLine(m_physicsBody.Rotation);
+                m_physicsBody.Enabled = Active;
             }
 
             if (m_fixtures != null) {
                 foreach (Fixture f in m_fixtures) {
                     f.Friction = Friction;
                     f.Restitution = Restitution;
+                    f.IsSensor = IsTrigger;
                 }
             }
         }
@@ -154,12 +174,29 @@ namespace TackEngine.Core.Objects.Components {
         }
 
         internal bool InternalOnCollision(Fixture sender, Fixture other, tainicom.Aether.Physics2D.Dynamics.Contacts.Contact contact) {
+            if (!Active) {
+                return false;
+            }
+
             TackObject collidedObject = TackObjectManager.Instance.GetByHash((string)other.Body.Tag);
 
             CallOnCollision(new CollisionData((BasePhysicsComponent)Utilities.FirstNotNull(
                 collidedObject.GetComponent<RectanglePhysicsComponent>(),
                 collidedObject.GetComponent<CirclePhysicsComponent>())));
+
             return true;
+        }
+
+        internal void InternalOnSeparation(Fixture sender, Fixture other, tainicom.Aether.Physics2D.Dynamics.Contacts.Contact contact) {
+            if (!Active) {
+                return;
+            }
+
+            TackObject collidedObject = TackObjectManager.Instance.GetByHash((string)other.Body.Tag);
+
+            CallOnSeparation(new CollisionData((BasePhysicsComponent)Utilities.FirstNotNull(
+                collidedObject.GetComponent<RectanglePhysicsComponent>(),
+                collidedObject.GetComponent<CirclePhysicsComponent>())));
         }
 
         public override void OnDetachedFromTackObject() {
@@ -199,6 +236,14 @@ namespace TackEngine.Core.Objects.Components {
             if (OnCollision != null) {
                 if (OnCollision.GetInvocationList().Length > 0) {
                     OnCollision.Invoke(data);
+                }
+            }
+        }
+
+        internal void CallOnSeparation(CollisionData data) {
+            if (OnSeparation != null) {
+                if (OnSeparation.GetInvocationList().Length > 0) {
+                    OnSeparation.Invoke(data);
                 }
             }
         }
@@ -245,10 +290,12 @@ namespace TackEngine.Core.Objects.Components {
             Fixture fixture = m_physicsBody.CreateRectangle((GetParent().Scale.X / 100f), (GetParent().Scale.Y / 100f), 1, new Vector2(0, 0));
             fixture.Restitution = Restitution;
             fixture.Friction = Friction;
+            fixture.IsSensor = IsTrigger;
 
             m_fixtures.Add(fixture);
 
             m_physicsBody.OnCollision += InternalOnCollision;
+            m_physicsBody.OnSeparation += InternalOnSeparation;
         }
 
         internal virtual void OnDebugDraw() {

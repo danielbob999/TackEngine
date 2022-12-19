@@ -82,7 +82,9 @@ namespace TackEngine.Core.Objects {
         public void RunTackObjectStartMethods() {
             foreach (KeyValuePair<string, TackObject> pair in m_tackObjects) {
                 for (int c = 0; c < pair.Value.GetAllComponents().Length; c++) {
-                    pair.Value.GetAllComponents()[c].OnStart();
+                    if (pair.Value.GetAllComponents()[c].Active) {
+                        pair.Value.GetAllComponents()[c].OnStart();
+                    }
                 }
             }
         }
@@ -95,7 +97,9 @@ namespace TackEngine.Core.Objects {
 
             for (int i = 0; i < objects.Length; i++) {
                 for (int c = 0; c < objects[i].GetAllComponents().Length; c++) {
-                    objects[i].GetAllComponents()[c].OnUpdate();
+                    if (objects[i].GetAllComponents()[c].Active) {
+                        objects[i].GetAllComponents()[c].OnUpdate();
+                    }
                 }
             }
         }
