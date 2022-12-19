@@ -152,10 +152,10 @@ namespace TackEngine.Core.Objects {
             TackObjectManager.Instance.RegisterTackObject(this);
         }
 
-        public void AddComponent(object _component) {
+        public object AddComponent(object _component) {
             if (!_component.GetType().IsSubclassOf(typeof(TackComponent))) {
                 TackConsole.EngineLog(TackConsole.LogType.Debug, string.Format("'{0}' cannot be added to TackObject with name '{1}' because it does not inherit from '{2}'", _component.GetType().Name, Name, typeof(TackComponent).Name));
-                return;
+                return null;
             }
 
             if (_component != null) {
@@ -165,6 +165,8 @@ namespace TackEngine.Core.Objects {
 
                 TackConsole.EngineLog(TackConsole.LogType.Debug, string.Format("Added a '{0}' component to TackObject with name '{1}'", _component.GetType(), Name));
             }
+
+            return _component;
         }
 
         public T GetComponent<T>() where T : TackComponent {
