@@ -9,6 +9,7 @@ using TackEngine.Core.GUI;
 using TackEngine.Core.GUI.Events;
 using TackEngine.Core.Input;
 using TackEngine.Core.Math;
+using TackEngine.Core.Engine;
 
 namespace TackEngine.Core.GUI {
     internal class GUIScrollBar : GUIObject {
@@ -85,7 +86,13 @@ namespace TackEngine.Core.GUI {
         internal override void OnMouseEvent(GUIMouseEventArgs args) {
             base.OnMouseEvent(args);
 
-            if (Physics.AABB.IsPointInAABB(new Physics.AABB(m_handleBounds), TackInput.Instance.MousePosition.ToVector2f())) {
+            Vector2f mousePos = TackInput.Instance.MousePosition.ToVector2f();
+
+            if (TackEngineInstance.Instance.Platform == TackEngineInstance.TackEnginePlatform.Android) {
+                mousePos = TackInput.Instance.TouchPosition.ToVector2f();
+            }
+
+            if (Physics.AABB.IsPointInAABB(new Physics.AABB(m_handleBounds), mousePos)) {
                 m_isDragging = true;
                 m_mouseDownOffset = args.MousePosition - new Vector2i((int)m_handleBounds.X, (int)m_handleBounds.Y);
             }

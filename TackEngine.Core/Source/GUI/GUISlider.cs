@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using TackEngine.Core.Main;
 using TackEngine.Core.Input;
 using TackEngine.Core.GUI.Events;
+using TackEngine.Core.Engine;
 
 namespace TackEngine.Core.GUI {
     public class GUISlider : GUIObject {
@@ -24,20 +25,6 @@ namespace TackEngine.Core.GUI {
             public Sprite FillSprite { get; set; }
 
             // Static default styles
-
-            // Default style
-            public static GUISliderStyle DefaultStyle {
-                get {
-                    return new GUISliderStyle() {
-                        BackgroundColour = new Colour4b(150, 150, 150, 255),
-                        HandleColour = Colour4b.White,
-                        FillColour = Colour4b.Green,
-                        BackgroundSprite = Sprite.DefaultSprite,
-                        FillSprite = Sprite.DefaultSprite,
-                        HandleSprite = Sprite.DefaultSprite
-                    };
-                }
-            }
 
             public GUISliderStyle() {
                 BackgroundColour = new Colour4b(150, 150, 150, 255);
@@ -122,7 +109,14 @@ namespace TackEngine.Core.GUI {
             m_backgroundBounds = new RectangleShape();
             m_fillBounds = new RectangleShape();
 
-            NormalStyle = GUISliderStyle.DefaultStyle;
+            NormalStyle = new GUISliderStyle() {
+                BackgroundColour = new Colour4b(200, 200, 200, 255),
+                HandleColour = Colour4b.White,
+                FillColour = new Colour4b(100, 100, 100, 255),
+                BackgroundSprite = Sprite.DefaultSprite,
+                FillSprite = Sprite.DefaultSprite,
+                HandleSprite = Sprite.DefaultSprite
+            };
 
             MinValue = 0;
             MaxValue = 1;
@@ -167,7 +161,13 @@ namespace TackEngine.Core.GUI {
             m_handleBounds.Y = m_backgroundBounds.Y - (m_handleBounds.Height / 2f) + (m_backgroundBounds.Height / 2f);
 
             if (m_isDragging) {
-                m_handleBounds.X = Math.TackMath.Clamp(m_mouseDownOffset.X + TackInput.Instance.MousePosition.X, m_backgroundBounds.X, (m_backgroundBounds.X + m_backgroundBounds.Width) - m_handleBounds.Width);
+                Vector2f mousePos = TackInput.Instance.MousePosition.ToVector2f();
+
+                if (TackEngineInstance.Instance.Platform == TackEngineInstance.TackEnginePlatform.Android) {
+                    mousePos = TackInput.Instance.TouchPosition.ToVector2f();
+                }
+
+                m_handleBounds.X = Math.TackMath.Clamp(m_mouseDownOffset.X + mousePos.X, m_backgroundBounds.X, (m_backgroundBounds.X + m_backgroundBounds.Width) - m_handleBounds.Width);
 
                 float valueIncreasePerPixel = (MaxValue - MinValue) / (m_backgroundBounds.Width - m_handleBounds.Width);
 
@@ -207,11 +207,15 @@ namespace TackEngine.Core.GUI {
             base.OnMouseEvent(args);
 
             if (args.MouseButton == MouseButtonKey.Left && args.MouseAction == MouseButtonAction.Down) {
-                if (TackEngine.Core.Physics.AABB.IsPointInAABB(new Physics.AABB(m_handleBounds), TackEngine.Core.Input.TackInput.Instance.MousePosition.ToVector2f())) {
-                    if (IsMouseHovering) {
-                        m_isDragging = true;
-                        m_mouseDownOffset = args.MousePosition - new Vector2i((int)m_handleBounds.X, (int)m_handleBounds.Y);
-                    }
+                Vector2f mousePos = TackInput.Instance.MousePosition.ToVector2f();
+
+                if (TackEngineInstance.Instance.Platform == TackEngineInstance.TackEnginePlatform.Android) {
+                    mousePos = TackInput.Instance.TouchPosition.ToVector2f();
+                }
+
+                if (TackEngine.Core.Physics.AABB.IsPointInAABB(new Physics.AABB(m_handleBounds), mousePos)) {
+                    m_isDragging = true;
+                    m_mouseDownOffset = args.MousePosition - new Vector2i((int)m_handleBounds.X, (int)m_handleBounds.Y);
                 }
             }
 
@@ -220,9 +224,15 @@ namespace TackEngine.Core.GUI {
                     m_isDragging = false;
                 } else {
                     // Check the left side of the handle of click
-                    if (Physics.AABB.IsPointInAABB(new Physics.AABB(new RectangleShape(m_backgroundBounds.X, m_backgroundBounds.Y, (m_handleBounds.X - m_backgroundBounds.X), m_backgroundBounds.Height)), TackInput.Instance.MousePosition.ToVector2f())){
+                    Vector2f mousePos = TackInput.Instance.MousePosition.ToVector2f();
+
+                    if (TackEngineInstance.Instance.Platform == TackEngineInstance.TackEnginePlatform.Android) {
+                        mousePos = TackInput.Instance.TouchPosition.ToVector2f();
+                    }
+
+                    if (Physics.AABB.IsPointInAABB(new Physics.AABB(new RectangleShape(m_backgroundBounds.X, m_backgroundBounds.Y, (m_handleBounds.X - m_backgroundBounds.X), m_backgroundBounds.Height)), mousePos)){
                         Value -= DefaultDecrease;
-                    } else if (Physics.AABB.IsPointInAABB(new Physics.AABB(new RectangleShape((m_handleBounds.X + m_handleBounds.Width), m_backgroundBounds.Y, (m_backgroundBounds.X + m_backgroundBounds.Width) - (m_handleBounds.X + m_handleBounds.Width), m_backgroundBounds.Height)), TackInput.Instance.MousePosition.ToVector2f())) {
+                    } else if (Physics.AABB.IsPointInAABB(new Physics.AABB(new RectangleShape((m_handleBounds.X + m_handleBounds.Width), m_backgroundBounds.Y, (m_backgroundBounds.X + m_backgroundBounds.Width) - (m_handleBounds.X + m_handleBounds.Width), m_backgroundBounds.Height)), mousePos)) {
                         Value += DefaultIncrease;
                         return;
                     }

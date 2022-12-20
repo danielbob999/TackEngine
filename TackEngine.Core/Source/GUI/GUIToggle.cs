@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using TackEngine.Core.Main;
 using TackEngine.Core.Input;
 using TackEngine.Core.GUI.Events;
+using TackEngine.Core.Engine;
 
 namespace TackEngine.Core.GUI {
     public class GUIToggle : GUIObject {
@@ -71,6 +72,9 @@ namespace TackEngine.Core.GUI {
 
             NormalStyle = new GUIToggleStyle();
 
+            Position = new Vector2f(10, 20);
+            Size = new Vector2f(250, 40);
+
             BaseTackGUI.Instance.RegisterGUIObject(this);
         }
 
@@ -109,12 +113,16 @@ namespace TackEngine.Core.GUI {
             base.OnMouseEvent(args);
 
             if (args.MouseButton == MouseButtonKey.Left && args.MouseAction == MouseButtonAction.Up) {
-                if (TackEngine.Core.Physics.AABB.IsPointInAABB(new Physics.AABB(m_toggleBounds), TackEngine.Core.Input.TackInput.Instance.MousePosition.ToVector2f())) {
-                    if (IsMouseHovering) {
-                        IsSelected = !IsSelected;
+                Vector2f mousePos = TackInput.Instance.MousePosition.ToVector2f();
 
-                        InvokeOnToggledEvent();
-                    }
+                if (TackEngineInstance.Instance.Platform == TackEngineInstance.TackEnginePlatform.Android) {
+                    mousePos = TackInput.Instance.TouchPosition.ToVector2f();
+                }
+
+                if (TackEngine.Core.Physics.AABB.IsPointInAABB(new Physics.AABB(m_toggleBounds), mousePos)) {
+                    IsSelected = !IsSelected;
+
+                    InvokeOnToggledEvent();
                 }
             }
         }

@@ -77,7 +77,9 @@ namespace TackEngine.Core.GUI {
 
             if (CanScroll) {
                 if (TackInput.Instance.MouseScrollWheelChange != 0) {
-                    if (IsMouseHovering) {
+                    RectangleShape shape = GetShapeWithMask();
+
+                    if (Physics.AABB.IsPointInAABB(new Physics.AABB(new Vector2f(shape.X, shape.Y + shape.Height), new Vector2f(shape.X + shape.Width, shape.Y)), TackEngine.Core.Input.TackInput.Instance.MousePosition.ToVector2f())) {
                         Vector2f sizeOfString = BaseTackGUI.MeasureStringSize(Text, BaseTackGUI.Instance.DefaultFont, NormalStyle.FontSize, new RectangleShape(Position, Size));
 
                         if (sizeOfString.Y > Size.Y) {

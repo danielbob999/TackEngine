@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using TackEngine.Core.Main;
 using TackEngine.Core.Input;
 using TackEngine.Core.GUI.Events;
+using tainicom.Aether.Physics2D.Collision.Shapes;
+using TackEngine.Core.Engine;
 
 namespace TackEngine.Core.GUI {
     public class GUIButton : GUIObject {
@@ -158,18 +160,19 @@ namespace TackEngine.Core.GUI {
             if (args.MouseButton == MouseButtonKey.Left && args.MouseAction == MouseButtonAction.Up) {
                 m_pressing = false;
 
-                /*
-                if (IsMouseHovering) {
+                RectangleShape shape = GetShapeWithMask();
+
+                Vector2f mousePos = TackInput.Instance.MousePosition.ToVector2f();
+
+                if (TackEngineInstance.Instance.Platform == TackEngineInstance.TackEnginePlatform.Android) {
+                    mousePos = TackInput.Instance.TouchPosition.ToVector2f();
+                }
+
+                if (Physics.AABB.IsPointInAABB(new Physics.AABB(new Vector2f(shape.X, shape.Y + shape.Height), new Vector2f(shape.X + shape.Width, shape.Y)), mousePos)) {
                     if (OnClickedEvent != null) {
                         if (OnClickedEvent.GetInvocationList().Length > 0) {
                             OnClickedEvent.Invoke(this, EventArgs.Empty);
                         }
-                    }
-                }*/
-
-                if (OnClickedEvent != null) {
-                    if (OnClickedEvent.GetInvocationList().Length > 0) {
-                        OnClickedEvent.Invoke(this, EventArgs.Empty);
                     }
                 }
             }
