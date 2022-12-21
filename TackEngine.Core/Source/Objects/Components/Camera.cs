@@ -68,7 +68,7 @@ namespace TackEngine.Core.Objects.Components
             set { m_zoomFactor = Math.TackMath.Clamp(value, 0, float.PositiveInfinity); } }
 
         public Camera() {
-            RenderTarget = new RectangleShape(0, 0, TackEngineInstance.Instance.Window.WindowSize.X, TackEngineInstance.Instance.Window.WindowSize.Y);
+            m_renderTarget = new RectangleShape(0, 0, TackEngineInstance.Instance.Window.WindowSize.X, TackEngineInstance.Instance.Window.WindowSize.Y);
             m_zoomFactor = 1f;
         }
     }

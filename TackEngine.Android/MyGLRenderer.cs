@@ -105,18 +105,10 @@ namespace TackEngine.Android {
             TackEngineActivity.Instance.mTackRender.OnRender(TackEngineActivity.Instance.m_engineTimer.LastRenderTime);
 
             TackEngineActivity.Instance.m_debugLineRenderer.OnRender();
-
-            // swap buffers was called here
-
-
-            // ------ testing
         }
 
         public void OnSurfaceChanged(IGL10? unused, int width, int height) {
-            //unused.GlViewport(0, 0, width, height);
-
             OpenTK.Graphics.ES30.GL.Viewport(0, 0, width, height);
-            //System.Diagnostics.Debug.WriteLine("============= surface changed " + width + " " + height);
 
             TackEngineActivity.Instance.WindowSize = new Vector2f(width, height);
 

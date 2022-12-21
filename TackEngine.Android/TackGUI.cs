@@ -328,7 +328,7 @@ namespace TackEngine.Android {
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)TextureWrapMode.ClampToEdge);
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)TextureWrapMode.ClampToEdge);
 
-            GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, style.Texture.Width, style.Texture.Height, 0, OpenTK.Graphics.ES30.PixelFormat.Rgba, PixelType.UnsignedByte, style.Texture.Data);
+            //GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, style.Texture.Width, style.Texture.Height, 0, OpenTK.Graphics.ES30.PixelFormat.Rgba, PixelType.UnsignedByte, style.Texture.Data);
             //GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
 
             m_defaultGUIShader.Use();

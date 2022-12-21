@@ -65,7 +65,7 @@ namespace TackEngine.Core.Objects.Components {
 
             m_physicsBody = TackPhysics.Instance.GetWorld().CreateBody(new Vector2(GetParent().Position.X / 100f, GetParent().Position.Y / 100f), TackMath.DegToRad(GetParent().Rotation), GetBodyType());
             m_physicsBody.FixedRotation = false;
-            m_physicsBody.SleepingAllowed = false;
+            m_physicsBody.SleepingAllowed = true;
             //m_physicsBody.AngularDamping = 0f;
             //m_physicsBody.LinearDamping = 0;
             m_physicsBody.IgnoreGravity = true;

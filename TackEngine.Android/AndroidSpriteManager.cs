@@ -12,6 +12,7 @@ using Java.Nio;
 using static Android.Icu.Text.ListFormatter;
 using System.Collections;
 using System.Runtime.InteropServices;
+using PixelFormat = OpenTK.Graphics.ES30.PixelFormat;
 
 namespace TackEngine.Android {
     internal class AndroidSpriteManager : SpriteManager {
@@ -38,6 +39,9 @@ namespace TackEngine.Android {
 
             GL.Enable(EnableCap.Texture2D);
             GL.ActiveTexture(TextureUnit.Texture0);
+
+            GL.BindTexture(TextureTarget.Texture2D, sprite.Id);
+            GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, sprite.Width, sprite.Height, 0, PixelFormat.Rgba, PixelType.UnsignedByte, sprite.Data);
 
             m_sprites.Add(sprite);
         }

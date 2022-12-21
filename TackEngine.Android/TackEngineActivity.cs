@@ -92,7 +92,7 @@ namespace TackEngine.Android {
             // removes the android status bar (battery icon/notifications)
             this.Window.AddFlags(WindowManagerFlags.Fullscreen);
 
-            System.Diagnostics.Debug.WriteLine("-------------- Started TackEngineActivity " + TackEngine.Core.Engine.TackEngineInstance.Instance.Window.WindowSize.ToString());
+            System.Diagnostics.Debug.WriteLine("Started TackEngineActivity " + TackEngine.Core.Engine.TackEngineInstance.Instance.Window.WindowSize.ToString());
         }
 
         public void OnAccuracyChanged(Sensor? sensor, [GeneratedEnum] SensorStatus accuracy) {

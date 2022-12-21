@@ -57,8 +57,17 @@ namespace TackEngine.Core.Physics {
             m_runBroadphaseAlgorithm = true;
             m_timeToSimulate = 1f / (float)targetSimulationRate;
             m_solverIterations = new SolverIterations();
-            m_solverIterations.PositionIterations = 10;
-            m_solverIterations.VelocityIterations = 10;
+
+            if (TackEngineInstance.Instance.Platform == TackEngineInstance.TackEnginePlatform.Windows ||
+                TackEngineInstance.Instance.Platform == TackEngineInstance.TackEnginePlatform.Linux ||
+                TackEngineInstance.Instance.Platform == TackEngineInstance.TackEnginePlatform.MacOS
+            ) {
+                m_solverIterations.PositionIterations = 10;
+                m_solverIterations.VelocityIterations = 10;
+            } else {
+                m_solverIterations.PositionIterations = 5;
+                m_solverIterations.VelocityIterations = 5;
+            }
 
             Instance = this;
         }

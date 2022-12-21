@@ -31,7 +31,7 @@ namespace TackEngine.Android {
             if (m_fpsCounterTextArea == null) {
                 m_fpsCounterTextArea = new GUITextArea();
                 m_fpsCounterTextArea.Position = new Vector2f(Camera.MainCamera.RenderTarget.Width - 150, 5);
-                m_fpsCounterTextArea.Size = new Vector2f(145, 53);
+                m_fpsCounterTextArea.Size = new Vector2f(145, 100);
 
                 GUITextArea.GUITextAreaStyle style = new GUITextArea.GUITextAreaStyle() {
                     Border = null,
@@ -47,7 +47,7 @@ namespace TackEngine.Android {
             if (mRenderFpsCounter) {
                 m_fpsCounterTextArea.Active = mRenderFpsCounter;
                 m_fpsCounterTextArea.Position = new Vector2f(Camera.MainCamera.RenderTarget.Width - 150, 5);
-                m_fpsCounterTextArea.Size = new Vector2f(145, 53);
+                m_fpsCounterTextArea.Size = new Vector2f(145, 100);
 
                 m_fpsCounterTextArea.Text = "U: " + (1f / EngineTimer.Instance.UpdateTimeAverageLastSecond).ToString("0") + "(" + (EngineTimer.Instance.UpdateTimeAverageLastSecond * 1000f).ToString("0.00") + "ms)\n" +
                     "R: " + (1f / EngineTimer.Instance.RenderTimeAverageLastSecond).ToString("0") + " (" + (EngineTimer.Instance.RenderTimeAverageLastSecond * 1000f).ToString("0.00") + "ms)\n" +

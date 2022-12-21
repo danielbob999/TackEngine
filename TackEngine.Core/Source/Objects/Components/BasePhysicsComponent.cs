@@ -283,7 +283,7 @@ namespace TackEngine.Core.Objects.Components {
 
             m_physicsBody = TackPhysics.Instance.GetWorld().CreateBody(new Vector2((GetParent().Position.X / 100f), (GetParent().Position.Y / 100f)), Math.TackMath.DegToRad(GetParent().Rotation), GetBodyType());
             m_physicsBody.FixedRotation = false;
-            m_physicsBody.SleepingAllowed = false;
+            m_physicsBody.SleepingAllowed = true;
             m_physicsBody.IgnoreGravity = !IsAffectedByGravity;
             m_physicsBody.Tag = GetParent().Hash;
 

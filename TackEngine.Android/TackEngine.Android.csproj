@@ -7,6 +7,38 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="Assets\tackresources\fonts\CourierPrime\CourierPrime-Bold.ttf" />
+    <None Remove="Assets\tackresources\fonts\CourierPrime\CourierPrime-BoldItalic.ttf" />
+    <None Remove="Assets\tackresources\fonts\CourierPrime\CourierPrime-Italic.ttf" />
+    <None Remove="Assets\tackresources\fonts\CourierPrime\CourierPrime-Regular.ttf" />
+    <None Remove="Assets\tackresources\fonts\JosefinSans-BoldItalic.ttf" />
+    <None Remove="Assets\tackresources\fonts\Roboto\Roboto-Bold.ttf" />
+    <None Remove="Assets\tackresources\fonts\Roboto\Roboto-BoldItalic.ttf" />
+    <None Remove="Assets\tackresources\fonts\Roboto\Roboto-Italic.ttf" />
+    <None Remove="Assets\tackresources\fonts\Roboto\Roboto-Regular.ttf" />
+    <None Remove="Assets\tackresources\shaders\debuglinerenderer\debug_line_renderer_frag.fs" />
+    <None Remove="Assets\tackresources\shaders\debuglinerenderer\debug_line_renderer_vert.vs" />
+    <None Remove="Assets\tackresources\shaders\gui\default_gui_fragment_shader.fs" />
+    <None Remove="Assets\tackresources\shaders\gui\default_gui_vertex_shader.vs" />
+    <None Remove="Assets\tackresources\shaders\gui\new\gui_fragment_shader.fs" />
+    <None Remove="Assets\tackresources\shaders\gui\new\gui_vertex_shader.vs" />
+    <None Remove="Assets\tackresources\shaders\gui\text\text_fragment_shader.fs" />
+    <None Remove="Assets\tackresources\shaders\gui\text\text_vertex_shader.vs" />
+    <None Remove="Assets\tackresources\shaders\world\batch_world_fragment_shader.fs" />
+    <None Remove="Assets\tackresources\shaders\world\batch_world_vertex_shader.vs" />
+    <None Remove="Assets\tackresources\shaders\world\default_world_fragment_shader.fs" />
+    <None Remove="Assets\tackresources\shaders\world\default_world_vertex_shader.vs" />
+    <None Remove="Assets\tackresources\shaders\world\instance\instance_world_fragment_shader.fs" />
+    <None Remove="Assets\tackresources\shaders\world\instance\instance_world_vertex_shader.vs" />
+    <None Remove="Assets\tackresources\shaders\world\opti\opti_world_fragment_shader.fs" />
+    <None Remove="Assets\tackresources\shaders\world\opti\opti_world_fragment_shader_lit.fs" />
+    <None Remove="Assets\tackresources\shaders\world\opti\opti_world_vertex_shader.vs" />
+    <None Remove="Assets\tackresources\shaders\world\opti\opti_world_vertex_shader_lit.vs" />
+    <None Remove="Assets\tackresources\sprites\default_sprite.png" />
+    <None Remove="Assets\tackresources\sprites\tackengine_logo.png" />
+    <None Remove="Assets\tackresources\sprites\ui\ui_panel.png" />
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="Xamarin.Legacy.OpenTK" Version="1.0.2" />
   </ItemGroup>
   <ItemGroup>

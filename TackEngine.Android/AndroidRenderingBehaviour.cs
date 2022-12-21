@@ -185,23 +185,16 @@ namespace TackEngine.Android {
 
                 TackProfiler.Instance.StartTimer("Renderer.Loop.BindTextureData");
 
-                if (rendererComp.Sprite.Id != lastBoundSpriteId) {
+                GL.ActiveTexture(TextureUnit.Texture0);
+                GL.BindTexture(TextureTarget.Texture2D, rendererComp.Sprite.Id);
 
-                    GL.ActiveTexture(TextureUnit.Texture0);
-                    GL.BindTexture(TextureTarget.Texture2D, rendererComp.Sprite.Id);
+                // set texture filtering parameters
+                GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)rendererComp.Sprite.Filter);
+                GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)rendererComp.Sprite.Filter);
 
-                    // set texture filtering parameters
-                    GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)rendererComp.Sprite.Filter);
-                    GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)rendererComp.Sprite.Filter);
-
-                    // set the texture wrapping parameters
-                    GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)rendererComp.Sprite.WrapMode);
-                    GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)rendererComp.Sprite.WrapMode);
-
-                    GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, rendererComp.Sprite.Width, rendererComp.Sprite.Height, 0, PixelFormat.Rgba, PixelType.UnsignedByte, rendererComp.Sprite.Data);
-
-                    lastBoundSpriteId = rendererComp.Sprite.Id;
-                }
+                // set the texture wrapping parameters
+                GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)rendererComp.Sprite.WrapMode);
+                GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)rendererComp.Sprite.WrapMode);
 
                 TackProfiler.Instance.StopTimer("Renderer.Loop.BindTextureData");
                 TackProfiler.Instance.StartTimer("Renderer.Loop.SetUniformData");
