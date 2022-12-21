@@ -89,6 +89,12 @@ namespace TackEngine.Android {
                 this.ActionBar.Hide();
             }
 
+            // Makes system bars visible by swipe, hidden by default
+            IWindowInsetsController controller = this.Window.InsetsController;
+            controller.Hide(WindowInsets.Type.SystemBars());
+            controller.SystemBarsBehavior = (int)WindowInsetsControllerBehavior.ShowTransientBarsBySwipe;
+
+
             // removes the android status bar (battery icon/notifications)
             this.Window.AddFlags(WindowManagerFlags.Fullscreen);
 
