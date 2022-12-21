@@ -31,15 +31,15 @@ namespace TackEngine.Android {
             }
 
             if (e.Action == MotionEventActions.Down) {
-                TackEngineActivity.Instance.m_tackInput.TouchDownEvent(new Core.Main.Vector2i((int)e.RawX, (int)e.RawY));
+                TackEngineActivity.Instance.m_tackInput.TouchDownEvent(new Core.Main.Vector2i((int)e.GetX(), (int)e.GetY()));
             }
 
             if (e.Action == MotionEventActions.Up) {
-                TackEngineActivity.Instance.m_tackInput.TouchUpEvent(new Core.Main.Vector2i((int)e.RawX, (int)e.RawY));
+                TackEngineActivity.Instance.m_tackInput.TouchUpEvent(new Core.Main.Vector2i((int)e.GetX(), (int)e.GetY()));
             }
 
             if (e.Action == MotionEventActions.Move) {
-                TackEngineActivity.Instance.m_tackInput.TouchDragEvent(new Core.Main.Vector2i((int)e.RawX, (int)e.RawY));
+                TackEngineActivity.Instance.m_tackInput.TouchDragEvent(new Core.Main.Vector2i((int)e.GetX(), (int)e.GetY()));
             }
 
             return true;

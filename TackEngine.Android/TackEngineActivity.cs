@@ -122,7 +122,6 @@ namespace TackEngine.Android {
         }
 
         public virtual void OnEngineUpdate() {
-
         }
 
         public virtual void OnEngineClose() {

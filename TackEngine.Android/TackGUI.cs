@@ -506,11 +506,13 @@ namespace TackEngine.Android {
 
                 m_defaultGUIShader.Use();
 
+                Vector2f finalScale = TackFont.GetFontCharacterScaledSize(fchar.size, style.FontSize);
+
                 // Generate translation matrix
-                OpenTK.Matrix4 transMat = OpenTK.Matrix4.CreateTranslation(charPos.X + (fchar.size.X / 2.0f), -charPos.Y - (fchar.size.Y / 2.0f), 0);
+                OpenTK.Matrix4 transMat = OpenTK.Matrix4.CreateTranslation(charPos.X + (finalScale.X / 2.0f), -charPos.Y - (finalScale.Y / 2.0f), 0);
 
                 // Generate scale matrix
-                OpenTK.Matrix4 scaleMat = MatrixUtility.CreateScaleMatrix((fchar.size.X / 2.0f), (fchar.size.Y / 2.0f), 1);
+                OpenTK.Matrix4 scaleMat = MatrixUtility.CreateScaleMatrix((finalScale.X / 2.0f), (finalScale.Y / 2.0f), 1);
 
                 // Generate the view matrix
                 float widthToHeightRatio = TackEngine.Core.Engine.TackEngineInstance.Instance.Window.WindowSize.Y / (float)TackEngine.Core.Engine.TackEngineInstance.Instance.Window.WindowSize.X;
@@ -565,7 +567,7 @@ namespace TackEngine.Android {
                     }
                 }
 
-                charPos.X += fchar.size.X;
+                charPos.X += finalScale.X;
             }
 
             GL.DeleteBuffers(1, ref VBO);

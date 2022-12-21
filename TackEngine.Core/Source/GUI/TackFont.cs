@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using SharpFont;
 
 using TackEngine.Core.Main;
+using TackEngine.Core.Math;
 
 namespace TackEngine.Core.GUI {
 	public class TackFont {
@@ -74,6 +75,16 @@ namespace TackEngine.Core.GUI {
 
 		public static TackFont LoadFromFile(string path) {
 			return FontLoadingImplementation.LoadFromFile(path);
+		}
+
+		public static Vector2f GetFontCharacterScaledSize(Vector2f originalSize, float fontSize) {
+			float widthToHeightRatio = originalSize.X / originalSize.Y;	// After deciding on a height, we can get the width using this
+
+			float baseSize = 14;
+			float deltaToBase = fontSize - baseSize;
+			float newHeight = TackMath.Clamp(originalSize.Y + deltaToBase, 0, float.PositiveInfinity);
+
+			return new Vector2f(newHeight * widthToHeightRatio, newHeight);
 		}
 	}
 }
