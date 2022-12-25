@@ -25,8 +25,13 @@ namespace TackEngine.Desktop {
         public static TackDesktopNativeWindow Instance { get; private set; } = null;
 
         public Vector2f WindowSize { get { return new Vector2f(base.ClientSize.X, base.ClientSize.Y); } }
+        public ulong CurrentUpdateLoopIndex { get { return m_currentUpdateLoopIndex; } }
+        public ulong CurrentRenderLoopIndex { get { return m_currentRenderLoopIndex; } }
 
         private float m_targetFrameTime;
+
+        private ulong m_currentUpdateLoopIndex;
+        private ulong m_currentRenderLoopIndex;
 
         // Modules
         private TackConsole mTackConsole;
@@ -60,6 +65,9 @@ namespace TackEngine.Desktop {
             onStartFunction = startFn;
             onUpdateFunction = updateFn;
             onCloseFunction = closeFn;
+
+            m_currentUpdateLoopIndex = 0;
+            m_currentRenderLoopIndex = 0;
 
             m_engineTimer = new EngineTimer();
             m_engineTimer.OnStart();
@@ -168,6 +176,9 @@ namespace TackEngine.Desktop {
                         System.Threading.Thread.Sleep(sleepTime);
                     }
                 }
+
+                m_currentUpdateLoopIndex++;
+                m_currentRenderLoopIndex++;
             }
 
             m_engineTimer.OnClose();

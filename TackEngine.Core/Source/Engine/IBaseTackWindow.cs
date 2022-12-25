@@ -6,5 +6,7 @@ using TackEngine.Core.Main;
 namespace TackEngine.Core.Engine {
     public interface IBaseTackWindow {
         Vector2f WindowSize { get; }
+        ulong CurrentUpdateLoopIndex { get; }
+        ulong CurrentRenderLoopIndex { get; }
     }
 }

@@ -23,6 +23,8 @@ namespace TackEngine.Android {
     [Activity(Label = "TackEngineActivity", ConfigurationChanges = (ConfigChanges.ScreenSize | ConfigChanges.Orientation))]
     public class TackEngineActivity : Activity, IBaseTackWindow, ISensorEventListener {
         public Vector2f WindowSize { get; set; }
+        public ulong CurrentUpdateLoopIndex { get { return m_currentUpdateLoopIndex; } }
+        public ulong CurrentRenderLoopIndex { get { return m_currentRenderLoopIndex; } }
 
         public static TackEngineActivity Instance { get; private set; }
 
@@ -43,6 +45,8 @@ namespace TackEngine.Android {
         internal TackEngine.Core.Engine.EngineDelegates.OnStart onCloseFunction;
 
         private MySurfaceView m_glView;
+        public ulong m_currentUpdateLoopIndex;
+        public ulong m_currentRenderLoopIndex;
 
         protected override void OnCreate(Bundle savedInstanceState) {
             base.OnCreate(savedInstanceState);

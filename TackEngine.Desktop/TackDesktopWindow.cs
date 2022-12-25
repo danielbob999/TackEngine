@@ -46,8 +46,14 @@ namespace TackEngine.Desktop {
 
         public Vector2f WindowSize { get { return new Vector2f(base.ClientSize.X, base.ClientSize.Y); } }
 
+        public ulong CurrentUpdateLoopIndex { get { return m_currentUpdateLoopIndex; } }
+        public ulong CurrentRenderLoopIndex { get { return m_currentRenderLoopIndex; } }
+
         public double TimeSinceLastUpdate { get; private set; }
         public double TimeSinceLastRender { get; private set; }
+
+        private ulong m_currentUpdateLoopIndex;
+        private ulong m_currentRenderLoopIndex;
 
         public TackGameWindow(TackEngine.Core.Engine.TackEngineInstance.InitalisationSettings settings, EngineDelegates.OnStart startFn, EngineDelegates.OnUpdate updateFn, EngineDelegates.OnClose closeFn)
             : base(new GameWindowSettings() { RenderFrequency = settings.TargetUpdateRenderFrequency, UpdateFrequency = settings.TargetUpdateRenderFrequency, IsMultiThreaded = true }, new NativeWindowSettings() { Size = new OpenTK.Mathematics.Vector2i(settings.WindowSize.X, settings.WindowSize.Y), NumberOfSamples = settings.MSAASampleCount, Title = settings.WindowTitle, WindowBorder = (OpenTK.Windowing.Common.WindowBorder)settings.WindowBorder, WindowState = (OpenTK.Windowing.Common.WindowState)settings.WindowState }) {

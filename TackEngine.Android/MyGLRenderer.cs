@@ -105,6 +105,9 @@ namespace TackEngine.Android {
             TackEngineActivity.Instance.mTackRender.OnRender(TackEngineActivity.Instance.m_engineTimer.LastRenderTime);
 
             TackEngineActivity.Instance.m_debugLineRenderer.OnRender();
+
+            TackEngineActivity.Instance.m_currentUpdateLoopIndex++;
+            TackEngineActivity.Instance.m_currentRenderLoopIndex++;
         }
 
         public void OnSurfaceChanged(IGL10? unused, int width, int height) {
