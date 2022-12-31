@@ -648,7 +648,7 @@ namespace TackEngine.Core.GUI {
             }
         }
 
-        private static float MeasureStringLength(string text, TackFont font, float finalFontSize) {
+        internal override float MeasureStringLength(string text, TackFont font, float finalFontSize) {
             float length = 0;
 
             for (int i = 0; i < text.Length; i++) {
@@ -664,7 +664,7 @@ namespace TackEngine.Core.GUI {
             return length;
         }
 
-        internal static Vector2f MeasureStringSize(string text, TackFont font, float fontSize, RectangleShape rect) {
+        internal override Vector2f MeasureStringSize(string text, TackFont font, float fontSize, RectangleShape rect) {
             float padding = 5f;
             float char_x = padding;
             float largestCharX = 0;

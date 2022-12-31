@@ -488,13 +488,34 @@ namespace TackEngine.Android {
 
             maskData.AddMask(rect);
 
-            Vector2f charPos = new Vector2f(minPos.X, minPos.Y);
+            Vector2f charPos = new Vector2f(minPos.X, minPos.Y + scrollPosition.Y);
 
             for (int i = 0; i < text.Length; i++) {
                 if (text[i] == '\n') {
                     charPos.Y += style.Font.GetFontCharacter('B').size.Y;
                     charPos.X = minPos.X;
                     continue;
+                }
+
+                // If the current character is a space, detect if we can fit the next word on the current line
+                // If not, drop a line
+                if (text[i] == ' ') {
+                    int indexOfNextSpace = text.IndexOfAny(new char[] { ' ' }, i + 1);
+
+                    if (indexOfNextSpace == -1) {
+                        indexOfNextSpace = text.Length - 1;
+                    }
+
+                    string subStr = text.Substring(i, indexOfNextSpace - i);
+                    float lengthOfNextWord = MeasureStringLength(subStr, font, style.FontSize);
+
+
+                    if (charPos.X + lengthOfNextWord > (rect.X + rect.Width)) {
+                        charPos.Y += TackFont.GetFontCharacterScaledSize(font.GetFontCharacter('B').size, style.FontSize).Y;
+
+                        charPos.X = minPos.X;
+                        continue;
+                    }
                 }
 
                 TackFont.FontCharacter fchar = style.Font.GetFontCharacter(text[i]);
@@ -583,7 +604,7 @@ namespace TackEngine.Android {
         /// <param name="font"></param>
         /// <param name="fontSize"></param>
         /// <returns></returns>
-        private static float MeasureStringLength(string text, TackFont font, float fontSize) {
+        internal override float MeasureStringLength(string text, TackFont font, float fontSize) {
             float length = 0;
 
             for (int i = 0; i < text.Length; i++) {
@@ -599,8 +620,7 @@ namespace TackEngine.Android {
             return length;
         }
 
-        internal static new Vector2f MeasureStringSize(string text, TackFont font, float fontSize, RectangleShape rect) {
-
+        internal override Vector2f MeasureStringSize(string text, TackFont font, float fontSize, RectangleShape rect) {
             Vector2f maxSize = new Vector2f();
 
             float currentLength = 0;
@@ -647,28 +667,20 @@ namespace TackEngine.Android {
 
                 bool wordSplit = false;
 
-                /*
                 // If true, the word is too long to fit on a single line so we must break it up with a hyphen
-                if (char_x + (((int)ch.advance >> 6) * finalFontSize) > (rect.Width - (padding * 4))) {
-                    ch = font.GetFontCharacter('-');
-
-                    w = ch.size.X * finalFontSize;
-                    h = ch.size.Y * finalFontSize;
-                    xrel = char_x + ch.bearing.X * finalFontSize;
-                    yrel = ch.bearing.Y * finalFontSize;
+                if (currentLength + finalSize.X > (rect.Width)) {
+                    maxSize.X += TackFont.GetFontCharacterScaledSize(font.GetFontCharacter('-').size, fontSize).X;
+                    maxSize.Y += TackFont.GetFontCharacterScaledSize(font.GetFontCharacter('B').size, fontSize).Y;
 
                     wordSplit = true;
-                }*/
+                }
 
                 if (!wordSplit) {
                     currentLength += finalSize.X;
                 } else {
-                    /*
-                    char_y += lineSpacing;
-
-                    char_x = padding;
+                    maxSize.Y += TackFont.GetFontCharacterScaledSize(font.GetFontCharacter('B').size, fontSize).Y;
+                    currentLength = 0;
                     i--;
-                    */
                 }
 
                 if (maxSize.X < currentLength) {
@@ -681,70 +693,6 @@ namespace TackEngine.Android {
             }
 
             return new Vector2f(maxSize.X, maxSize.Y);
-        }
-
-        public static int GetFontFamilyId(string familyName) {
-            if (Instance == null) {
-                return 0;
-            }
-            
-            /*
-            for (int i = 0; i < Instance.m_fontCollection.Families.Length; i++)
-            {
-                if (Instance.m_fontCollection.Families[i].Name == familyName) {
-                    return i;
-                }
-            }*/
-
-            TackConsole.EngineLog(TackConsole.LogType.Error, string.Format("No FontFamily with name: {0} was found in the font collection", familyName));
-            return -1;
-        }
-
-        /// <summary>
-        /// Gets the FontFamily at a specified index
-        /// </summary>
-        /// <param name="fontId">The index of the FontFamily in the collection</param>
-        /// <returns></returns>
-        /*
-        public static FontFamily GetFontFamily(int fontId) {
-            
-            if (fontId < Instance.m_fontCollection.Families.Length) {
-                return Instance.m_fontCollection.Families[fontId];
-            }
-
-            return Instance.m_fontCollection.Families[0];
-            
-
-            return null;
-        }*/
-
-        private static string GetRenderableString(string aString, float aScrollPos, float aHeightPerLine, float aTextAreaHeight) {
-            if (string.IsNullOrEmpty(aString)) {
-                return "";
-            }
-
-            // Split strings by lines
-            string[] splitString = aString.Split(new char[] { '\n', '\r' });
-
-            int maxLines = (int)(aTextAreaHeight / aHeightPerLine);
-
-            Console.WriteLine("Height: {0}, HeightPerLine: {1}, Lines: {2}", aTextAreaHeight, aHeightPerLine, maxLines);
-
-            if (splitString.Length <= maxLines) {
-                return aString;
-            }
-
-            string returnString = "";
-
-            for (int i = (int)aScrollPos; i < (aScrollPos + maxLines); i++) {
-                if (i < splitString.Length) {
-                    returnString += splitString[i] + "\n";
-                } else {
-                    continue;
-                }
-            }
-
-            return returnString;
         }
     }
 }
