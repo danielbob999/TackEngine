@@ -26,6 +26,14 @@ namespace TackEngine.Core.Physics {
         private List<Body> m_bodiesToBeDeleted;
         private float m_timeToSimulate;
         private SolverIterations m_solverIterations;
+        private bool m_hasRetrievedPermEnabledStatus = false;
+        private bool m_permanentEnabledStatus = false;
+
+        /// <summary>
+        /// Gets/Sets whether TackPhysics is enabled. 
+        /// This value can never be changed once the program has start its first update loop
+        /// </summary>
+        public bool Enabled { get; set; }
 
         public Vector2f Gravity {
             get { return m_gravityForce; }
@@ -57,6 +65,7 @@ namespace TackEngine.Core.Physics {
             m_runBroadphaseAlgorithm = true;
             m_timeToSimulate = 1f / (float)targetSimulationRate;
             m_solverIterations = new SolverIterations();
+            Enabled = true;
 
             if (TackEngineInstance.Instance.Platform == TackEngineInstance.TackEnginePlatform.Windows ||
                 TackEngineInstance.Instance.Platform == TackEngineInstance.TackEnginePlatform.Linux ||
@@ -87,6 +96,15 @@ namespace TackEngine.Core.Physics {
 
         internal override void Update() {
             base.Update();
+
+            if (!m_hasRetrievedPermEnabledStatus) {
+                m_permanentEnabledStatus = Enabled;
+                m_hasRetrievedPermEnabledStatus = true;
+            }
+
+            if (!m_permanentEnabledStatus) {
+                return;
+            }
 
             TackProfiler.Instance.StartTimer("TackPhysics.OnUpdate");
 

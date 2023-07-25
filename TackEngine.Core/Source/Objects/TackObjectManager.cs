@@ -41,6 +41,10 @@ namespace TackEngine.Core.Objects {
 
             Vector2f mouseWorldCoords = Input.TackInput.Instance.MousePositionInWorld;
 
+            if (TackEngineInstance.Instance.Platform == TackEngineInstance.TackEnginePlatform.Android) {
+                mouseWorldCoords = Input.TackInput.Instance.TouchPositionInWorld;
+            }
+
             foreach (KeyValuePair<string, TackObject> pair in m_tackObjects) {
                 Vector2f objPos = pair.Value.Position;
                 Vector2f objScale = pair.Value.Scale;
@@ -55,7 +59,7 @@ namespace TackEngine.Core.Objects {
                             components[c].OnMouseEnter();
                         }
 
-                        if (Input.TackInput.MouseButtonDown(Input.MouseButtonKey.Left)) {
+                        if (Input.TackInput.MouseButtonDown(Input.MouseButtonKey.Left) || Input.TackInput.TouchDown()) {
                             if (!TackRenderer.GetInstance().GUIInstance.MouseClickDetectedThisFrame) {
                                 components[c].OnMouseClick();
                             }

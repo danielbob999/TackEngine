@@ -7,6 +7,8 @@ using System.Drawing;
 
 using TackEngine.Core.Main;
 using TackEngine.Core.Input;
+using TackEngine.Core.Engine;
+using TackEngine.Core.GUI.Events;
 
 namespace TackEngine.Core.GUI {
     public class GUITextArea : GUIObject, IGUIScrollable {
@@ -50,6 +52,8 @@ namespace TackEngine.Core.GUI {
         }
 
         private bool m_hovering = false;
+        private float m_dragStartY;
+        private bool m_isDragging = false;
 
         public string Text { get; set; }
         public GUITextAreaStyle NormalStyle { get; set; }
@@ -76,16 +80,31 @@ namespace TackEngine.Core.GUI {
             base.OnUpdate();
 
             if (CanScroll) {
-                if (TackInput.Instance.MouseScrollWheelChange != 0) {
-                    RectangleShape shape = GetShapeWithMask();
+                if (TackEngineInstance.Instance.Platform == TackEngineInstance.TackEnginePlatform.Windows) {
+                    if (TackInput.Instance.MouseScrollWheelChange != 0) {
+                        RectangleShape shape = GetShapeWithMask();
 
-                    if (Physics.AABB.IsPointInAABB(new Physics.AABB(new Vector2f(shape.X, shape.Y + shape.Height), new Vector2f(shape.X + shape.Width, shape.Y)), TackEngine.Core.Input.TackInput.Instance.MousePosition.ToVector2f())) {
-                        Vector2f sizeOfString = BaseTackGUI.MeasureStringSize(Text, BaseTackGUI.Instance.DefaultFont, NormalStyle.FontSize, new RectangleShape(Position, Size));
+                        if (Physics.AABB.IsPointInAABB(new Physics.AABB(new Vector2f(shape.X, shape.Y + shape.Height), new Vector2f(shape.X + shape.Width, shape.Y)), TackEngine.Core.Input.TackInput.Instance.MousePosition.ToVector2f())) {
+                            Vector2f sizeOfString = BaseTackGUI.Instance.MeasureStringSize(Text, BaseTackGUI.Instance.DefaultFont, NormalStyle.FontSize, new RectangleShape(Position, Size));
+
+                            if (sizeOfString.Y > Size.Y) {
+                                float diff = sizeOfString.Y - Size.Y;
+                                VerticalScrollPosition = Math.TackMath.Clamp(VerticalScrollPosition + TackInput.Instance.MouseScrollWheelChange * (ScrollSensitivity * 10), -diff - 10, 0);
+                            }
+                        }
+                    }
+                } else if (TackEngineInstance.Instance.Platform == TackEngineInstance.TackEnginePlatform.Android) {
+                    if (m_isDragging) {
+                        float touchDragAmount = TackInput.Instance.TouchPosition.ToVector2f().Y - m_dragStartY;
+
+                        Vector2f sizeOfString = BaseTackGUI.Instance.MeasureStringSize(Text, NormalStyle.Font, NormalStyle.FontSize, new RectangleShape(Position, Size));
 
                         if (sizeOfString.Y > Size.Y) {
                             float diff = sizeOfString.Y - Size.Y;
-                            VerticalScrollPosition = Math.TackMath.Clamp(VerticalScrollPosition + TackInput.Instance.MouseScrollWheelChange * (ScrollSensitivity * 10), -diff - 10, 0);
-                        }   
+                            VerticalScrollPosition = Math.TackMath.Clamp(VerticalScrollPosition + touchDragAmount * (ScrollSensitivity * 2), -diff - 50, 0);
+                        }
+
+                        m_dragStartY = TackInput.Instance.TouchPosition.ToVector2f().Y;
                     }
                 }
             }
@@ -101,6 +120,21 @@ namespace TackEngine.Core.GUI {
             for (int i = 0; i < ChildObjects.Count; i++) {
                 if (ChildObjects[i].Active) {
                     ChildObjects[i].OnRender(new GUIMaskData(maskData.Masks));
+                }
+            }
+        }
+
+        internal override void OnMouseEvent(GUIMouseEventArgs args) {
+            base.OnMouseEvent(args);
+
+            if (TackEngineInstance.Instance.Platform == TackEngineInstance.TackEnginePlatform.Android) {
+                if (args.MouseAction == MouseButtonAction.Down) {
+                    m_isDragging = true;
+                    m_dragStartY = args.MousePosition.Y;
+                }
+
+                if (args.MouseAction == MouseButtonAction.Up) {
+                    m_isDragging = false;
                 }
             }
         }

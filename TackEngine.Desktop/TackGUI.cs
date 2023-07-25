@@ -24,6 +24,12 @@ namespace TackEngine.Core.GUI {
     /// The main class for rendering GUI elements to the screen
     /// </summary>
     public class TackGUI : BaseTackGUI {
+        private int m_vao;
+        private int m_vbo;
+        private int m_ebo;
+        private float[] m_vertexData;
+        private int[] m_indexData;
+
         public TackGUI() {
             /*
             if (Instance != null) {
@@ -60,13 +66,52 @@ namespace TackEngine.Core.GUI {
 
             m_defaultTextShader = new Shader("shaders.text_shader", TackShaderType.GUI, System.IO.File.ReadAllText("tackresources/shaders/gui/text/text_vertex_shader.vs"),
                                                                                         System.IO.File.ReadAllText("tackresources/shaders/gui/text/text_fragment_shader.fs"));
+
+            m_vertexData = new float[20] {
+                    //       Position (XYZ)                                                                                                      Colours (RGB)                                                                                  TexCoords (XY)
+                    /* v1 */  1f, -1f, 1.0f,       1.0f, 1.0f,
+                    /* v2 */  1f,  1f, 1.0f,       1.0f, 0.0f,
+                    /* v3 */ -1f,  1f, 1.0f,       0.0f, 0.0f,
+                    /* v4 */ -1f, -1f, 1.0f,       0.0f, 1.0f
+            };
+
+            m_indexData = new int[] {
+                    0, 1, 3, // first triangle
+                    1, 2, 3  // second triangle
+            };
+
+            m_vao = GL.GenVertexArray();
+            m_vbo = GL.GenBuffer();
+            m_ebo = GL.GenBuffer();
+
+            GL.BindVertexArray(m_vao);
+
+            GL.BindBuffer(BufferTarget.ArrayBuffer, m_vbo);
+            GL.BufferData(BufferTarget.ArrayBuffer, sizeof(float) * 20, m_vertexData, BufferUsageHint.StaticDraw);
+
+            GL.BindBuffer(BufferTarget.ElementArrayBuffer, m_ebo);
+            GL.BufferData(BufferTarget.ElementArrayBuffer, sizeof(int) * 6, m_indexData, BufferUsageHint.StaticDraw);
+
+            // position attribute
+            GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 5 * sizeof(float), 0);
+            GL.EnableVertexAttribArray(0);
+
+            // texture coords attribute
+            GL.VertexAttribPointer(1, 2, VertexAttribPointerType.Float, false, 5 * sizeof(float), 3 * sizeof(float));
+            GL.EnableVertexAttribArray(1);
+
+            TackConsole.EngineLog(TackConsole.LogType.Message, "Generated TackGUI buffers");
         }
 
         internal override void OnUpdate() {
             MouseClickDetectedThisFrame = false;
 
+            TackProfiler.Instance.StartTimer("TackGUI.Update.ObjectRemoval");
             // Remove all GUIObjects that were marked for deletion last frame
             CompleteGUObjectRemoval();
+            TackProfiler.Instance.StopTimer("TackGUI.Update.ObjectRemoval");
+
+            TackProfiler.Instance.StartTimer("TackGUI.Update.MouseEvent");
 
             // Deal with mouse inputs and focusing logic
             for (int i = 0; i < m_mouseEventQueue.Count; i++) {
@@ -115,6 +160,9 @@ namespace TackEngine.Core.GUI {
 
             m_mouseEventQueue.Clear();
 
+            TackProfiler.Instance.StopTimer("TackGUI.Update.MouseEvent");
+
+            TackProfiler.Instance.StartTimer("TackGUI.Update.KeyboardEvent");
             // Deal with keyboard key presses
             for (int i = 0; i < m_keyboardEventQueue.Count; i++) {
                 for (int j = 0; j < m_guiObjects.Count; j++) {
@@ -128,16 +176,21 @@ namespace TackEngine.Core.GUI {
 
             m_keyboardEventQueue.Clear();
 
+            TackProfiler.Instance.StopTimer("TackGUI.Update.KeyboardEvent");
 
+            TackProfiler.Instance.StartTimer("TackGUI.Update.ObjectOnUpdate");
             // Loop through the current GUIObject List calling the OnUpdate function on each
             for (int i = 0; i < m_guiObjects.Count; i++) {
                 if (m_guiObjects[i].Active) {
                     m_guiObjects[i].OnUpdate();
                 }
             }
+
+            TackProfiler.Instance.StopTimer("TackGUI.Update.ObjectOnUpdate");
         }
 
         internal override void OnGUIRender() {
+            TackProfiler.Instance.StartTimer("TackGUI.Render");
             for (int i = 0; i < m_guiObjects.Count; i++) {
                 if (m_guiObjects[i].ParentId == null) {
                     if (m_guiObjects[i].Active) {
@@ -145,6 +198,8 @@ namespace TackEngine.Core.GUI {
                     }
                 }
             }
+
+            TackProfiler.Instance.StopTimer("TackGUI.Render");
         }
 
         internal override void OnClose() {
@@ -152,6 +207,12 @@ namespace TackEngine.Core.GUI {
             for (int i = 0; i < m_guiObjects.Count; i++) {
                 ((GUIObject)m_guiObjects[i]).OnClose();
             }
+
+            GL.DeleteBuffer(m_ebo);
+            GL.DeleteBuffer(m_vbo);
+            GL.DeleteVertexArray(m_vao);
+
+            TackConsole.EngineLog(TackConsole.LogType.Message, "Deleted TackGUI buffers");
         }
 
         private void FocusGUIObject(GUIObject obj) {
@@ -253,6 +314,7 @@ namespace TackEngine.Core.GUI {
                 InternalBorder(rect, style.Border);
             }
 
+            TackProfiler.Instance.StartTimer("TackGUI.InternalBox.GLEnable");
             GL.Enable(EnableCap.Texture2D);
             GL.Enable(EnableCap.Blend);
             GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
@@ -262,40 +324,9 @@ namespace TackEngine.Core.GUI {
             GL.EnableClientState(ArrayCap.IndexArray);
             GL.EnableClientState(ArrayCap.TextureCoordArray);
 
-            // Call 1 or more draw element calls depending on a maxGUIDrawCallAmount variable 
+            TackProfiler.Instance.StopTimer("TackGUI.InternalBox.GLEnable");
 
-            float[] vertexData = new float[20] {
-                    //       Position (XYZ)                                                                                                      Colours (RGB)                                                                                  TexCoords (XY)
-                    /* v1 */  1f, -1f, 1.0f,       1.0f, 1.0f,
-                    /* v2 */  1f,  1f, 1.0f,       1.0f, 0.0f,
-                    /* v3 */ -1f,  1f, 1.0f,       0.0f, 0.0f,
-                    /* v4 */ -1f, -1f, 1.0f,       0.0f, 1.0f
-            };
-
-            int[] indiceData = new int[] {
-                    0, 1, 3, // first triangle
-                    1, 2, 3  // second triangle
-            };
-
-            int VAO = GL.GenVertexArray();
-            int VBO = GL.GenBuffer();
-            int EBO = GL.GenBuffer();
-
-            GL.BindVertexArray(VAO);
-
-            GL.BindBuffer(BufferTarget.ArrayBuffer, VBO);
-            GL.BufferData(BufferTarget.ArrayBuffer, sizeof(float) * 20, vertexData, BufferUsageHint.StaticDraw);
-
-            GL.BindBuffer(BufferTarget.ElementArrayBuffer, EBO);
-            GL.BufferData(BufferTarget.ElementArrayBuffer, sizeof(int) * 6, indiceData, BufferUsageHint.StaticDraw);
-
-            // position attribute
-            GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 5 * sizeof(float), 0);
-            GL.EnableVertexAttribArray(0);
-
-            // texture coords attribute
-            GL.VertexAttribPointer(1, 2, VertexAttribPointerType.Float, false, 5 * sizeof(float), 3 * sizeof(float));
-            GL.EnableVertexAttribArray(1);
+            TackProfiler.Instance.StartTimer("TackGUI.InternalBox.BindTexture");
 
             // Set texture attributes
             GL.ActiveTexture(TextureUnit.Texture0);
@@ -309,10 +340,14 @@ namespace TackEngine.Core.GUI {
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)TextureWrapMode.ClampToEdge);
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)TextureWrapMode.ClampToEdge);
 
-            GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, style.Texture.Width, style.Texture.Height, 0, OpenTK.Graphics.OpenGL.PixelFormat.Bgra, PixelType.UnsignedByte, style.Texture.Data);
+            //GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, style.Texture.Width, style.Texture.Height, 0, OpenTK.Graphics.OpenGL.PixelFormat.Bgra, PixelType.UnsignedByte, style.Texture.Data);
             //GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
 
+            TackProfiler.Instance.StopTimer("TackGUI.InternalBox.BindTexture");
+
             Instance.DefaultGUIShader.Use();
+
+            TackProfiler.Instance.StartTimer("TackGUI.InternalBox.GenerateTexture");
 
             // Generate translation matrix
             OpenTK.Mathematics.Matrix4 transMat = OpenTK.Mathematics.Matrix4.CreateTranslation(rect.X + (rect.Width / 2.0f), -rect.Y - (rect.Height / 2.0f), 0);
@@ -332,6 +367,10 @@ namespace TackEngine.Core.GUI {
 
             // Multiply the above matrices to generate the final model matrix
             OpenTK.Mathematics.Matrix4 modelMatrix = ((scaleMat) * transMat) * orthoView;
+
+            TackProfiler.Instance.StopTimer("TackGUI.InternalBox.GenerateTexture");
+
+            TackProfiler.Instance.StartTimer("TackGUI.InternalBox.BindUniform");
 
             GL.UniformMatrix4(GL.GetUniformLocation(TackGUI.Instance.DefaultGUIShader.Id, "uModelMat"), false, ref modelMatrix);
             GL.Uniform1(GL.GetUniformLocation(TackGUI.Instance.DefaultGUIShader.Id, "uTexture"), 0);
@@ -367,13 +406,13 @@ namespace TackEngine.Core.GUI {
 
             GL.Uniform1(GL.GetUniformLocation(Instance.DefaultGUIShader.Id, "uMaskCount"), maskData.Masks.Count);
 
-            GL.BindVertexArray(VAO);
+            TackProfiler.Instance.StopTimer("TackGUI.InternalBox.BindUniform");
+
+            TackProfiler.Instance.StartTimer("TackGUI.InternalBox.DrawElements");
 
             GL.DrawElements(PrimitiveType.Triangles, 6, DrawElementsType.UnsignedInt, IntPtr.Zero);
 
-            GL.DeleteBuffer(EBO);
-            GL.DeleteBuffer(VBO);
-            GL.DeleteVertexArray(VAO);
+            TackProfiler.Instance.StopTimer("TackGUI.InternalBox.DrawElements");
         }
 
         /// <summary>
@@ -392,41 +431,6 @@ namespace TackEngine.Core.GUI {
             GL.EnableClientState(ArrayCap.VertexArray);
             GL.EnableClientState(ArrayCap.IndexArray);
             GL.EnableClientState(ArrayCap.TextureCoordArray);
-
-            // Call 1 or more draw element calls depending on a maxGUIDrawCallAmount variable 
-
-            float[] vertexData = new float[20] {
-                    //       Position (XYZ)                                                                                                      Colours (RGB)                                                                                  TexCoords (XY)
-                    /* v1 */  1f, -1f, 1.0f,       1.0f, 1.0f,
-                    /* v2 */  1f,  1f, 1.0f,       1.0f, 0.0f,
-                    /* v3 */ -1f,  1f, 1.0f,       0.0f, 0.0f,
-                    /* v4 */ -1f, -1f, 1.0f,       0.0f, 1.0f
-            };
-
-            int[] indiceData = new int[] {
-                    0, 1, 3, // first triangle
-                    1, 2, 3  // second triangle
-            };
-
-            int VAO = GL.GenVertexArray();
-            int VBO = GL.GenBuffer();
-            int EBO = GL.GenBuffer();
-
-            GL.BindVertexArray(VAO);
-
-            GL.BindBuffer(BufferTarget.ArrayBuffer, VBO);
-            GL.BufferData(BufferTarget.ArrayBuffer, sizeof(float) * 20, vertexData, BufferUsageHint.StaticDraw);
-
-            GL.BindBuffer(BufferTarget.ElementArrayBuffer, EBO);
-            GL.BufferData(BufferTarget.ElementArrayBuffer, sizeof(int) * 6, indiceData, BufferUsageHint.StaticDraw);
-
-            // position attribute
-            GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 5 * sizeof(float), 0);
-            GL.EnableVertexAttribArray(0);
-
-            // texture coords attribute
-            GL.VertexAttribPointer(1, 2, VertexAttribPointerType.Float, false, 5 * sizeof(float), 3 * sizeof(float));
-            GL.EnableVertexAttribArray(1);
 
             float padding = 5f;
             float char_x = padding;
@@ -615,7 +619,7 @@ namespace TackEngine.Core.GUI {
                 GL.Uniform1(GL.GetUniformLocation(TackGUI.Instance.DefaultTextShader.Id, "uMaskCount"), maskData.Masks.Count);
 
 
-                GL.BindVertexArray(VAO);
+                GL.BindVertexArray(m_vao);
 
                 GL.DrawElements(PrimitiveType.Triangles, 6, DrawElementsType.UnsignedInt, IntPtr.Zero);
 
@@ -642,13 +646,9 @@ namespace TackEngine.Core.GUI {
 
                 InternalBox(shape, new GUIBox.GUIBoxStyle() { Border = null, Colour = Colour4b.Black, Texture = Sprite.DefaultSprite }, maskData);
             }
-
-            GL.DeleteBuffer(EBO);
-            GL.DeleteBuffer(VBO);
-            GL.DeleteVertexArray(VAO);
         }
 
-        private static float MeasureStringLength(string text, TackFont font, float finalFontSize) {
+        internal override float MeasureStringLength(string text, TackFont font, float finalFontSize) {
             float length = 0;
 
             for (int i = 0; i < text.Length; i++) {
@@ -664,7 +664,7 @@ namespace TackEngine.Core.GUI {
             return length;
         }
 
-        internal static Vector2f MeasureStringSize(string text, TackFont font, float fontSize, RectangleShape rect) {
+        internal override Vector2f MeasureStringSize(string text, TackFont font, float fontSize, RectangleShape rect) {
             float padding = 5f;
             float char_x = padding;
             float largestCharX = 0;
