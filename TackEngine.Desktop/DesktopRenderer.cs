@@ -59,10 +59,18 @@ namespace TackEngine.Desktop {
         public override void OnRender(double timeSinceLastRender) {
             m_previousRenderTime = (float)timeSinceLastRender;
 
+            TackProfiler.Instance.StartTimer("Renderer.PreRender");
+            m_currentRenderer.PreRender();
+            TackProfiler.Instance.StopTimer("Renderer.PreRender");
+
             TackProfiler.Instance.StartTimer("Renderer.RenderToScreen");
             // Render everything in the world using the current renderer
             m_currentRenderer.RenderToScreen(out m_previousDrawCallCount);
             TackProfiler.Instance.StopTimer("Renderer.RenderToScreen");
+
+            TackProfiler.Instance.StartTimer("Renderer.PostRender");
+            m_currentRenderer.PostRender();
+            TackProfiler.Instance.StopTimer("Renderer.PostRender");
 
             // Render TackPhysics debug objects
             //TackPhysics.GetInstance().Render();
@@ -70,7 +78,9 @@ namespace TackEngine.Desktop {
 
             TackProfiler.Instance.StartTimer("Renderer.GUIRender");
             // Render GUI
+            GUIInstance.OnGUIPreRender();
             GUIInstance.OnGUIRender();
+            GUIInstance.OnGUIPostRender();
             TackProfiler.Instance.StopTimer("Renderer.GUIRender");
         }
 

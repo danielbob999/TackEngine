@@ -189,6 +189,24 @@ namespace TackEngine.Core.GUI {
             TackProfiler.Instance.StopTimer("TackGUI.Update.ObjectOnUpdate");
         }
 
+        internal override void OnGUIPreRender() {
+            GL.BindVertexArray(m_vao);
+
+            GL.BindBuffer(BufferTarget.ArrayBuffer, m_vbo);
+            GL.BufferData(BufferTarget.ArrayBuffer, sizeof(float) * 20, m_vertexData, BufferUsageHint.StaticDraw);
+
+            GL.BindBuffer(BufferTarget.ElementArrayBuffer, m_ebo);
+            GL.BufferData(BufferTarget.ElementArrayBuffer, sizeof(int) * 6, m_indexData, BufferUsageHint.StaticDraw);
+
+            // position attribute
+            GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 5 * sizeof(float), 0);
+            GL.EnableVertexAttribArray(0);
+
+            // texture coords attribute
+            GL.VertexAttribPointer(1, 2, VertexAttribPointerType.Float, false, 5 * sizeof(float), 3 * sizeof(float));
+            GL.EnableVertexAttribArray(1);
+        }
+
         internal override void OnGUIRender() {
             TackProfiler.Instance.StartTimer("TackGUI.Render");
             for (int i = 0; i < m_guiObjects.Count; i++) {

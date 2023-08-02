@@ -158,6 +158,10 @@ namespace TackEngine.Core.GUI {
             */
         }
 
+        internal virtual void OnGUIPreRender() {
+
+        }
+
         internal virtual void OnGUIRender() {
             /*
             for (int i = 0; i < m_guiObjects.Count; i++) {
@@ -168,6 +172,10 @@ namespace TackEngine.Core.GUI {
                 }
             }
             */
+        }
+
+        internal virtual void OnGUIPostRender() {
+
         }
 
         internal virtual void OnClose() {

@@ -39,6 +39,9 @@ namespace TackEngine.Desktop {
             };
         }
 
+        public override void PreRender() {
+        }
+
         public override void RenderToScreen(out int drawCallCount) {
             GL.Enable(EnableCap.Texture2D);
             GL.Enable(EnableCap.Blend);
@@ -264,6 +267,9 @@ namespace TackEngine.Desktop {
             GL.DeleteBuffers(1, ref VAO);
 
             drawCallCount = localDrawCallCount;
+        }
+
+        public override void PostRender() {
         }
 
         private OpenTK.Mathematics.Matrix4 GenerateModelMatrix(Vector2f position, Vector2f scale, float rotation) {

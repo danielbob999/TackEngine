@@ -62,6 +62,9 @@ namespace TackEngine.Android {
             uvHandle = GL.GetAttribLocation(m_defaultWorldShader.Id, "aTexCoord");
         }
 
+        public override void PreRender() {
+        }
+
         public override void RenderToScreen(out int drawCallCount) {
             //GL.Enable(EnableCap.Texture2D);
             GL.Enable(EnableCap.Blend);
@@ -317,6 +320,9 @@ namespace TackEngine.Android {
             GL.DisableVertexAttribArray(posHandle);
             */
 
+        }
+
+        public override void PostRender() {
         }
 
         private OpenTK.Matrix4 GenerateModelMatrix(Vector2f position, Vector2f scale, float rotation) {

@@ -13,6 +13,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TackEngine.Android", "TackE
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GameApp.Android", "GameApp.Android\GameApp.Android.csproj", "{BED7A9BD-FB31-4475-8A36-8A01CFD67DA4}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Examples", "Examples", "{E821AEF7-3398-4859-8085-923707D5EBC7}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Desktop", "Desktop", "{98A735C4-AA4E-4C2F-B627-4FB0BD57E478}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Android", "Android", "{140AE64D-78DA-4CBE-BE24-6DAF73C9DBF8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -164,6 +170,12 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{1EE2E09F-C426-4761-9BA8-59BF8DBBE867} = {98A735C4-AA4E-4C2F-B627-4FB0BD57E478}
+		{BED7A9BD-FB31-4475-8A36-8A01CFD67DA4} = {140AE64D-78DA-4CBE-BE24-6DAF73C9DBF8}
+		{98A735C4-AA4E-4C2F-B627-4FB0BD57E478} = {E821AEF7-3398-4859-8085-923707D5EBC7}
+		{140AE64D-78DA-4CBE-BE24-6DAF73C9DBF8} = {E821AEF7-3398-4859-8085-923707D5EBC7}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {05705CA4-06E7-4242-813C-B54AAB60208E}

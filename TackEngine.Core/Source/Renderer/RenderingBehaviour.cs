@@ -21,7 +21,11 @@ namespace TackEngine.Core.Renderer {
             TackConsole.EngineLog(TackConsole.LogType.Message, "Initialised a new RenderingBehaviour of type: " + childType.Name);
         }
 
+        public abstract void PreRender();
+
         public abstract void RenderToScreen(out int drawCallCount);
+
+        public abstract void PostRender();
 
         public void AddShader(BaseShader shader) {
             if (!shader.CompiledAndLinked) {
