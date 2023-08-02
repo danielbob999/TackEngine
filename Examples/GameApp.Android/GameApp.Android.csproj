@@ -48,6 +48,6 @@
     <AndroidNativeLibrary Include="libs\armeabi-v7a\freetype6.dll" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\TackEngine.Android\TackEngine.Android.csproj" />
+    <ProjectReference Include="..\..\TackEngine.Android\TackEngine.Android.csproj" />
   </ItemGroup>
 </Project>
