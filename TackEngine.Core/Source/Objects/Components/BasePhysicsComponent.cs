@@ -22,6 +22,14 @@ namespace TackEngine.Core.Objects.Components {
         private bool m_affectedByGravity;
         private bool m_isStatic;
 
+        public override bool Active {
+            get { return base.Active; }
+            set {
+                base.Active = value;
+                m_physicsBody.Enabled = value;
+            }
+        }
+
         /// <summary>
         /// Gets/Sets the mass of the physics body. If setting the mass, the value must be a number larger than 0 and smaller than Infinity
         /// </summary>

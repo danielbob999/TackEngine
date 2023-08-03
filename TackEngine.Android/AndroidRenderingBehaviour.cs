@@ -144,7 +144,7 @@ namespace TackEngine.Android {
 
             // Run the main draw loop
             for (int i = 0; i < sortedObjects.Count; i++) {
-                if (!sortedObjects[i].Active) {
+                if (!TackObject.IsActiveInHierarchy(sortedObjects[i])) {
                     continue;
                 }
 

@@ -18,6 +18,14 @@ namespace TackEngine.Core.Objects.Components {
         public float UpperLimit { get; set; }
         public bool LimitEnabled { get; set; }
 
+        public override bool Active {
+            get { return base.Active; }
+            set {
+                base.Active = value;
+                m_joint.Enabled = value;
+            }
+        }
+
         public RevoluteJointComponent() {
 
         }

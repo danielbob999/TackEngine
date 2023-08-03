@@ -10,14 +10,14 @@ namespace TackEngine.Core.Objects.Components
     public class TackComponent {
         private static int s_nextId = 0;
 
-        private bool m_active = true;
+        protected bool m_active = true;
         private string m_parentObjectHash;
         private int m_componentId;
 
         /// <summary>
         /// Is the component active on the TackObject
         /// </summary>
-        public bool Active { 
+        public virtual bool Active { 
             get { return m_active;  } 
             set { m_active = value; } 
         }

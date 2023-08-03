@@ -52,6 +52,10 @@ namespace TackEngine.Core.Objects {
             }
 
             foreach (KeyValuePair<string, TackObject> pair in m_tackObjects) {
+                if (!TackObject.IsActiveInHierarchy(pair.Value)) {
+                    continue;
+                }
+
                 Vector2f objPos = pair.Value.Position;
                 Vector2f objScale = pair.Value.Scale;
 
@@ -106,9 +110,11 @@ namespace TackEngine.Core.Objects {
             TackObject[] objects = GetAllTackObjects();
 
             for (int i = 0; i < objects.Length; i++) {
-                for (int c = 0; c < objects[i].GetAllComponents().Length; c++) {
-                    if (objects[i].GetAllComponents()[c].Active) {
-                        objects[i].GetAllComponents()[c].OnUpdate();
+                if (TackObject.IsActiveInHierarchy(objects[i])) {
+                    for (int c = 0; c < objects[i].GetAllComponents().Length; c++) {
+                        if (objects[i].GetAllComponents()[c].Active) {
+                            objects[i].GetAllComponents()[c].OnUpdate();
+                        }
                     }
                 }
             }
