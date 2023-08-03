@@ -17,9 +17,11 @@ namespace TackEngine.Core.Objects {
 
         private Dictionary<string, TackObject> m_tackObjects;
         private int m_nextHashIdNumber = 0;
+        private bool m_runComponentCallbacks = true;
 
-        public TackObjectManager() {
+        public TackObjectManager(bool runCompCallbacks = true) {
             Instance = this;
+            m_runComponentCallbacks = runCompCallbacks;
 
             m_tackObjects = new Dictionary<string, TackObject>();
         }
@@ -27,15 +29,19 @@ namespace TackEngine.Core.Objects {
         public void OnStart() {
             double startTime = EngineTimer.Instance.TotalRunTime;
 
-            RunTackObjectStartMethods();
+            if (m_runComponentCallbacks) {
+                RunTackObjectStartMethods();
+            }
 
             TackConsole.EngineLog(TackConsole.LogType.Message, "TackObjectManager started in " + (EngineTimer.Instance.TotalRunTime - startTime).ToString("0.000") + " seconds");
         }
 
         public void OnUpdate() {
-            TackProfiler.Instance.StartTimer("TackObject.Component.OnUpdate");
-            RunTackObjectUpdateMethods();
-            TackProfiler.Instance.StopTimer("TackObject.Component.OnUpdate");
+            if (m_runComponentCallbacks) {
+                TackProfiler.Instance.StartTimer("TackObject.Component.OnUpdate");
+                RunTackObjectUpdateMethods();
+                TackProfiler.Instance.StopTimer("TackObject.Component.OnUpdate");
+            }
 
             TackProfiler.Instance.StartTimer("TackObject.DetectMouse");
 
