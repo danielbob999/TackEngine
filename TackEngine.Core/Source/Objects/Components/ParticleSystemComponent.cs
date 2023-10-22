@@ -48,6 +48,8 @@ namespace TackEngine.Core.Objects.Components {
         /// </summary>
         public float ParticleRotation { get; set; }
 
+        public int ParticleRenderLayer { get; set; }
+
         public ParticleSystemComponent() {
             m_particles = new List<Particle>();
             m_behaviours = new List<ParticleBehaviour>();
@@ -95,7 +97,7 @@ namespace TackEngine.Core.Objects.Components {
 
                 if (m_timeSinceLastSpawn > timeBetweenSpawns) {
                     // Spawn particle
-                    Particle newParticle = new Particle(new Vector2f(), ParticleScale, ParticleRotation, ParticleTexture, ParticleColour);
+                    Particle newParticle = new Particle(GetParent().Position, ParticleScale, ParticleRotation, ParticleTexture, ParticleColour, ParticleRenderLayer);
                     m_behaviours.ForEach(behaviour => behaviour.Spawn(ref newParticle));
                     m_particles.Add(newParticle);
 
@@ -124,7 +126,7 @@ namespace TackEngine.Core.Objects.Components {
         /// <param name="count">The amount of m_particles to spawn</param>
         public void SpawnParticleBurst(int count) {
             for (int i = 0; i < count; i++) {
-                Particle newParticle = new Particle(new Vector2f(), ParticleScale, ParticleRotation, ParticleTexture, ParticleColour);
+                Particle newParticle = new Particle(GetParent().Position, ParticleScale, ParticleRotation, ParticleTexture, ParticleColour, ParticleRenderLayer);
                 m_behaviours.ForEach(behaviour => behaviour.Spawn(ref newParticle));
                 m_particles.Add(newParticle);
             }

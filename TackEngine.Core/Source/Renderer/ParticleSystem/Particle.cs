@@ -19,11 +19,12 @@ namespace TackEngine.Core.Renderer.ParticleSystem {
         public Main.Sprite Sprite { get; set; }
         public Colour4b Colour { get; set; }
         public float AliveTime { get; internal set; }
+        public int RenderLayer { get; set; }
 
         internal TackObject ConnectedObject { get; }
         internal SpriteRendererComponent RendererComponent { get; }
 
-        internal Particle(Vector2f pos, Vector2f scale, float rotation, Main.Sprite sprite, Colour4b colour) {
+        internal Particle(Vector2f pos, Vector2f scale, float rotation, Main.Sprite sprite, Colour4b colour, int renderLayer) {
             Id = s_nextId++;
 
             Position = pos;
@@ -33,6 +34,7 @@ namespace TackEngine.Core.Renderer.ParticleSystem {
             Colour = colour;
             AliveTime = 0;
             Scale = new Vector2f(10, 10);
+            RenderLayer = renderLayer;
 
             // Generate a TackObject
             ConnectedObject = TackObject.Create("particle", Position, Scale, Rotation);
@@ -41,7 +43,7 @@ namespace TackEngine.Core.Renderer.ParticleSystem {
             RendererComponent = new SpriteRendererComponent() {
                 Active = true,
                 Colour = Colour,
-                RenderLayer = 10,
+                RenderLayer = RenderLayer,
                 Sprite = Sprite,
             };
 
