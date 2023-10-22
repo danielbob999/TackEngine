@@ -38,11 +38,11 @@ namespace TackEngine.Core.GUI {
             BaseTackGUI.Instance.RegisterGUIObject(this);
         }
 
-        internal override void OnStart() {
+        public override void OnStart() {
 
         }
 
-        internal override void OnUpdate() {
+        public override void OnUpdate() {
             base.OnUpdate();
         }
 
@@ -64,7 +64,7 @@ namespace TackEngine.Core.GUI {
             }
         }
 
-        internal override void OnClose() {
+        public override void OnClose() {
             
         }
     }

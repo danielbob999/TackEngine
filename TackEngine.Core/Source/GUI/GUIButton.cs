@@ -112,11 +112,11 @@ namespace TackEngine.Core.GUI {
             BaseTackGUI.Instance.RegisterGUIObject(this);
         }
 
-        internal override void OnStart() {
+        public override void OnStart() {
             base.OnStart();
         }
 
-        internal override void OnUpdate() {
+        public override void OnUpdate() {
             base.OnUpdate();
         }
 
@@ -146,11 +146,11 @@ namespace TackEngine.Core.GUI {
             }
         }
 
-        internal override void OnClose() {
+        public override void OnClose() {
 
         }
 
-        internal override void OnMouseEvent(GUIMouseEventArgs args) {
+        public override void OnMouseEvent(GUIMouseEventArgs args) {
             base.OnMouseEvent(args);
 
             if (args.MouseButton == MouseButtonKey.Left && args.MouseAction == MouseButtonAction.Down) {
@@ -178,11 +178,11 @@ namespace TackEngine.Core.GUI {
             }
         }
 
-        internal override void OnFocusGained() {
+        public override void OnFocusGained() {
             base.OnFocusGained();
         }
 
-        internal override void OnFocusLost() {
+        public override void OnFocusLost() {
             base.OnFocusLost();
         }
     }

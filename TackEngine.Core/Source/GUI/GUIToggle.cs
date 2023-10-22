@@ -78,11 +78,11 @@ namespace TackEngine.Core.GUI {
             BaseTackGUI.Instance.RegisterGUIObject(this);
         }
 
-        internal override void OnStart() {
+        public override void OnStart() {
             
         }
 
-        internal override void OnUpdate() {
+        public override void OnUpdate() {
             base.OnUpdate();
 
             m_toggleBounds = new RectangleShape(Position.X + 1, Position.Y + 1, Size.Y - 2, Size.Y - 2);
@@ -105,11 +105,11 @@ namespace TackEngine.Core.GUI {
             BaseTackGUI.Instance.InternalTextArea(new RectangleShape(Position.X + m_toggleBounds.Width, Position.Y, Size.X, Size.Y), Text, style.ConvertToGUITextStyle(), Vector2f.Zero, maskData, -1);
         }
 
-        internal override void OnClose() {
+        public override void OnClose() {
             
         }
 
-        internal override void OnMouseEvent(GUIMouseEventArgs args) {
+        public override void OnMouseEvent(GUIMouseEventArgs args) {
             base.OnMouseEvent(args);
 
             if (args.MouseButton == MouseButtonKey.Left && args.MouseAction == MouseButtonAction.Up) {
@@ -127,7 +127,7 @@ namespace TackEngine.Core.GUI {
             }
         }
 
-        internal override void OnKeyboardEvent(GUIKeyboardEventArgs args) {
+        public override void OnKeyboardEvent(GUIKeyboardEventArgs args) {
             base.OnKeyboardEvent(args);
 
             if ((args.Key == KeyboardKey.Space || args.Key == KeyboardKey.Enter) && args.KeyAction == KeyboardKeyAction.Up){

@@ -131,11 +131,11 @@ namespace TackEngine.Core.GUI {
             BaseTackGUI.Instance.RegisterGUIObject(this);
         }
 
-        internal override void OnStart() {
+        public override void OnStart() {
 
         }
 
-        internal override void OnUpdate() {
+        public override void OnUpdate() {
             base.OnUpdate();
 
             if (IsWaitingForMouseUp(MouseButtonKey.Left)) {
@@ -199,11 +199,11 @@ namespace TackEngine.Core.GUI {
             }
         }
 
-        internal override void OnClose() {
+        public override void OnClose() {
 
         }
 
-        internal override void OnMouseEvent(GUIMouseEventArgs args) {
+        public override void OnMouseEvent(GUIMouseEventArgs args) {
             base.OnMouseEvent(args);
 
             if (args.MouseButton == MouseButtonKey.Left && args.MouseAction == MouseButtonAction.Down) {
@@ -240,7 +240,7 @@ namespace TackEngine.Core.GUI {
             }
         }
 
-        internal override void OnKeyboardEvent(GUIKeyboardEventArgs args) {
+        public override void OnKeyboardEvent(GUIKeyboardEventArgs args) {
             base.OnKeyboardEvent(args);
 
             if (args.Key == KeyboardKey.Left && args.KeyAction == KeyboardKeyAction.Up) {

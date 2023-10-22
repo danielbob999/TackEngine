@@ -32,11 +32,11 @@ namespace TackEngine.Core.GUI {
             BaseTackGUI.Instance.RegisterGUIObject(this);
         }
 
-        internal override void OnStart() {
+        public override void OnStart() {
 
         }
 
-        internal override void OnUpdate() {
+        public override void OnUpdate() {
             base.OnUpdate();
 
             m_verticalScrollBar.Size = new Vector2f(m_verticalScrollBar.Size.X, Size.Y);
@@ -79,7 +79,7 @@ namespace TackEngine.Core.GUI {
             }
         }
 
-        internal override void OnClose() {
+        public override void OnClose() {
             
         }
 

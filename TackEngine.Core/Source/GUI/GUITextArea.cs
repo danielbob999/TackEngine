@@ -72,11 +72,11 @@ namespace TackEngine.Core.GUI {
             BaseTackGUI.Instance.RegisterGUIObject(this);
         }
 
-        internal override void OnStart() {
+        public override void OnStart() {
             base.OnStart();
         }
 
-        internal override void OnUpdate() {
+        public override void OnUpdate() {
             base.OnUpdate();
 
             if (CanScroll) {
@@ -124,7 +124,7 @@ namespace TackEngine.Core.GUI {
             }
         }
 
-        internal override void OnMouseEvent(GUIMouseEventArgs args) {
+        public override void OnMouseEvent(GUIMouseEventArgs args) {
             base.OnMouseEvent(args);
 
             if (TackEngineInstance.Instance.Platform == TackEngineInstance.TackEnginePlatform.Android) {
@@ -139,7 +139,7 @@ namespace TackEngine.Core.GUI {
             }
         }
 
-        internal override void OnClose() {
+        public override void OnClose() {
             base.OnClose();
         }
     }

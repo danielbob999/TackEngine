@@ -96,13 +96,13 @@ namespace TackEngine.Core.GUI {
             BaseTackGUI.Instance.RegisterGUIObject(this);
         }
 
-        internal override void OnStart() {
+        public override void OnStart() {
             base.OnStart();
 
             TackInput.Instance.GUIInputRequired = true;
         }
 
-        internal override void OnUpdate() {
+        public override void OnUpdate() {
             base.OnUpdate();
 
             if (EngineTimer.Instance.TotalRunTime - m_timeAtLastCaretSwitch > 0.53f) {
@@ -159,23 +159,23 @@ namespace TackEngine.Core.GUI {
             }
         }
 
-        internal override void OnClose() {
+        public override void OnClose() {
             base.OnClose();
         }
 
-        internal override void OnFocusGained() {
+        public override void OnFocusGained() {
             base.OnFocusGained();
 
             TackInput.Instance.GUIInputRequired = true;
         }
 
-        internal override void OnFocusLost() {
+        public override void OnFocusLost() {
             base.OnFocusLost();
 
             TackInput.Instance.GUIInputRequired = false;
         }
 
-        internal override void OnKeyboardEvent(GUIKeyboardEventArgs args) {
+        public override void OnKeyboardEvent(GUIKeyboardEventArgs args) {
             base.OnKeyboardEvent(args);
 
             if (args.Key == KeyboardKey.Backspace && args.KeyAction == KeyboardKeyAction.Down) {

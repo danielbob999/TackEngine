@@ -66,7 +66,7 @@ namespace TackEngine.Core.GUI {
             BaseTackGUI.Instance.RegisterGUIObject(this);
         }
 
-        internal override void OnUpdate() {
+        public override void OnUpdate() {
             base.OnUpdate();
 
             if (IsWaitingForMouseUp(MouseButtonKey.Left)) {
@@ -83,7 +83,7 @@ namespace TackEngine.Core.GUI {
             }
         }
 
-        internal override void OnMouseEvent(GUIMouseEventArgs args) {
+        public override void OnMouseEvent(GUIMouseEventArgs args) {
             base.OnMouseEvent(args);
 
             Vector2f mousePos = TackInput.Instance.MousePosition.ToVector2f();
