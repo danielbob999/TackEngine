@@ -94,11 +94,11 @@ namespace TackEngine.Core.GUI {
             m_mouseDownWaitingForUp = new bool[12];
         }
 
-        internal virtual void OnStart() {
+        public virtual void OnStart() {
 
         }
 
-        internal virtual void OnUpdate() {
+        public virtual void OnUpdate() {
             RectangleShape shape = GetShapeWithMask();
 
             if (Physics.AABB.IsPointInAABB(new Physics.AABB(new Vector2f(shape.X, shape.Y + shape.Height), new Vector2f(shape.X + shape.Width, shape.Y)), TackEngine.Core.Input.TackInput.Instance.MousePosition.ToVector2f())) {
@@ -112,25 +112,25 @@ namespace TackEngine.Core.GUI {
             m_previousMaskData = maskData;
         }
 
-        internal virtual void OnClose() {
+        public virtual void OnClose() {
 
         }
 
-        internal virtual void OnMouseEvent(GUIMouseEventArgs args) {
+        public virtual void OnMouseEvent(GUIMouseEventArgs args) {
             if (args.MouseAction == Input.MouseButtonAction.Down) {
                 m_mouseDownWaitingForUp[(int)args.MouseButton] = true;
             }
         }
 
-        internal virtual void OnKeyboardEvent(GUIKeyboardEventArgs args) {
+        public virtual void OnKeyboardEvent(GUIKeyboardEventArgs args) {
 
         }
 
-        internal virtual void OnFocusGained() {
+        public virtual void OnFocusGained() {
             IsFocused = true;
         }
 
-        internal virtual void OnFocusLost() {
+        public virtual void OnFocusLost() {
             IsFocused = false;
         }
 
