@@ -92,6 +92,10 @@ namespace TackEngine.Desktop {
             GUIInstance.OnClose();
         }
 
+        public override void CallGUIObjectStartMethods() {
+            GUIInstance.CallGUIObjectStartMethods();
+        }
+
         public void PhysicsDebugDraw() {
             TackObject[] objs = TackObject.Get();
 

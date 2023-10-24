@@ -91,5 +91,9 @@ namespace TackEngine.Android {
 
             GUIInstance.OnClose();
         }
+
+        public override void CallGUIObjectStartMethods() {
+            GUIInstance.CallGUIObjectStartMethods();
+        }
     }
 }

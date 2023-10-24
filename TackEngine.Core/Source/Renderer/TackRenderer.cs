@@ -56,6 +56,8 @@ namespace TackEngine.Core.Renderer
 
         public abstract void OnClose();
 
+        public abstract void CallGUIObjectStartMethods();
+
         public void AddShader(BaseShader shader) {
             m_currentRenderer.AddShader(shader);
         }

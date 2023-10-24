@@ -122,6 +122,7 @@ namespace TackEngine.Desktop {
             onStartFunction();
 
             mTackObjectManager.OnStart();
+            mTackRender.CallGUIObjectStartMethods();
 
             while (GLFW.WindowShouldClose(WindowPtr) == false) {
                 loopWatch.Stop();

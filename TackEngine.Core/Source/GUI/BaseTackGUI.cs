@@ -263,6 +263,10 @@ namespace TackEngine.Core.GUI {
             m_guiObjectsToRemove.Clear();
         }
 
+        internal virtual void CallGUIObjectStartMethods() {
+
+        }
+
         internal abstract void InternalBox(RectangleShape rect, GUIBox.GUIBoxStyle style, GUIMaskData maskData);
         internal abstract void InternalBorder(RectangleShape objectBounds, GUIBorder border);
         internal abstract void InternalTextArea(RectangleShape rect, string text, GUITextArea.GUITextAreaStyle style, Vector2f scrollPosition, GUIMaskData maskData, int caretCharacterIndex);

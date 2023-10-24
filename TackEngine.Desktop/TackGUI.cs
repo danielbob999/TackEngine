@@ -772,6 +772,12 @@ namespace TackEngine.Core.GUI {
             return new Vector2f(largestCharX, char_y);
         }
 
+        internal override void CallGUIObjectStartMethods() {
+            for (int i = 0; i < m_guiObjects.Count; i++) {
+                m_guiObjects[i].OnStart();
+            }
+        }
+
         /*
         public static string InputField(RectangleShape rect, string textToRender, ref InputFieldStyle style) {
             if (style == null) {
