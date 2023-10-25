@@ -79,6 +79,7 @@ namespace TackEngine.Core.GUI {
         public bool IsFocused { get; private set; }
 
         public int RenderLayer { get; set; }
+        public bool IgnoreMouseEvents { get; set; }
 
         /// <summary>
         /// The name of this GUIObject. This does not have to be unique but can be used for identification
@@ -90,6 +91,7 @@ namespace TackEngine.Core.GUI {
 
             ChildObjects = new List<GUIObject>();
             RenderLayer = 1;
+            IgnoreMouseEvents = false;
             Active = true;
             m_mouseDownWaitingForUp = new bool[12];
         }

@@ -118,6 +118,8 @@ namespace TackEngine.Core.GUI {
                 // Loop through all gui objects and send the mouse event to it
                 int blankClickCount = 0;
 
+                List<GUIObject> clickedObjects = new List<GUIObject>();
+
                 for (int j = 0; j < m_guiObjects.Count; j++) {
                     if (!m_guiObjects[j].Active) {
                         blankClickCount++;
@@ -132,15 +134,22 @@ namespace TackEngine.Core.GUI {
                     RectangleShape shape = m_guiObjects[j].GetShapeWithMask();
 
                     if (Physics.AABB.IsPointInAABB(new Physics.AABB(new Vector2f(shape.X, shape.Y + shape.Height), new Vector2f(shape.X + shape.Width, shape.Y)), m_mouseEventQueue[i].Args.MousePosition.ToVector2f())) {
+                        /*
                         // If the action is down or held, only send the action if its inside a selectable area
                         m_guiObjects[j].OnMouseEvent(m_mouseEventQueue[i].Args);
 
                         if (m_mouseEventQueue[i].Args.MouseAction == MouseButtonAction.Up) {
                             FocusGUIObject(m_guiObjects[j]);
                         }
+                        */
+
+                        if (!m_guiObjects[j].IgnoreMouseEvents) {
+                            clickedObjects.Add(m_guiObjects[j]);
+                        }
 
                         MouseClickDetectedThisFrame = true;
                     } else {
+                        /*
                         // If we are here that means a mouse event has occured inside a GUIObject
                         if (m_mouseEventQueue[i].Args.MouseAction == MouseButtonAction.Up) {
                             m_guiObjects[j].OnMouseEvent(m_mouseEventQueue[i].Args);
@@ -153,8 +162,19 @@ namespace TackEngine.Core.GUI {
                                 FocusGUIObject(null);
                             }
                         }
+                        */
                     }
+                }
 
+                if (clickedObjects.Count > 0) {
+                    GUIObject obj = clickedObjects.OrderBy(o => o.RenderLayer).Last();
+                    obj.OnMouseEvent(m_mouseEventQueue[i].Args);
+
+                    if (m_mouseEventQueue[i].Args.MouseAction == MouseButtonAction.Up) {
+                        FocusGUIObject(obj);
+                    }
+                } else {
+                    FocusGUIObject(null);
                 }
             }
 
