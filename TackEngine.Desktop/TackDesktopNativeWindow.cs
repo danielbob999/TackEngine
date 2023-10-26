@@ -82,6 +82,7 @@ namespace TackEngine.Desktop {
             }
 
             Instance = this;
+
         }
 
         public unsafe void Run() {

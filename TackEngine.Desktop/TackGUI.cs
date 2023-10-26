@@ -229,10 +229,13 @@ namespace TackEngine.Core.GUI {
 
         internal override void OnGUIRender() {
             TackProfiler.Instance.StartTimer("TackGUI.Render");
-            for (int i = 0; i < m_guiObjects.Count; i++) {
-                if (m_guiObjects[i].ParentId == null) {
-                    if (m_guiObjects[i].Active) {
-                        m_guiObjects[i].OnRender(new GUIMaskData(new List<RectangleShape>()));
+
+            IEnumerable<GUIObject> sortedObjects = m_guiObjects.OrderBy(o => o.RenderLayer);
+
+            for (int i = 0; i < sortedObjects.Count(); i++) {
+                if (sortedObjects.ElementAt(i).ParentId == null) {
+                    if (sortedObjects.ElementAt(i).Active) {
+                        sortedObjects.ElementAt(i).OnRender(new GUIMaskData(new List<RectangleShape>()));
                     }
                 }
             }
