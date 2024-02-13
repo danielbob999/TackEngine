@@ -64,6 +64,19 @@ namespace TackEngine.Core.GUI {
             }
         }
 
+        public enum InputFieldType {
+            Text,
+            WholeNumber,
+            DecimalNumber,
+            Custom
+        }
+
+        public class CustomInputFieldTypeValidator {
+            public virtual bool CheckValidation(string text, KeyboardKey key) {
+                return true;
+            }
+        }
+
         private bool m_showCaret;
         private float m_timeAtLastCaretSwitch;
         private bool m_backspacePressedDown;    // Indicates whether the backspace button has been pressed down but not released yet
@@ -78,6 +91,8 @@ namespace TackEngine.Core.GUI {
         public int SelectionLength { get; set; }
         public GUIInputFieldStyle NormalStyle { get; set; }
         public Input.KeyboardKey SubmitKey { get; set; }
+        public InputFieldType FieldType { get; set; }
+        public CustomInputFieldTypeValidator CustomFieldTypeValidator { get; set; }
 
         public event EventHandler OnSubmittedEvent;
         public event EventHandler OnTextChangedEvent;
@@ -87,6 +102,7 @@ namespace TackEngine.Core.GUI {
             PlaceholderText = "GUIInputField";
             m_showCaret = false;
             SubmitKey = KeyboardKey.Enter;
+            FieldType = InputFieldType.Text;
 
             Position = new Vector2f(5, 5);
             Size = new Vector2f(300, 300);
@@ -214,48 +230,60 @@ namespace TackEngine.Core.GUI {
                     } else if (args.Key == KeyboardKey.Delete) {
                         DeleteCharacter();
                     } else if (args.Key == KeyboardKey.Space) {
-                        Text = Text.Insert((int)SelectionStart, " ");
+                        if (DoesInputPassValidation(args.Key)) {
+                            Text = Text.Insert((int)SelectionStart, " ");
 
-                        if (SelectionStart < Text.Length) {
-                            SelectionStart += 1;
+                            if (SelectionStart < Text.Length) {
+                                SelectionStart += 1;
+                            }
                         }
                     } else if (args.Key == KeyboardKey.Period) {
-                        Text = Text.Insert((int)SelectionStart, ".");
+                        if (DoesInputPassValidation(args.Key)) {
+                            Text = Text.Insert((int)SelectionStart, ".");
 
-                        if (SelectionStart < Text.Length) {
-                            SelectionStart += 1;
+                            if (SelectionStart < Text.Length) {
+                                SelectionStart += 1;
+                            }
                         }
                     } else if (args.Key == KeyboardKey.Apostrophe) {
-                        Text = Text.Insert((int)SelectionStart, "\"");
+                        if (DoesInputPassValidation(args.Key)) {
+                            Text = Text.Insert((int)SelectionStart, "\"");
 
-                        if (SelectionStart < Text.Length) {
-                            SelectionStart += 1;
+                            if (SelectionStart < Text.Length) {
+                                SelectionStart += 1;
+                            }
                         }
                     } else if (args.Key == KeyboardKey.Minus) {
-                        if (TackInput.Instance.InputBufferShift) {
-                            Text = Text.Insert((int)SelectionStart, "_");
-                        } else {
-                            Text = Text.Insert((int)SelectionStart, "-");
-                        }
+                        if (DoesInputPassValidation(args.Key, TackInput.Instance.InputBufferShift)) {
+                            if (TackInput.Instance.InputBufferShift) {
+                                Text = Text.Insert((int)SelectionStart, "_");
+                            } else {
+                                Text = Text.Insert((int)SelectionStart, "-");
+                            }
 
-                        if (SelectionStart < Text.Length) {
-                            SelectionStart += 1;
+                            if (SelectionStart < Text.Length) {
+                                SelectionStart += 1;
+                            }
                         }
                     } else if (args.Key >= KeyboardKey.D0 && args.Key <= KeyboardKey.D9) {
-                        Text = Text.Insert((int)SelectionStart, ((char)((int)args.Key + 0)).ToString());
+                        if (DoesInputPassValidation(args.Key)) {
+                            Text = Text.Insert((int)SelectionStart, ((char)((int)args.Key + 0)).ToString());
 
-                        if (SelectionStart < Text.Length) {
-                            SelectionStart += 1;
+                            if (SelectionStart < Text.Length) {
+                                SelectionStart += 1;
+                            }
                         }
                     } else if (args.Key >= KeyboardKey.A && args.Key <= KeyboardKey.Z) {
-                        if (TackInput.Instance.InputBufferCapsLock || TackInput.Instance.InputBufferShift) {
-                            Text = Text.Insert((int)SelectionStart, ((char)((int)args.Key + 0)).ToString());
-                        } else {
-                            Text = Text.Insert((int)SelectionStart, ((char)((int)args.Key + 32)).ToString());
-                        }
+                        if (DoesInputPassValidation(args.Key)) {
+                            if (TackInput.Instance.InputBufferCapsLock || TackInput.Instance.InputBufferShift) {
+                                Text = Text.Insert((int)SelectionStart, ((char)((int)args.Key + 0)).ToString());
+                            } else {
+                                Text = Text.Insert((int)SelectionStart, ((char)((int)args.Key + 32)).ToString());
+                            }
 
-                        if (SelectionStart < Text.Length) {
-                            SelectionStart += 1;
+                            if (SelectionStart < Text.Length) {
+                                SelectionStart += 1;
+                            }
                         }
                     }
 
@@ -286,6 +314,41 @@ namespace TackEngine.Core.GUI {
         private void DeleteCharacter() {
             if (SelectionStart < Text.Length) {
                 Text = Text.Remove((int)SelectionStart, 1);
+            }
+        }
+
+        private bool DoesInputPassValidation(KeyboardKey key, bool shiftDown = false) {
+            switch (FieldType) {
+                case InputFieldType.Text:
+                    return true;
+                case InputFieldType.WholeNumber:
+                    if (key >= KeyboardKey.D0 && key <= KeyboardKey.D9) {
+                        return true;
+                    }
+
+                    if (key == KeyboardKey.Minus && !shiftDown && SelectionStart == 0) {
+                        return true;
+                    }
+
+                    return false;
+                case InputFieldType.DecimalNumber:
+                    if (key >= KeyboardKey.D0 && key <= KeyboardKey.D9) {
+                        return true;
+                    }
+
+                    if ((key == KeyboardKey.KeyPadDecimal || key == KeyboardKey.Period) && !Text.Contains('.')) {
+                        return true;
+                    }
+
+                    if (key == KeyboardKey.Minus && !shiftDown && SelectionStart == 0) {
+                        return true;
+                    }
+
+                    return false;
+                case InputFieldType.Custom:
+                    return CustomFieldTypeValidator.CheckValidation(Text, key);
+                default:
+                    return true;
             }
         }
     }
