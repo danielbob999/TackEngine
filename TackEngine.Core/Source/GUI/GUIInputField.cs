@@ -178,15 +178,15 @@ namespace TackEngine.Core.GUI {
         internal override void OnKeyboardEvent(GUIKeyboardEventArgs args) {
             base.OnKeyboardEvent(args);
 
-            if (args.Key == KeyboardKey.Backspace && args.KeyAction == KeyboardKeyAction.Down) {
-                m_backspacePressedDown = true;
-                m_backspacePressedTime = EngineTimer.Instance.TotalRunTime;
+            if (args.Key == KeyboardKey.Backspace && args.KeyAction == KeyboardKeyAction.Up) {
+                m_holdingBackspace = false;
+                m_backspacePressedDown = false;
             }
 
             string oldText = Text;
 
             if (IsFocused) {
-                if (args.KeyAction == KeyboardKeyAction.Up) {
+                if (args.KeyAction == KeyboardKeyAction.Down) {
                     if (args.Key == SubmitKey) {
                         if (OnSubmittedEvent != null) {
                             if (OnSubmittedEvent.GetInvocationList().Length > 0) {
@@ -207,12 +207,10 @@ namespace TackEngine.Core.GUI {
                     } else if (args.Key == KeyboardKey.Down) {
 
                     } else if (args.Key == KeyboardKey.Backspace) {
-                        if (!m_holdingBackspace) {
-                            BackspaceCharacter();
-                        }
+                        BackspaceCharacter();
 
-                        m_holdingBackspace = false;
-                        m_backspacePressedDown = false;
+                        m_backspacePressedDown = true;
+                        m_backspacePressedTime = EngineTimer.Instance.TotalRunTime;
                     } else if (args.Key == KeyboardKey.Delete) {
                         DeleteCharacter();
                     } else if (args.Key == KeyboardKey.Space) {
@@ -244,7 +242,7 @@ namespace TackEngine.Core.GUI {
                             SelectionStart += 1;
                         }
                     } else if (args.Key >= KeyboardKey.D0 && args.Key <= KeyboardKey.D9) {
-                        Text = Text.Insert((int)SelectionStart, ((char)((int)args.Key - 61)).ToString());
+                        Text = Text.Insert((int)SelectionStart, ((char)((int)args.Key + 0)).ToString());
 
                         if (SelectionStart < Text.Length) {
                             SelectionStart += 1;
