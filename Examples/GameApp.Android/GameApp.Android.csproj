@@ -1,0 +1,53 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net7.0-android</TargetFramework>
+    <SupportedOSPlatformVersion>21</SupportedOSPlatformVersion>
+    <OutputType>Exe</OutputType>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <ApplicationId>com.companyname.GameApp.Android</ApplicationId>
+    <ApplicationVersion>1</ApplicationVersion>
+    <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <AndroidUseAapt2>True</AndroidUseAapt2>
+    <AndroidCreatePackagePerAbi>False</AndroidCreatePackagePerAbi>
+    <AndroidPackageFormat>apk</AndroidPackageFormat>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <AndroidPackageFormat>apk</AndroidPackageFormat>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Remove="Assets\tackresources\fonts\CourierPrime\CourierPrime-Bold.ttf" />
+    <None Remove="Assets\tackresources\fonts\CourierPrime\CourierPrime-BoldItalic.ttf" />
+    <None Remove="Assets\tackresources\fonts\CourierPrime\CourierPrime-Italic.ttf" />
+    <None Remove="Assets\tackresources\fonts\CourierPrime\CourierPrime-Regular.ttf" />
+    <None Remove="Assets\tackresources\fonts\JosefinSans-BoldItalic.ttf" />
+    <None Remove="Assets\tackresources\fonts\Roboto\Roboto-Bold.ttf" />
+    <None Remove="Assets\tackresources\fonts\Roboto\Roboto-BoldItalic.ttf" />
+    <None Remove="Assets\tackresources\fonts\Roboto\Roboto-Italic.ttf" />
+    <None Remove="Assets\tackresources\fonts\Roboto\Roboto-Regular.ttf" />
+    <None Remove="Assets\tackresources\shaders\gui\default_gui_vertex_shader.vs" />
+    <None Remove="Assets\tackresources\shaders\gui\new\gui_vertex_shader.vs" />
+    <None Remove="Assets\tackresources\shaders\gui\text\text_vertex_shader.vs" />
+    <None Remove="Assets\tackresources\shaders\world\batch_world_vertex_shader.vs" />
+    <None Remove="Assets\tackresources\shaders\world\default_world_vertex_shader.vs" />
+    <None Remove="Assets\tackresources\shaders\world\instance\instance_world_vertex_shader.vs" />
+    <None Remove="Assets\tackresources\shaders\world\opti\opti_world_vertex_shader.vs" />
+    <None Remove="Assets\tackresources\shaders\world\opti\opti_world_vertex_shader_lit.vs" />
+    <None Remove="Assets\tackresources\sprites\tackengine_logo.png" />
+    <None Remove="Assets\tackresources\sprites\ui\ui_panel.png" />
+    <None Remove="freetype6.dll" />
+    <None Remove="libs\armeabi-v7a\freetype.a" />
+    <None Remove="libs\armeabi-v7a\freetype6.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidNativeLibrary Include="libs\armeabi-v7a\freetype.a">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </AndroidNativeLibrary>
+    <AndroidNativeLibrary Include="libs\armeabi-v7a\freetype6.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\TackEngine.Android\TackEngine.Android.csproj" />
+  </ItemGroup>
+</Project>
