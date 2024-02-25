@@ -36,10 +36,18 @@ namespace TackEngine.Core.Objects.Components
             Active = true;
         }
 
+        /// <summary>
+        /// Called at the start of the TackObject lifecycle.
+        /// This can either be during the next frame from when the TackObject is created OR
+        /// at the start of the game engine
+        /// </summary>
         public virtual void OnStart() {
 
         }
 
+        /// <summary>
+        /// Called every frame
+        /// </summary>
         public virtual void OnUpdate() {
 
         }
