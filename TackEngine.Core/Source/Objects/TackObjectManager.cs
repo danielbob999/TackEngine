@@ -16,7 +16,6 @@ namespace TackEngine.Core.Objects {
         public static TackObjectManager Instance;
 
         private Dictionary<string, TackObject> m_tackObjects;
-        private List<TackObject> m_tackObjectQueue;
         private int m_nextHashIdNumber = 0;
         private bool m_runComponentCallbacks = true;
 
@@ -25,19 +24,10 @@ namespace TackEngine.Core.Objects {
             m_runComponentCallbacks = runCompCallbacks;
 
             m_tackObjects = new Dictionary<string, TackObject>();
-            m_tackObjectQueue = new List<TackObject>();
         }
 
         public void OnStart() {
             double startTime = EngineTimer.Instance.TotalRunTime;
-
-            // Move all objects from the add queue to the final tackobject dictionary
-            foreach (TackObject to in m_tackObjectQueue) {
-                m_tackObjects.Add(to.Hash, to);
-            }
-
-            // Clear the queue
-            m_tackObjectQueue.Clear();
 
             if (m_runComponentCallbacks) {
                 RunTackObjectStartMethods();
@@ -52,10 +42,6 @@ namespace TackEngine.Core.Objects {
                 RunTackObjectUpdateMethods();
                 TackProfiler.Instance.StopTimer("TackObject.Component.OnUpdate");
             }
-
-            TackProfiler.Instance.StartTimer("TackObject.CleanAddQueue");
-            AddTackObjectsFromQueue();
-            TackProfiler.Instance.StopTimer("TackObject.CleanAddQueue");
 
             TackProfiler.Instance.StartTimer("TackObject.DetectMouse");
 
@@ -108,43 +94,44 @@ namespace TackEngine.Core.Objects {
         }
 
         private void RunTackObjectStartMethods() {
-            foreach (KeyValuePair<string, TackObject> pair in m_tackObjects) {
-                TackComponent[] components = pair.Value.GetAllComponents();
+            TackObject[] objList = m_tackObjects.Values.ToArray();
+
+            foreach (TackObject tobj in objList) {
+                TackComponent[] components = tobj.GetAllComponents();
 
                 for (int c = 0; c < components.Length; c++) {
                     if (TackObject.IsComponentActiveInHierarchy(components[c])) {
                        components[c].OnStart();
                     }
                 }
+
+                tobj.InternalState = TackObject.TackObjectState.Looping;
             }
         }
 
         private void RunTackObjectUpdateMethods() {
-            foreach (KeyValuePair<string, TackObject> pair in m_tackObjects) {
-                TackComponent[] components = pair.Value.GetAllComponents();
+            TackObject[] objList = m_tackObjects.Values.ToArray();
 
-                for (int c = 0; c < components.Length; c++) {
-                    if (TackObject.IsComponentActiveInHierarchy(components[c])) {
-                        components[c].OnUpdate();
+            foreach (TackObject tobj in objList) {
+                if (tobj != null) {
+                    TackComponent[] components = tobj.GetAllComponents();
+
+                    for (int c = 0; c < components.Length; c++) {
+                        if (components[c] != null) {
+                            if (TackObject.IsComponentActiveInHierarchy(components[c])) {
+                                if (tobj.InternalState == TackObject.TackObjectState.Initialised) {
+                                    components[c].OnStart();
+                                } else {
+                                    components[c].OnUpdate();
+                                }
+                            }
+                        }
+                    }
+
+                    if (tobj.InternalState == TackObject.TackObjectState.Initialised) {
+                        tobj.InternalState = TackObject.TackObjectState.Looping;
                     }
                 }
-            }
-        }
-
-        private void AddTackObjectsFromQueue() {
-            TackObject[] tempQueue = m_tackObjectQueue.ToArray();
-
-            foreach (TackObject to in tempQueue) {
-                TackComponent[] components = to.GetAllComponents();
-
-                for (int c = 0; c < components.Length; c++) {
-                    if (TackObject.IsComponentActiveInHierarchy(components[c])) {
-                        components[c].OnStart();
-                    }
-                }
-
-                m_tackObjects.Add(to.Hash, to);
-                m_tackObjectQueue.Remove(to);
             }
         }
 
@@ -171,7 +158,7 @@ namespace TackEngine.Core.Objects {
         }
 
         internal void RegisterTackObject(TackObject obj) {
-            m_tackObjectQueue.Add(obj);
+            m_tackObjects.Add(obj.Hash, obj);
         }
 
         internal void DeregisterTackObject(TackObject obj) {

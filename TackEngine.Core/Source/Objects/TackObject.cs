@@ -15,6 +15,11 @@ namespace TackEngine.Core.Objects {
     /// The main class used by the TackEngine.Core to represent and object
     /// </summary>
     public class TackObject {
+        internal enum TackObjectState {
+            Initialised,
+            Looping
+        }
+
         private Vector2f m_scale;
         private float m_rotation;
 
@@ -137,6 +142,8 @@ namespace TackEngine.Core.Objects {
         /// Gets the parent TackObject of this object
         /// </summary>
         public TackObject Parent { get { return TackObjectManager.Instance.GetByHash(m_parentHash); } }
+
+        internal TackObjectState InternalState { get; set; } = TackObjectState.Initialised;
 
         // CONSTRUCTORS
 
