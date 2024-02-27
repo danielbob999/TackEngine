@@ -26,7 +26,10 @@ namespace TackEngine.Core.Objects.Components {
             get { return base.Active; }
             set {
                 base.Active = value;
-                m_physicsBody.Enabled = value;
+
+                if (m_physicsBody != null) {
+                    m_physicsBody.Enabled = value;
+                }
             }
         }
 
