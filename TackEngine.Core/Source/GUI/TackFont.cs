@@ -80,7 +80,7 @@ namespace TackEngine.Core.GUI {
 		public static Vector2f GetFontCharacterScaledSize(Vector2f originalSize, float fontSize) {
 			float widthToHeightRatio = originalSize.X / originalSize.Y;	// After deciding on a height, we can get the width using this
 
-			float baseSize = 14;
+			float baseSize = 35;
 			float deltaToBase = fontSize - baseSize;
 			float newHeight = TackMath.Clamp(originalSize.Y + deltaToBase, 0, float.PositiveInfinity);
 
