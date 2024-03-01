@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TackEngine.Android.Audio;
 using TackEngine.Core.Engine;
 using TackEngine.Core.Input;
 using TackEngine.Core.Main;
@@ -58,6 +59,9 @@ namespace TackEngine.Android {
             TackEngineActivity.Instance.m_debugLineRenderer = new AndroidDebugLineRenderer();
             TackEngineActivity.Instance.m_debugLineRenderer.OnStart();
 
+            TackEngineActivity.Instance.m_audioManager = new AndroidAudioManagerImpl();
+            TackEngineActivity.Instance.m_audioManager.OnStart();
+
             //OnEngineStart();
             TackEngineActivity.Instance.onStartFunction();
 
@@ -84,6 +88,7 @@ namespace TackEngine.Android {
             TackEngineActivity.Instance.mTackPhysics.Update();      // If issues arise, try running this below RunTackObjectUpdateMethods()
             TackEngineActivity.Instance.mTackObjectManager.OnUpdate();
             TackEngineActivity.Instance.mTackLightingSystem.OnUpdate();
+            TackEngineActivity.Instance.m_audioManager.OnUpdate();
 
             TackEngineActivity.Instance.mTackConsole.OnUpdate();
             TackEngineActivity.Instance.mTackRender.OnUpdate();

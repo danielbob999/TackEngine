@@ -19,6 +19,8 @@ using OpenTK.Input;
 using System.Diagnostics;
 using OpenTK.Graphics.OpenGL;
 using TackEngine.Desktop;
+using TackEngine.Core.Audio;
+using TackEngine.Desktop.Audio;
 
 namespace TackEngine.Desktop {
     public class TackDesktopNativeWindow : NativeWindow, IBaseTackWindow {
@@ -44,6 +46,7 @@ namespace TackEngine.Desktop {
         private TackInput m_tackInput;
         private DesktopSpriteManager m_spriteManager;
         private DebugLineRenderer m_debugLineRenderer;
+        private AudioManager m_audioManager;
 
         private EngineDelegates.OnStart onStartFunction;
         private EngineDelegates.OnUpdate onUpdateFunction;
@@ -119,6 +122,9 @@ namespace TackEngine.Desktop {
             m_debugLineRenderer = new DesktopDebugLineRenderer();
             m_debugLineRenderer.OnStart();
 
+            m_audioManager = new DesktopAudioManagerImpl();
+            m_audioManager.OnStart();
+
             onStartFunction();
 
             mTackObjectManager.OnStart();
@@ -145,6 +151,7 @@ namespace TackEngine.Desktop {
                 mTackPhysics.Update();      // If issues arise, try running this below RunTackObjectUpdateMethods()
                 mTackObjectManager.OnUpdate();
                 mTackLightingSystem.OnUpdate();
+                m_audioManager.OnUpdate();
 
                 mTackConsole.OnUpdate();
                 mTackRender.OnUpdate();
@@ -186,6 +193,7 @@ namespace TackEngine.Desktop {
             onCloseFunction();
 
             mTackPhysics.Close();
+            m_audioManager.OnClose();
 
             m_tackProfiler.OnClose();
             m_spriteManager.OnClose();

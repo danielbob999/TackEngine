@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using TackEngine.Core.Audio;
 using TackEngine.Core.Engine;
 using TackEngine.Core.GUI;
 using TackEngine.Core.Input;
@@ -39,6 +40,7 @@ namespace TackEngine.Android {
         internal TackInput m_tackInput;
         internal AndroidSpriteManager m_spriteManager;
         internal DebugLineRenderer m_debugLineRenderer;
+        internal AudioManager m_audioManager;
 
         internal TackEngine.Core.Engine.EngineDelegates.OnStart onStartFunction;
         internal TackEngine.Core.Engine.EngineDelegates.OnStart onUpdateFunction;
