@@ -20,6 +20,7 @@ namespace TackEngine.Core.Objects.Components
                 if (s_mainCamera == null) {
                     // Create an object
                     TackObject camObject = TackObject.Create("Camera", new Vector2f(0, 0), new Vector2f(0, 0), 0);
+                    camObject.SetDoNotDestroyBetweenScenes();
 
                     Camera newCamera = new Camera();
 

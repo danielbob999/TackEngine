@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 using TackEngine.Core.Main;
 using TackEngine.Core.GUI.Events;
+using TackEngine.Core.SceneManagement;
 
 namespace TackEngine.Core.GUI {
     public class GUIObject {
@@ -26,6 +27,7 @@ namespace TackEngine.Core.GUI {
 
         internal int Id { get; private set; }
         internal int? ParentId { get { return m_parentId; } }
+        internal Type LinkedSceneType { get; set; }
 
         public List<GUIObject> ChildObjects { get; private set; }
 
@@ -92,6 +94,10 @@ namespace TackEngine.Core.GUI {
             RenderLayer = 1;
             Active = true;
             m_mouseDownWaitingForUp = new bool[12];
+            
+            if (SceneManager.Instance.CurrentScene != null) {
+                LinkedSceneType = SceneManager.Instance.CurrentScene.GetType();
+            }
         }
 
         internal virtual void OnStart() {

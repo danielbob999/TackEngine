@@ -10,6 +10,7 @@ using TackEngine.Core.Main;
 using TackEngine.Core.Engine;
 using TackEngine.Core.Renderer;
 using TackEngine.Core.Objects.Components;
+using TackEngine.Core.SceneManagement;
 
 namespace TackEngine.Core.Objects {
     internal class TackObjectManager {
@@ -158,6 +159,10 @@ namespace TackEngine.Core.Objects {
         }
 
         internal void RegisterTackObject(TackObject obj) {
+            if (SceneManager.Instance.CurrentScene != null) {
+                obj.LinkedSceneType = SceneManager.Instance.CurrentScene.GetType();
+            }
+
             m_tackObjects.Add(obj.Hash, obj);
         }
 
@@ -216,6 +221,20 @@ namespace TackEngine.Core.Objects {
             m_nextHashIdNumber++;
 
             return hashNum.ToString("0000000000000000");
+        }
+
+        internal void DeregisterAllObjectsOfSceneType(Type type) {
+            List<TackObject> objectsToDeregister = new List<TackObject>();
+
+            foreach (KeyValuePair<string, TackObject> pair in m_tackObjects) {
+                if (pair.Value.LinkedSceneType == SceneManager.Instance.CurrentScene.GetType() && string.IsNullOrEmpty(pair.Value.InternalParentHash)) {
+                    objectsToDeregister.Add(pair.Value);
+                }
+            }
+
+            for (int i = 0; i < objectsToDeregister.Count; i++) {
+                DeregisterTackObject(objectsToDeregister[i]);
+            }
         }
     }
 }

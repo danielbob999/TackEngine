@@ -145,6 +145,10 @@ namespace TackEngine.Core.Objects {
 
         internal TackObjectState InternalState { get; set; } = TackObjectState.Initialised;
 
+        internal System.Type LinkedSceneType { get; set; }
+
+        internal string InternalParentHash { get { return m_parentHash; } }
+
         // CONSTRUCTORS
 
         internal TackObject(string name, Vector2f position, Vector2f scale, float rotation) {
@@ -417,6 +421,10 @@ namespace TackEngine.Core.Objects {
             }
 
             return true;
+        }
+
+        public void SetDoNotDestroyBetweenScenes() {
+            LinkedSceneType = null;
         }
     }
 }

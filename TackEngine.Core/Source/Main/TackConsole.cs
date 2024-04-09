@@ -104,6 +104,7 @@ namespace TackEngine.Core.Main {
                 m_consoleInputField.Active = m_consoleGUIActive;
                 m_consoleInputField.Text = "";
                 m_consoleInputField.NormalStyle.VerticalAlignment = VerticalAlignment.Middle;
+                m_consoleInputField.LinkedSceneType = null;
 
                 m_consoleTextArea = new GUITextArea();
                 m_consoleTextArea.Position = new Vector2f(0, 0);
@@ -118,6 +119,7 @@ namespace TackEngine.Core.Main {
                 };
                 m_consoleTextArea.Active = m_consoleGUIActive;
                 m_consoleTextArea.CanScroll = true;
+                m_consoleTextArea.LinkedSceneType = null;
 
                 m_consoleGUIActive = false;
             }

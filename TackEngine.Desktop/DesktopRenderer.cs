@@ -30,6 +30,7 @@ namespace TackEngine.Desktop {
             m_fpsCounterTextArea = new GUITextArea();
             m_fpsCounterTextArea.Position = new Vector2f(Camera.MainCamera.RenderTarget.Width - 150, 5);
             m_fpsCounterTextArea.Size = new Vector2f(145, 53);
+            m_fpsCounterTextArea.LinkedSceneType = null;
 
             GUITextArea.GUITextAreaStyle style = new GUITextArea.GUITextAreaStyle() {
                 Border = null,

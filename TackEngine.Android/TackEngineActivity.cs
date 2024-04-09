@@ -42,20 +42,12 @@ namespace TackEngine.Android {
         internal DebugLineRenderer m_debugLineRenderer;
         internal AudioManager m_audioManager;
 
-        internal TackEngine.Core.Engine.EngineDelegates.OnStart onStartFunction;
-        internal TackEngine.Core.Engine.EngineDelegates.OnStart onUpdateFunction;
-        internal TackEngine.Core.Engine.EngineDelegates.OnStart onCloseFunction;
-
         private MySurfaceView m_glView;
         public ulong m_currentUpdateLoopIndex;
         public ulong m_currentRenderLoopIndex;
 
         protected override void OnCreate(Bundle savedInstanceState) {
             base.OnCreate(savedInstanceState);
-
-            onStartFunction = OnEngineStart;
-            onUpdateFunction = OnEngineUpdate;
-            onCloseFunction = OnEngineClose;
 
             mTackConsole = new TackConsole();
 
@@ -66,7 +58,7 @@ namespace TackEngine.Android {
             AndroidContext.CurrentContext = this;
             AndroidContext.CurrentAssetManager = Assets;
 
-            TackEngine.Core.Engine.TackEngineInstance.Initialise(this, new TackEngineInstance.InitalisationSettings(), TackEngineInstance.TackEnginePlatform.Android);
+            TackEngine.Core.Engine.TackEngineInstance.Initialise(this, GetInitalisationSettings(), TackEngineInstance.TackEnginePlatform.Android);
 
             m_glView = new MySurfaceView(this);
 
@@ -128,16 +120,8 @@ namespace TackEngine.Android {
             }
         }
 
-        public virtual void OnEngineStart() {
-            
-
-        }
-
-        public virtual void OnEngineUpdate() {
-        }
-
-        public virtual void OnEngineClose() {
-
+        public virtual TackEngineInstance.InitalisationSettings GetInitalisationSettings() {
+            return new TackEngineInstance.InitalisationSettings();
         }
     }
 }

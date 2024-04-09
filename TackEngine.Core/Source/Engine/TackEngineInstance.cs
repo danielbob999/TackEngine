@@ -75,6 +75,8 @@ namespace TackEngine.Core.Engine
             /// </summary>
             public int MSAASampleCount { get; set; }
 
+            public List<Type> SceneTypes { get; set; }
+
             public InitalisationSettings() {
                 WindowSize = new Vector2i(800, 600);
                 WindowLocation = new Vector2i(0, 0);
@@ -84,6 +86,7 @@ namespace TackEngine.Core.Engine
                 TargetUpdateRenderFrequency = 60;
                 VSync = true;
                 MSAASampleCount = 16;
+                SceneTypes = null;
             }
         }
 
@@ -93,6 +96,7 @@ namespace TackEngine.Core.Engine
         public IBaseTackWindow Window { get; private set; }
         public TackEnginePlatform Platform { get; private set; }
         public InitalisationSettings Settings { get; private set; }
+        internal SceneManagement.SceneManager SceneManager { get; private set; }
 
         public TackEngineInstance() { }
 
@@ -103,7 +107,9 @@ namespace TackEngine.Core.Engine
 
             Instance.Platform = platform;
 
-            Instance.Settings = settings;          
+            Instance.Settings = settings;
+
+            Instance.SceneManager = new SceneManagement.SceneManager(settings.SceneTypes);
 
             TackConsole.EngineLog(TackConsole.LogType.Message, "Starting TackEngine.");
             TackConsole.EngineLog(TackConsole.LogType.Message, string.Format("EngineVersion: {0}", GetEngineVersion().ToString()));

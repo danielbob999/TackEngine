@@ -21,6 +21,7 @@ using OpenTK.Graphics.OpenGL;
 using TackEngine.Desktop;
 using TackEngine.Core.Audio;
 using TackEngine.Desktop.Audio;
+using TackEngine.Core.SceneManagement;
 
 namespace TackEngine.Desktop {
     public class TackDesktopNativeWindow : NativeWindow, IBaseTackWindow {
@@ -48,13 +49,9 @@ namespace TackEngine.Desktop {
         private DebugLineRenderer m_debugLineRenderer;
         private AudioManager m_audioManager;
 
-        private EngineDelegates.OnStart onStartFunction;
-        private EngineDelegates.OnUpdate onUpdateFunction;
-        private EngineDelegates.OnClose onCloseFunction;
-
         private CancellationTokenSource m_cancelTokenSource;
 
-        public TackDesktopNativeWindow(TackEngine.Core.Engine.TackEngineInstance.InitalisationSettings settings, EngineDelegates.OnStart startFn, EngineDelegates.OnUpdate updateFn, EngineDelegates.OnClose closeFn)
+        public TackDesktopNativeWindow(TackEngine.Core.Engine.TackEngineInstance.InitalisationSettings settings)
             : base(new NativeWindowSettings() { Size = new OpenTK.Mathematics.Vector2i(settings.WindowSize.X, settings.WindowSize.Y) , NumberOfSamples = settings.MSAASampleCount, Title = settings.WindowTitle, WindowBorder = (OpenTK.Windowing.Common.WindowBorder)settings.WindowBorder, WindowState = (OpenTK.Windowing.Common.WindowState)settings.WindowState }) {
 
             // We must initialise a TackConsole instance before doing anything
@@ -64,10 +61,6 @@ namespace TackEngine.Desktop {
 
             // Set all implementations
             TackFont.FontLoadingImplementation = new DesktopTackFontLoadingImpl();
-
-            onStartFunction = startFn;
-            onUpdateFunction = updateFn;
-            onCloseFunction = closeFn;
 
             m_currentUpdateLoopIndex = 0;
             m_currentRenderLoopIndex = 0;
@@ -125,7 +118,7 @@ namespace TackEngine.Desktop {
             m_audioManager = new DesktopAudioManagerImpl();
             m_audioManager.OnStart();
 
-            onStartFunction();
+            TackEngineInstance.Instance.SceneManager.LoadFirstScene();
 
             mTackObjectManager.OnStart();
 
@@ -141,10 +134,6 @@ namespace TackEngine.Desktop {
                  * Update
                  */
                 m_engineTimer.OnUpdate();
-
-                TackProfiler.Instance.StartTimer("UserUpdate");
-                onUpdateFunction();
-                TackProfiler.Instance.StopTimer("UserUpdate");
 
                 // All OnUpdate here
                 m_tackProfiler.OnUpdate();
@@ -189,8 +178,6 @@ namespace TackEngine.Desktop {
             }
 
             m_engineTimer.OnClose();
-
-            onCloseFunction();
 
             mTackPhysics.Close();
             m_audioManager.OnClose();

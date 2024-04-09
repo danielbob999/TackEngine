@@ -62,8 +62,7 @@ namespace TackEngine.Android {
             TackEngineActivity.Instance.m_audioManager = new AndroidAudioManagerImpl();
             TackEngineActivity.Instance.m_audioManager.OnStart();
 
-            //OnEngineStart();
-            TackEngineActivity.Instance.onStartFunction();
+            TackEngineInstance.Instance.SceneManager.LoadFirstScene();
 
             TackEngineActivity.Instance.mTackObjectManager.OnStart();
         }
@@ -78,10 +77,6 @@ namespace TackEngine.Android {
             // ----------
 
             TackEngineActivity.Instance.m_engineTimer.OnUpdate();
-
-            TackProfiler.Instance.StartTimer("UserUpdate");
-            TackEngineActivity.Instance.onUpdateFunction();
-            TackProfiler.Instance.StopTimer("UserUpdate");
 
             // All OnUpdate here
             TackEngineActivity.Instance.m_tackProfiler.OnUpdate();

@@ -231,6 +231,14 @@ namespace TackEngine.Core.GUI {
             }
         }
 
+        internal void DeregisterAllSceneLinkedGUIObjects() {
+            for (int i = 0; i < m_guiObjects.Count; i++) {
+                if (m_guiObjects[i].LinkedSceneType != null) {
+                    DeregisterGUIObject(m_guiObjects[i]);
+                }
+            }
+        }
+
         private void FocusGUIObject(GUIObject obj) {
             if (obj == null) {
                 for (int i = 0; i < m_guiObjects.Count; i++) {
