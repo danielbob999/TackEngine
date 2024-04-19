@@ -140,7 +140,7 @@ namespace TackEngine.Core.Renderer {
                 details = new ParsedShaderDetails() { m_supportsLighting = false, m_cameraInfoVarName = camInfoVariableName };
                 return true;
             } else {
-                TackConsole.EngineLog(TackConsole.LogType.Error, "Error: A vertex shader must define the CameraInfo struct and uniform variable");
+                TackConsole.EngineLog(TackConsole.LogType.Error, "Error: A fragment shader must define the CameraInfo struct and uniform variable");
                 details = new ParsedShaderDetails() { m_supportsLighting = false };
                 return false;
             }

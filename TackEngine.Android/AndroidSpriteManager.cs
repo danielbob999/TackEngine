@@ -69,38 +69,6 @@ namespace TackEngine.Android {
         }
 
         internal void LoadDefaultSprite() {
-            /*
-            Bitmap defaultBitmap = Bitmap.CreateBitmap(32, 32, Bitmap.Config.Argb8888);
-            Canvas canvas = new Canvas(defaultBitmap);
-            canvas.DrawColor(Color.White);
-
-            Sprite.DefaultSprite = new Sprite();
-
-            Sprite.DefaultSprite.Width = defaultBitmap.Width;
-            Sprite.DefaultSprite.Height = defaultBitmap.Height;
-
-            AndroidBitmapInfo info = defaultBitmap.GetBitmapInfo();
-
-            int[] pixels = new int[(int)TackEngine.Core.Math.TackMath.Abs(defaultBitmap.GetBitmapInfo().Stride) * defaultBitmap.Height];
-
-            defaultBitmap.GetPixels(pixels, 0, (int)info.Stride, 0, 0, 32, 32);
-
-            Sprite.DefaultSprite.Data = new byte[pixels.Length * sizeof(int)];
-            System.Buffer.BlockCopy(pixels, 0, Sprite.DefaultSprite.Data, 0, Sprite.DefaultSprite.Data.Length);
-
-            //Sprite.DefaultSprite.PixelFormat = (Sprite.SpritePixelFormat)defaultBitmap.GetBitmapInfo().Format;
-            //Sprite.DefaultSprite.m_stride = defaultBitmap.
-            //Sprite.DefaultSprite.Data = new byte[TackEngine.Core.Math.TackMath.Abs(defaultBitmap.GetBitmapInfo().Stride) * defaultBitmap.Height];
-
-            //System.Runtime.InteropServices.Marshal.Copy(pixel, Sprite.DefaultSprite.Data, 0, Sprite.DefaultSprite.Data.Length);
-
-            //defaultBitmap.UnlockBits(bmpData);
-
-            Sprite.DefaultSprite.Create();
-            Sprite.DefaultSprite.IsNineSliced = false;
-
-            //defaultBitmap.Dispose();*/
-
             Sprite defaultSprite = LoadFromFile("tackresources/sprites/default_sprite.png");
             defaultSprite.Create();
 
@@ -110,14 +78,10 @@ namespace TackEngine.Android {
         }
 
         internal void LoadDefaultUISprite() {
-            /*
-            Sprite.DefaultUISprite = LoadSpriteFromFile("tackresources/sprites/ui/ui_panel.png");
+            Sprite.DefaultUISprite = LoadFromFile("tackresources/sprites/ui/ui_panel.png");
             Sprite.DefaultUISprite.Create();
             Sprite.DefaultUISprite.IsNineSliced = true;
             Sprite.DefaultUISprite.NineSlicedData = new TackEngine.Core.Main.Sprite.SliceData(20);
-            */
-
-            Sprite.DefaultUISprite = Sprite.DefaultSprite;
 
             TackConsole.EngineLog(TackConsole.LogType.Message, "Loaded the default UI sprite into Sprite.DefaultUISprite");
         }

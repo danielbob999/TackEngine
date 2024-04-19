@@ -31,7 +31,7 @@ bool isPointInMask(mediump vec2 point, mediump vec2 topRight, mediump vec2 botto
 	return false;
 }
 
-void main(){
+void main() {
 	mediump vec2 tFragCoord = vec2((gl_FragCoord.x - (uCameraInfo.size.x / 2.0)) / (uCameraInfo.size.x / 2.0), ((gl_FragCoord.y - (uCameraInfo.size.y / 2.0)) * -1.0) / (uCameraInfo.size.y / 2.0));
 	
 	int maskPassCount = 0;
@@ -43,7 +43,7 @@ void main(){
 	}
 		
 	if (maskPassCount == uMaskCount){
-		FragColor = texture(uTexture, fTexCoord) * vec4(uColour.xyz, 1.0);
+		FragColor = texture(uTexture, fTexCoord) * vec4(uColour.xyz, 1.0) * uColour.w;
 	} else {
 		FragColor = vec4(0, 0, 0, 0);
 	}

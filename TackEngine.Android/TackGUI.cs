@@ -76,12 +76,10 @@ namespace TackEngine.Android {
                 using (StreamReader fragReader = new StreamReader(AndroidContext.CurrentAssetManager.Open("tackresources/shaders/gui/new/gui_fragment_shader.fs"))) {
                     string fragSource = fragReader.ReadToEnd();
 
-                    m_defaultGUIShader = new Shader("shaders.new_gui_shader", TackShaderType.GUI, vertSource, fragSource);
-                    m_defaultTextShader = new Shader("shaders.text_gui_shader", TackShaderType.GUI, vertSource, fragSource);
+                   m_defaultGUIShader = new Shader("shaders.new_gui_shader", TackShaderType.GUI, vertSource, fragSource);
                 }
             }
 
-            /*
             // Load default text shader
             using (StreamReader vertReader = new StreamReader(AndroidContext.CurrentAssetManager.Open("tackresources/shaders/gui/text/text_vertex_shader.vs"))) {
                 string vertSource = vertReader.ReadToEnd();
@@ -92,7 +90,6 @@ namespace TackEngine.Android {
                     m_defaultTextShader = new Shader("shaders.text_gui_shader", TackShaderType.GUI, vertSource, fragSource);
                 }
             }
-            */
 
             m_guiShaderPosHandle = GL.GetAttribLocation(m_defaultGUIShader.Id, "aPos");
             m_guiShaderUvHandle = GL.GetAttribLocation(m_defaultGUIShader.Id, "aTexCoord");
@@ -601,16 +598,6 @@ namespace TackEngine.Android {
                 GL.UniformMatrix4(GL.GetUniformLocation(TackGUI.Instance.DefaultTextShader.Id, "uModelMat"), false, ref modelMatrix);
                 GL.Uniform1(GL.GetUniformLocation(TackGUI.Instance.DefaultTextShader.Id, "uTexture"), 0);
                 GL.Uniform4(GL.GetUniformLocation(TackGUI.Instance.DefaultTextShader.Id, "uColour"), style.FontColour.R / 255f, style.FontColour.G / 255f, style.FontColour.B / 255f, style.FontColour.A / 255f); ;
-
-                if (style.Texture.IsNineSliced && style.Texture.NineSlicedData != null) {
-                    float slice = style.Texture.NineSlicedData.BorderSize;
-
-                    GL.Uniform2(GL.GetUniformLocation(Instance.DefaultTextShader.Id, "uSliceDimensions"), new Vector2f(slice / rect.Width, slice / rect.Height).ToOpenTKVec2());
-                    GL.Uniform2(GL.GetUniformLocation(Instance.DefaultTextShader.Id, "uSliceBorder"), new Vector2f(slice / style.Texture.Width, slice / style.Texture.Height).ToOpenTKVec2());
-                    GL.Uniform1(GL.GetUniformLocation(Instance.DefaultTextShader.Id, "uIsNineSlicedTexture"), 1);
-                } else {
-                    GL.Uniform1(GL.GetUniformLocation(Instance.DefaultTextShader.Id, "uIsNineSlicedTexture"), 0);
-                }
 
                 // Set camera info
                 GL.Uniform2(GL.GetUniformLocation(Instance.DefaultTextShader.Id, "uCameraInfo.position"), TackEngine.Core.Objects.Components.Camera.MainCamera.GetParent().Position.ToOpenTKVec2());
