@@ -210,6 +210,14 @@ namespace TackEngine.Core.Main {
         public byte[] Data { get; internal set; }
         //internal int m_stride;
 
+        /// <summary>
+        /// Is this sprite dynamic?
+        /// Dynamic sprites can have their data changed once created
+        /// </summary>
+        public bool IsDynamic { get; internal set; }
+
+        internal bool IsDirty { get; set; }
+
         internal Sprite(int w = 0, int h = 0) {
             Width = w;
             Height = h;
@@ -219,6 +227,8 @@ namespace TackEngine.Core.Main {
 
             IsNineSliced = false;
             NineSlicedData = null;
+            IsDynamic = false;
+            IsDirty = false;
         }
 
         /// <summary>
@@ -233,23 +243,6 @@ namespace TackEngine.Core.Main {
             SpriteManager.Instance.DeleteSprite(this, _logMsgs);
         }
 
-        public object GetBitmapCopy() {
-            /*
-            Bitmap bmpCopy = new Bitmap(Width, Height, PixelFormat);
-            BitmapData bmpCopyData = bmpCopy.LockBits(new Rectangle(0, 0, Width, Height), ImageLockMode.ReadWrite, PixelFormat);
-            bmpCopyData.Stride = m_stride;
-
-            // Copy m_data back to the bitmap Scan0 
-            System.Runtime.InteropServices.Marshal.Copy(Data, 0, bmpCopyData.Scan0, Data.Length);
-
-            bmpCopy.UnlockBits(bmpCopyData);
-
-            return bmpCopy;
-            */
-
-            return null;
-        }
-
         public override bool Equals(object obj) {
             if (obj == null) {
                 return false;
@@ -262,6 +255,73 @@ namespace TackEngine.Core.Main {
             return base.GetHashCode();
         }
 
+        /// <summary>
+        /// Sets the data for this sprite.
+        /// If sprite is not marked as dynamic, this method does nothing
+        /// </summary>
+        /// <param name="data"></param>
+        public void SetData(byte[] data) {
+            if (!IsDynamic) {
+                return;
+            }
+
+            if (data.Length != Data.Length) {
+                throw new Exception("Cannot set sprite data. Incoming data length differs from original length");
+            }
+
+            data.CopyTo(Data, 0);
+
+            IsDirty = true;
+        }
+
+        internal void InternalSetPixel(int x, int y, Colour4b colour) {
+            int indx0 = (Width * 4 * y) + (x * 4);
+
+            Data[indx0] = colour.R;
+            Data[indx0 + 1] = colour.G;
+            Data[indx0 + 2] = colour.B;
+            Data[indx0 + 3] = colour.A;
+        }
+
+        public void SetPixel(int x, int y, Colour4b colour) {
+            if (!IsDynamic) {
+                return;
+            }
+
+            if (x >= Width || y >= Height) {
+                throw new Exception("Cannot set pixel. Out of bounds");
+            }
+
+            int indx0 = (Width * 4 * y) + (x * 4);
+
+            Data[indx0] = colour.R;
+            Data[indx0 + 1] = colour.G;
+            Data[indx0 + 2] = colour.B;
+            Data[indx0 + 3] = colour.A;
+
+            IsDirty = true;
+        }
+
+        public Colour4b GetPixel(int x, int y) {
+            if (x >= Width || y >= Height) {
+                throw new Exception("Cannot get pixel. Out of bounds");
+            }
+
+            int indx0 = (Width * 4 * y) + (x * 4);
+
+            return new Colour4b(Data[indx0], Data[indx0 + 1], Data[indx0 + 2], Data[indx0 + 3]);
+        }
+
+        public static Sprite GenerateDynamicSprite(int width, int height) {
+            Sprite newSprite = new Sprite(width, height);
+            newSprite.PixelFormat = SpritePixelFormat.Format32bppRgb;
+            newSprite.Data = new byte[width * height * 4];
+            newSprite.IsDynamic = true;
+            newSprite.IsDirty = true;
+
+            return newSprite;
+        }
+
         public static Sprite LoadFromFile(string path) {
             return SpriteManager.Instance.LoadFromFile(path);
         }
@@ -272,27 +332,5 @@ namespace TackEngine.Core.Main {
 
             return newSprite;
         }
-
-        /*
-        public static Sprite LoadFromBitmap(Bitmap original) {
-            Sprite newSprite = new Sprite();
-
-            newSprite.Width = original.Width;
-            newSprite.Height = original.Height;
-
-            BitmapData bmpData = original.LockBits(new System.Drawing.Rectangle(0, 0, original.Width, original.Height),
-                ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-
-            newSprite.PixelFormat = bmpData.PixelFormat;
-            newSprite.m_stride = bmpData.Stride;
-            newSprite.Data = new byte[Math.TackMath.Abs(bmpData.Stride) * original.Height];
-
-            System.Runtime.InteropServices.Marshal.Copy(bmpData.Scan0, newSprite.Data, 0, newSprite.Data.Length);
-
-            original.UnlockBits(bmpData);
-
-            return newSprite;
-        }
-        */
     }
 }

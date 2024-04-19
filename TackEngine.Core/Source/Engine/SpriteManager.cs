@@ -28,6 +28,5 @@ namespace TackEngine.Core.Engine {
         public abstract void DeleteSprite(Sprite _sprite, bool _debugMsgs = true);
 
         public abstract Sprite LoadFromFile(string path);
-
     }
 }

@@ -9,6 +9,7 @@ using TackEngine.Core.Objects;
 using TackEngine.Core.Renderer;
 using OpenTK.Graphics.OpenGL;
 using TackEngine.Core.Physics;
+using tainicom.Aether.Physics2D.Fluids;
 
 namespace TackEngine.Desktop {
     public class DesktopRenderingBehaviour : RenderingBehaviour {
@@ -162,6 +163,13 @@ namespace TackEngine.Desktop {
 
                 GL.ActiveTexture(TextureUnit.Texture0);
                 GL.BindTexture(TextureTarget.Texture2D, rendererComp.Sprite.Id);
+
+                if (rendererComp.Sprite.IsDynamic && rendererComp.Sprite.IsDirty) {
+                    GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, rendererComp.Sprite.Width, rendererComp.Sprite.Height, 0, OpenTK.Graphics.OpenGL.PixelFormat.Rgba, PixelType.UnsignedByte, rendererComp.Sprite.Data);
+
+                    Console.WriteLine("Writing data of dirty sprite with id: " + rendererComp.Sprite.Id);
+                    rendererComp.Sprite.IsDirty = false;
+                }
 
                 // set texture filtering parameters
                 GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)rendererComp.Sprite.Filter);

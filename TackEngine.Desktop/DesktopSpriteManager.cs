@@ -35,7 +35,7 @@ namespace TackEngine.Desktop {
             GL.ActiveTexture(TextureUnit.Texture0);
 
             GL.BindTexture(TextureTarget.Texture2D, sprite.Id);
-            GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, sprite.Width, sprite.Height, 0, OpenTK.Graphics.OpenGL.PixelFormat.Bgra, PixelType.UnsignedByte, sprite.Data);
+            GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, sprite.Width, sprite.Height, 0, OpenTK.Graphics.OpenGL.PixelFormat.Rgba, PixelType.UnsignedByte, sprite.Data);
 
             m_sprites.Add(sprite);
         }
@@ -58,17 +58,17 @@ namespace TackEngine.Desktop {
 
             newSprite.Width = newBp.Width;
             newSprite.Height = newBp.Height;
+            newSprite.PixelFormat = (Sprite.SpritePixelFormat)newBp.PixelFormat;
+            newSprite.Data = new byte[newBp.Width * newBp.Height * 4];
 
-            BitmapData bmpData = newBp.LockBits(new System.Drawing.Rectangle(0, 0, newBp.Width, newBp.Height),
-                ImageLockMode.ReadOnly, newBp.PixelFormat);
+            for (int y = 0; y < newBp.Height; y++) {
+                for (int x = 0; x < newBp.Width; x++) {
+                    Color col = newBp.GetPixel(x, y);
 
-            newSprite.PixelFormat = (Sprite.SpritePixelFormat)bmpData.PixelFormat;
-            //newSprite.m_stride = bmpData.Stride;
-            newSprite.Data = new byte[TackEngine.Core.Math.TackMath.Abs(bmpData.Stride) * newBp.Height];
+                    newSprite.InternalSetPixel(x, y, new Colour4b(col.R, col.G, col.B, col.A));
+                }
+            }
 
-            System.Runtime.InteropServices.Marshal.Copy(bmpData.Scan0, newSprite.Data, 0, newSprite.Data.Length);
-
-            newBp.UnlockBits(bmpData);
             newBp.Dispose();
 
             return newSprite;

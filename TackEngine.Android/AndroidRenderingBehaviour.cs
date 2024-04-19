@@ -12,6 +12,7 @@ using TackEngine.Core.Physics;
 using Android.Opengl;
 using Java.Security.Cert;
 using Java.Lang;
+using tainicom.Aether.Physics2D.Fluids;
 
 namespace TackEngine.Android {
     public class AndroidRenderingBehaviour : RenderingBehaviour {
@@ -190,6 +191,13 @@ namespace TackEngine.Android {
 
                 GL.ActiveTexture(TextureUnit.Texture0);
                 GL.BindTexture(TextureTarget.Texture2D, rendererComp.Sprite.Id);
+
+                if (rendererComp.Sprite.IsDynamic && rendererComp.Sprite.IsDirty) {
+                    GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, rendererComp.Sprite.Width, rendererComp.Sprite.Height, 0, PixelFormat.Rgba, PixelType.UnsignedByte, rendererComp.Sprite.Data);
+
+                    Console.WriteLine("Writing data of dirty sprite with id: " + rendererComp.Sprite.Id);
+                    rendererComp.Sprite.IsDirty = false;
+                }
 
                 // set texture filtering parameters
                 GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)rendererComp.Sprite.Filter);

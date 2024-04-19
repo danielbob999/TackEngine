@@ -57,13 +57,17 @@ namespace TackEngine.Android {
             newSprite.Width = newBp.Width;
             newSprite.Height = newBp.Height;
             newSprite.PixelFormat = (Sprite.SpritePixelFormat)newBp.GetBitmapInfo().Format;
+            newSprite.Data = new byte[newBp.Width * newBp.Height * 4];
 
-            int size = newBp.Width * newBp.Height * 4; // 4 bytes per pixel
-            newSprite.Data = new byte[size]; 
-            var byteBuffer = Java.Nio.ByteBuffer.AllocateDirect(size);
-            newBp.CopyPixelsToBuffer(byteBuffer);
-            Marshal.Copy(byteBuffer.GetDirectBufferAddress(), newSprite.Data, 0, size);     
-            byteBuffer.Dispose();
+            for (int y = 0; y < newBp.Height; y++) {
+                for (int x = 0; x < newBp.Width; x++) {
+                    int col = newBp.GetPixel(x, y);
+
+                    newSprite.InternalSetPixel(x, y, new Colour4b((byte)Color.GetRedComponent(col), (byte)Color.GetGreenComponent(col), (byte)Color.GetBlueComponent(col), (byte)Color.GetAlphaComponent(col)));
+                }
+            }
+
+            newBp.Recycle();
 
             return newSprite;
         }
