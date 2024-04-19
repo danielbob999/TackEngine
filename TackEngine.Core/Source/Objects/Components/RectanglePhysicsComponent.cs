@@ -123,10 +123,6 @@ namespace TackEngine.Core.Objects.Components {
             base.OnUpdate();
         }
 
-        public override void OnGUIRender() {
-            base.OnGUIRender();
-        }
-
         public override void OnClose() {
             base.OnClose();
         }

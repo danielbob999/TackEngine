@@ -116,10 +116,6 @@ namespace TackEngine.Core.Objects.Components
             //FindVertexPoint(2);
         }
 
-        public override void OnRender()  {
-            base.OnRender();
-        }
-
         /// <summary>
         /// Calculates the actual vertex point with position and rotation factored in
         /// </summary>

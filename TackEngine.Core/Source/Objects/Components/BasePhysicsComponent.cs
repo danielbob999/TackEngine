@@ -168,10 +168,6 @@ namespace TackEngine.Core.Objects.Components {
             }
         }
 
-        public override void OnGUIRender() {
-            base.OnGUIRender();
-        }
-
         public override void OnClose() {
             base.OnClose();
 
@@ -223,8 +219,8 @@ namespace TackEngine.Core.Objects.Components {
             m_physicsBody.Position = new Vector2(GetParent().Position.X / 100f, GetParent().Position.Y / 100f);
         }
 
-        public override void OnScaleChanged() {
-            base.OnScaleChanged();
+        public override void OnSizeChanged() {
+            base.OnSizeChanged();
 
             // Generate because we cannot change the fixture shape dynamically
             GenerateBody();

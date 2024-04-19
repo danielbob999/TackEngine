@@ -92,7 +92,7 @@ namespace TackEngine.Core.Objects {
 
                 m_components.ForEach(component => {
                     if (((TackComponent)component).Active) {
-                        ((TackComponent)component).OnScaleChanged();
+                        ((TackComponent)component).OnSizeChanged();
                     }
                 });
             }

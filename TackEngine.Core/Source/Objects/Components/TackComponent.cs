@@ -52,20 +52,13 @@ namespace TackEngine.Core.Objects.Components
 
         }
 
-        
-        public virtual void OnRender() {
-
-        }
-        
-
-        public virtual void OnGUIRender() {
-
-        }
-
         public virtual void OnClose() {
 
         }
 
+        /// <summary>
+        /// And override-able method that occurs when the component gets added to a TackObject
+        /// </summary>
         public virtual void OnAttachedToTackObject() {
 
         }
@@ -115,9 +108,9 @@ namespace TackEngine.Core.Objects.Components
         }
 
         /// <summary>
-        /// An override-able method that occurs when a user manually changes the scale of the connected TackObject
+        /// An override-able method that occurs when a user manually changes the size of the connected TackObject
         /// </summary>
-        public virtual void OnScaleChanged() {
+        public virtual void OnSizeChanged() {
 
         }
 

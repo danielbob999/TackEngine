@@ -95,10 +95,6 @@ namespace TackEngine.Core.Objects.Components {
             base.OnUpdate();
         }
 
-        public override void OnRender() {
-            base.OnRender();
-        }
-
         public override void OnAttachedToTackObject() {
             base.OnAttachedToTackObject();
 
