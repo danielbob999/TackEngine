@@ -1,4 +1,4 @@
-#version 320 es
+#version 300 es
 out mediump vec4 FragColor;
 
 in mediump vec2 fTexCoord;
@@ -43,7 +43,7 @@ void main(){
 	}
 		
 	if (maskPassCount == uMaskCount){
-		FragColor = vec4(uColour.xyz, texture(uTexture, fTexCoord));
+		FragColor = texture(uTexture, fTexCoord) * vec4(uColour.xyz, 1.0);
 	} else {
 		FragColor = vec4(0, 0, 0, 0);
 	}

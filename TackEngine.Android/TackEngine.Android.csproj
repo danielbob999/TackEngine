@@ -44,4 +44,11 @@
   <ItemGroup>
     <ProjectReference Include="..\TackEngine.Core\TackEngine.Core.csproj" />
   </ItemGroup>
+
+   <ItemGroup>
+	  <EmbeddedNativeLibrary Include="..\libs\freetype2\android\arm64-v8a\libfreetype6.so" Link="libs\arm64-v8a\libfreetype6.so" />
+	  <EmbeddedNativeLibrary Include="..\libs\freetype2\android\armeabi-v7a\libfreetype6.so" Link="libs\armeabi-v7a\libfreetype6.so" />
+	  <EmbeddedNativeLibrary Include="..\libs\freetype2\android\x86\libfreetype6.so" Link="libs\x86\libfreetype6.so" />
+	  <EmbeddedNativeLibrary Include="..\libs\freetype2\android\x86_64\libfreetype6.so" Link="libs\x86_64\libfreetype6.so" />
+   </ItemGroup>
 </Project>

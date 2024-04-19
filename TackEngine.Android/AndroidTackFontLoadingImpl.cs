@@ -28,13 +28,15 @@ namespace TackEngine.Android {
             }
 
             TackFont newFont = new TackFont();
+            newFont.FontFace = new Face(BaseTackGUI.Instance.FontLibrary, fileData, 0);
+            newFont.FontFace.SetPixelSizes(0, 50);
 
             // set 1 byte pixel alignment 
             GL.PixelStore(PixelStoreParameter.UnpackAlignment, 1);
 
             for (int i = 0; i < 128; i++) {
                 char c = (char)i;
-                newFont.FontCharacters.Add(c, LoadCharacter(null, c));
+                newFont.FontCharacters.Add(c, LoadCharacter(newFont.FontFace, c));
             }
 
             TackConsole.EngineLog(TackConsole.LogType.Message, "Loaded new TackFont with name " + "KJHSAJKDH");
@@ -42,80 +44,32 @@ namespace TackEngine.Android {
             return newFont;
         }
 
-        public TackFont.FontCharacter LoadCharacter(Face fance, uint charCode) {
-            /*
-            // Create an empty, mutable bitmap
-            Bitmap bitmap = Bitmap.CreateBitmap(256, 256, Bitmap.Config.Argb8888);
-            // get a canvas to paint over the bitmap
-            Canvas canvas = new Canvas(bitmap);
-            bitmap.EraseColor(0);
+        public TackFont.FontCharacter LoadCharacter(Face face, uint charCode) {
+            face.LoadChar(charCode, LoadFlags.Render, LoadTarget.Normal);
 
-            // Draw the text
-            Paint textPaint = new Paint();
-            textPaint.TextSize = 32;
-            textPaint.AntiAlias = true;
-            textPaint.SetARGB(0xff, 0xFF, 0x00, 0x00);
-            // draw the text centered
-            canvas.DrawText(((char)charCode).ToString(), 5, 5, textPaint);
+            GlyphSlot glyph = face.Glyph;
+            FTBitmap tbmp = glyph.Bitmap;
 
-            int size = bitmap.Width * bitmap.Width * 4; // 4 bytes per pixel
-            byte[] data = new byte[size];
-            var byteBuffer = Java.Nio.ByteBuffer.AllocateDirect(size);
-            bitmap.CopyPixelsToBuffer(byteBuffer);
-            Marshal.Copy(byteBuffer.GetDirectBufferAddress(), data, 0, size);
-            byteBuffer.Dispose();
-
-            bitmap.Recycle();
-
-            // create glyph texture
-            int texObj = GL.GenTexture();
-            GL.BindTexture(TextureTarget.Texture2D, texObj);
-            GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgb, bitmap.Width, bitmap.Height, 0, OpenTK.Graphics.ES30.PixelFormat.Rgba, PixelType.UnsignedByte, data);
-            //GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, bitmap.Width, bitmap.Rows, 0, PixelFormat.Bgra, PixelType.UnsignedByte, bitmap.Buffer);
-
-            // set texture filter parameters
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
-
-            // set the texture wrapping parameters
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)TextureWrapMode.ClampToEdge);
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)TextureWrapMode.ClampToEdge);
-
-            // add character
-            TackFont.FontCharacter ch = new TackFont.FontCharacter();
-            ch.texId = texObj;
-            ch.size = new Vector2f(bitmap.Width, bitmap.Height);
-            //ch.bearing = new Vector2f(glyph.Metrics.HorizontalBearingX.ToSingle(), glyph.Metrics.HorizontalBearingY.ToSingle());
-            //ch.advance = (int)glyph.Advance.X.Value;
-
-            return ch;
-            */
-
-            // Draw the text
-            Paint textPaint = new Paint();
-            textPaint.TextSize = 50;
-            textPaint.AntiAlias = true;
-            textPaint.SetARGB(255, 255, 255, 255);
-
-            string charAsStr = ((char)charCode).ToString();
-
-            Vector2f bmpSize = new Vector2f(textPaint.MeasureText(charAsStr), textPaint.TextSize);
-
-            if (bmpSize.X == 0 || bmpSize.Y == 0) {
-                return default(TackFont.FontCharacter);
+            if (tbmp.Width == 0 || tbmp.Rows == 0) {
+                return new TackFont.FontCharacter() { texId = -1 };
             }
 
             // Create an empty, mutable bitmap
-            Bitmap bitmap = Bitmap.CreateBitmap((int)bmpSize.X, (int)bmpSize.Y, Bitmap.Config.Argb8888);
-            // get a canvas to paint over the bitmap
-            Canvas canvas = new Canvas(bitmap);
+            Bitmap bitmap = Bitmap.CreateBitmap((int)tbmp.Width, (int)tbmp.Rows, Bitmap.Config.Argb8888);
 
-            //bitmap.EraseColor(Color.Argb(0, 0, 0, 0).ToArgb());
-            bitmap.EraseColor(Color.Argb(0, 255, 0, 0).ToArgb());
+            int byteIndex = 0;
 
-            //textPaint.SetTypeface(Typef)
-            // draw the text centered
-            canvas.DrawText(((char)charCode).ToString(), 0, textPaint.TextSize, textPaint);
+            for (int y = 0; y < bitmap.Height; y++) {
+                for (int x = 0; x < bitmap.Width; x++) {
+                    bitmap.SetPixel(x, y, new Color(
+                        (byte)0,
+                        (byte)0,
+                        (byte)0,
+                        (byte)tbmp.BufferData[byteIndex]));
+
+                    byteIndex += 1;
+                }
+            }
 
             int size = bitmap.Width * bitmap.Height * 4; // 4 bytes per pixel
             byte[] data = new byte[size];
@@ -143,8 +97,8 @@ namespace TackEngine.Android {
             TackFont.FontCharacter ch = new TackFont.FontCharacter();
             ch.texId = texObj;
             ch.size = new Vector2f(bitmap.Width, bitmap.Height);
-            ch.bearing = new Vector2f(0, 0);
-            ch.advance = 0;
+            ch.bearing = new Vector2f(glyph.Metrics.HorizontalBearingX.ToSingle(), glyph.Metrics.HorizontalBearingY.ToSingle());
+            ch.advance = (int)glyph.Advance.X.Value;
 
             bitmap.Recycle();
 
