@@ -72,7 +72,7 @@ namespace TackEngine.Core.Objects.Components {
             m_physicsBody.Tag = GetParent().Hash;
 
             for (int i = 1; i < Points.Count; i ++) {
-                Fixtures.Add(m_physicsBody.CreateEdge(new Vector2((Points[i - 1].X * GetParent().Scale.X) / 100f, (Points[i - 1].Y * GetParent().Scale.Y) / 100f), new Vector2((Points[i].X * GetParent().Scale.X) / 100f, (Points[i].Y * GetParent().Scale.Y) / 100f)));
+                Fixtures.Add(m_physicsBody.CreateEdge(new Vector2((Points[i - 1].X * GetParent().Size.X) / 100f, (Points[i - 1].Y * GetParent().Size.Y) / 100f), new Vector2((Points[i].X * GetParent().Size.X) / 100f, (Points[i].Y * GetParent().Size.Y) / 100f)));
             }
 
             m_physicsBody.OnCollision += InternalOnCollision;

@@ -147,7 +147,7 @@ namespace TackEngine.Core.Objects.Components {
             m_physicsBody.IgnoreGravity = !IsAffectedByGravity;
             m_physicsBody.Tag = GetParent().Hash;
 
-            Fixture fixture = m_physicsBody.CreateCircle((GetParent().Scale.X / 2f) / 100f, 10);
+            Fixture fixture = m_physicsBody.CreateCircle((GetParent().Size.X / 2f) / 100f, 10);
             fixture.Restitution = Restitution;
             fixture.Friction = Friction;
 
@@ -165,15 +165,15 @@ namespace TackEngine.Core.Objects.Components {
             for (int i = 0; i <= numOfSegments; i++) {
                 if (i == 0) {
                     prevPoint = new Vector2f(
-                            GetParent().Position.X + (GetParent().Scale.X / 2f) * (float)System.Math.Cos(TackMath.DegToRad(i * segAngle)),
-                            GetParent().Position.Y + (GetParent().Scale.X / 2f) * (float)System.Math.Sin(TackMath.DegToRad(i * segAngle)));
+                            GetParent().Position.X + (GetParent().Size.X / 2f) * (float)System.Math.Cos(TackMath.DegToRad(i * segAngle)),
+                            GetParent().Position.Y + (GetParent().Size.X / 2f) * (float)System.Math.Sin(TackMath.DegToRad(i * segAngle)));
 
                     continue;
                 }
 
                 Vector2f posOnCircle = new Vector2f(
-                    GetParent().Position.X + (GetParent().Scale.X / 2f) * (float)System.Math.Cos(TackMath.DegToRad(i * segAngle)),
-                    GetParent().Position.Y + (GetParent().Scale.X / 2f) * (float)System.Math.Sin(TackMath.DegToRad(i * segAngle)));
+                    GetParent().Position.X + (GetParent().Size.X / 2f) * (float)System.Math.Cos(TackMath.DegToRad(i * segAngle)),
+                    GetParent().Position.Y + (GetParent().Size.X / 2f) * (float)System.Math.Sin(TackMath.DegToRad(i * segAngle)));
 
                 DebugLineRenderer.DrawLine(prevPoint, posOnCircle, TackPhysics.BoundsColour);
 

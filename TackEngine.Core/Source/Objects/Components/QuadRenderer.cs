@@ -151,10 +151,10 @@ namespace TackEngine.Core.Objects.Components
 
             RectangleShape objectShape = new RectangleShape()
             {
-                X = ((parentObject.Position.X) - (parentObject.Scale.X / 2)),
-                Y = ((parentObject.Position.Y ) + (parentObject.Scale.Y / 2)),
-                Width = (parentObject.Scale.X),
-                Height = (parentObject.Scale.Y)
+                X = ((parentObject.Position.X) - (parentObject.Size.X / 2)),
+                Y = ((parentObject.Position.Y ) + (parentObject.Size.Y / 2)),
+                Width = (parentObject.Size.X),
+                Height = (parentObject.Size.Y)
             };
 
             if (_vertIndex == 1)

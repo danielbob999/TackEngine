@@ -298,7 +298,7 @@ namespace TackEngine.Core.Objects.Components {
             m_physicsBody.IgnoreGravity = !IsAffectedByGravity;
             m_physicsBody.Tag = GetParent().Hash;
 
-            Fixture fixture = m_physicsBody.CreateRectangle((GetParent().Scale.X / 100f), (GetParent().Scale.Y / 100f), 1, new Vector2(0, 0));
+            Fixture fixture = m_physicsBody.CreateRectangle((GetParent().Size.X / 100f), (GetParent().Size.Y / 100f), 1, new Vector2(0, 0));
             fixture.Restitution = Restitution;
             fixture.Friction = Friction;
             fixture.IsSensor = IsTrigger;

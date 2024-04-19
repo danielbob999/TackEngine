@@ -309,7 +309,7 @@ namespace TackEngine.Desktop {
         }
 
         private OpenTK.Mathematics.Matrix4 GenerateModelMatrix(TackObject obj, Camera camera) {
-            return GenerateModelMatrix(obj.Position, obj.Scale, obj.Rotation + camera.GetParent().Rotation);
+            return GenerateModelMatrix(obj.Position, obj.Size, obj.Rotation + camera.GetParent().Rotation);
         }
     }
 }

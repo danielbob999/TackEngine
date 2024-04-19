@@ -364,7 +364,7 @@ namespace TackEngine.Android {
         }
 
         private OpenTK.Matrix4 GenerateModelMatrix(TackObject obj, Camera camera) {
-            return GenerateModelMatrix(obj.Position, obj.Scale, obj.Rotation + camera.GetParent().Rotation);
+            return GenerateModelMatrix(obj.Position, obj.Size, obj.Rotation + camera.GetParent().Rotation);
         }
 
         private void CheckForErrors(bool clear = false) {

@@ -58,7 +58,7 @@ namespace TackEngine.Core.Objects {
                 }
 
                 Vector2f objPos = pair.Value.Position;
-                Vector2f objScale = pair.Value.Scale;
+                Vector2f objScale = pair.Value.Size;
 
                 if (Physics.AABB.IsPointInAABBWorld(new Physics.AABB(new Vector2f(objPos.X - (objScale.X / 2.0f), objPos.Y - (objScale.Y / 2.0f)), new Vector2f(objPos.X + (objScale.X / 2.0f), objPos.Y + (objScale.Y / 2.0f))), mouseWorldCoords)) {
                     TackComponent[] components = pair.Value.GetAllComponents();

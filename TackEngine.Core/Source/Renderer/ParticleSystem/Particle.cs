@@ -53,7 +53,7 @@ namespace TackEngine.Core.Renderer.ParticleSystem {
             RendererComponent.Sprite = Sprite;
 
             ConnectedObject.Position = Position;
-            ConnectedObject.Scale = Scale;
+            ConnectedObject.Size = Scale;
             ConnectedObject.Rotation = Rotation;
         }
 

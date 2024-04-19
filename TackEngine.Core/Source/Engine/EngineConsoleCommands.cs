@@ -267,7 +267,7 @@ namespace TackEngine.Core.Engine
                 TackConsole.EngineLog(TackConsole.LogType.Message, "Name: {0:-20}", calledObject.Name);
                 TackConsole.EngineLog(TackConsole.LogType.Message, "Hash: {0:-20}", calledObject.GetHash());
                 TackConsole.EngineLog(TackConsole.LogType.Message, "Position: {0:-20}", calledObject.Position.ToString());
-                TackConsole.EngineLog(TackConsole.LogType.Message, "Scale: {0:-20}", calledObject.Scale.ToString());
+                TackConsole.EngineLog(TackConsole.LogType.Message, "Scale: {0:-20}", calledObject.Size.ToString());
                 TackConsole.EngineLog(TackConsole.LogType.Message, "Rotation: {0:-20}", calledObject.Rotation);
                 TackConsole.EngineLog(TackConsole.LogType.Message, "Components ({0}):", calledObject.GetAllComponents().Length);
 

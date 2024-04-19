@@ -35,8 +35,8 @@ namespace TackEngine.Core.Renderer.ParticleSystem {
         private void RecalculateBounds() {
             TackObject parentObj = TackObject.GetByHash(m_particleSystemParentHash);
 
-            BoundsTopLeft = new Vector2f(parentObj.Position.X - (parentObj.Scale.X / 2f), parentObj.Position.Y + (parentObj.Scale.Y / 2f));
-            BoundsBottomRight = new Vector2f(parentObj.Position.X + (parentObj.Scale.X / 2f), parentObj.Position.Y - (parentObj.Scale.Y / 2f));
+            BoundsTopLeft = new Vector2f(parentObj.Position.X - (parentObj.Size.X / 2f), parentObj.Position.Y + (parentObj.Size.Y / 2f));
+            BoundsBottomRight = new Vector2f(parentObj.Position.X + (parentObj.Size.X / 2f), parentObj.Position.Y - (parentObj.Size.Y / 2f));
         }
     }
 }

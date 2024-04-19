@@ -20,7 +20,7 @@ namespace TackEngine.Core.Objects {
             Looping
         }
 
-        private Vector2f m_scale;
+        private Vector2f m_size;
         private float m_rotation;
 
         private Vector2f m_localPosition;
@@ -34,8 +34,8 @@ namespace TackEngine.Core.Objects {
         internal Physics.AABB BoundingBox { 
             get { 
                 return new Physics.AABB(
-                    new Vector2f(Position.X - (m_scale.X / 2f), Position.Y - (m_scale.Y / 2f)),
-                    new Vector2f(Position.X + (m_scale.X / 2f), Position.Y + (m_scale.Y / 2f)));
+                    new Vector2f(Position.X - (m_size.X / 2f), Position.Y - (m_size.Y / 2f)),
+                    new Vector2f(Position.X + (m_size.X / 2f), Position.Y + (m_size.Y / 2f)));
          } 
         }
 
@@ -85,10 +85,10 @@ namespace TackEngine.Core.Objects {
         /// The scale of this TackObject
         /// </summary>
         /// <datatype>Vector2f</datatype>
-        public Vector2f Scale {
-            get { return m_scale; }
+        public Vector2f Size {
+            get { return m_size; }
             set { 
-                m_scale = value;
+                m_size = value;
 
                 m_components.ForEach(component => {
                     if (((TackComponent)component).Active) {
@@ -157,7 +157,7 @@ namespace TackEngine.Core.Objects {
             Hash = TackObjectManager.Instance.GenerateNewHash();
             Name = name;
             Position = position;
-            m_scale = scale;
+            m_size = scale;
             m_rotation = rotation;
 
             TackObjectManager.Instance.RegisterTackObject(this);
@@ -294,8 +294,8 @@ namespace TackEngine.Core.Objects {
         }
 
         public bool IsPointInArea(Vector2f _point) {
-            Vector2f xConstraints = new Vector2f(Position.X - (m_scale.X / 2), Position.X + (m_scale.X / 2));
-            Vector2f yConstraints = new Vector2f(Position.Y - (m_scale.Y / 2), Position.Y + (m_scale.Y / 2));
+            Vector2f xConstraints = new Vector2f(Position.X - (m_size.X / 2), Position.X + (m_size.X / 2));
+            Vector2f yConstraints = new Vector2f(Position.Y - (m_size.Y / 2), Position.Y + (m_size.Y / 2));
 
             if ((_point.X > xConstraints.X) && (_point.X < xConstraints.Y)) {
 
@@ -321,12 +321,12 @@ namespace TackEngine.Core.Objects {
         }
 
         /// <summary>
-        /// Internal method that sets the scale of the TackObject
-        /// Use this when wanting to set the scale of an TackObject but don't want to call the TackComponent.OnScaleChanged method on all TackComponents
+        /// Internal method that sets the size of the TackObject
+        /// Use this when wanting to set the size of an TackObject but don't want to call the TackComponent.OnScaleChanged method on all TackComponents
         /// </summary>
         /// <param name="val"></param>
-        internal void ChangeScale(Vector2f val) {
-            m_scale = val;
+        internal void ChangeSize(Vector2f val) {
+            m_size = val;
         }
 
         /// <summary>
@@ -373,12 +373,12 @@ namespace TackEngine.Core.Objects {
             return new TackObject(name, position, new Vector2f(50, 50), 0);
         }
 
-        public static TackObject Create(string name, Vector2f position, Vector2f scale) {
-            return new TackObject(name, position, scale, 0);
+        public static TackObject Create(string name, Vector2f position, Vector2f size) {
+            return new TackObject(name, position, size, 0);
         }
 
-        public static TackObject Create(string name, Vector2f position, Vector2f scale, float rotation) {
-            return new TackObject(name, position, scale, rotation);
+        public static TackObject Create(string name, Vector2f position, Vector2f size, float rotation) {
+            return new TackObject(name, position, size, rotation);
         }
 
         /// <summary>
