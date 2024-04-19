@@ -54,7 +54,13 @@ void main()
 			if (distLightToFrag < uLightingInfo.lights[i].radius){
 				mediump float lightAmount = (uLightingInfo.lights[i].radius - distLightToFrag) / uLightingInfo.lights[i].radius;
 				
-				lightAdditive += vec4(uLightingInfo.lights[i].colour.xyz, lightAmount) * (lightAmount * uLightingInfo.lights[i].intensity);
+				mediump vec4 finalAdd = vec4(uLightingInfo.lights[i].colour.xyz, lightAmount) * (lightAmount * uLightingInfo.lights[i].intensity);
+				
+				lightAdditive = vec4(
+					min(lightAdditive.x + finalAdd.x, 1.0),
+					min(lightAdditive.y + finalAdd.y, 1.0),
+					min(lightAdditive.z + finalAdd.z, 1.0),
+					min(lightAdditive.w + finalAdd.w, 1.0));
 			}
 		}
 		
