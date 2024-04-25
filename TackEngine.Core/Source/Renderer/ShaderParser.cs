@@ -9,6 +9,14 @@ using TackEngine.Core.Main;
 
 namespace TackEngine.Core.Renderer {
     internal static class ShaderParser {
+        public readonly static string[] ExcludedUniformStartWithNames = new string[] {
+            "uCameraInfo",
+            "uColour",
+            "uLightingInfo",
+            "uModelMat",
+            "uTexture"
+        };
+
         public struct ParsedShaderDetails {
             public bool m_supportsLighting;
             public string m_lightArrayVarName;
@@ -187,6 +195,16 @@ namespace TackEngine.Core.Renderer {
 
             if (m1 == null) {
                 return false;
+            }
+
+            return true;
+        }
+
+        public static bool IsUserDefinedShaderUniformName(string name) {
+            for (int i = 0; i < ExcludedUniformStartWithNames.Length; i++) {
+                if (name.StartsWith(ExcludedUniformStartWithNames[i]) || name.Equals(ExcludedUniformStartWithNames[i])) {
+                    return false;
+                }
             }
 
             return true;

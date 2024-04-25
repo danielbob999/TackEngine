@@ -67,7 +67,10 @@ namespace TackEngine.Android {
             // for loop that iterates through 0-count, getting the uniform name/type at pos i
             for (int i = 0; i < uniformCount; i++) {
                 string uniformName = GL.GetActiveUniform(Id, i, out int size, out ActiveUniformType type);
-                UniformVariables.Add(uniformName);
+
+                if (ShaderParser.IsUserDefinedShaderUniformName(uniformName)) {
+                    UniformVariables.Add(uniformName);
+                }
             }
         }
 

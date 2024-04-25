@@ -101,7 +101,7 @@ namespace TackEngine.Core.Engine {
 
             str += "\n";
 
-            for (ulong i = 0; i < m_timerResults["UserUpdate"].entries.Keys.Max(); i++) {
+            for (ulong i = 0; i < TackEngineInstance.Instance.Window.CurrentUpdateLoopIndex; i++) {
                 str += GenerateSaveFileLine(i, keys);
             }
 
