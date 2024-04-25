@@ -15,12 +15,12 @@ namespace TackEngine.Core.Input
         Left,
         //
         // Summary:
-        //     The middle mouse button.
-        Middle,
-        //
-        // Summary:
         //     The right mouse button.
         Right,
+        //
+        // Summary:
+        //     The middle mouse button.
+        Middle,
         //
         // Summary:
         //     The first extra mouse button.

@@ -194,6 +194,10 @@ namespace TackEngine.Core.Input {
                 }
             }*/
 
+            if ((int)_key < 0 || (int)_key >= mKeysDownPerFrame.Length) {
+                return;
+            }
+
             if (mGUIInputRequired) {
                 if (_key == KeyboardKey.CapsLock) {
                     mInputBufferCapsLock = !mInputBufferCapsLock;
@@ -218,6 +222,10 @@ namespace TackEngine.Core.Input {
         }
 
         internal void KeyUpEvent(KeyboardKey _key) {
+            if ((int)_key < 0 || (int)_key >= mKeysDownPerFrame.Length) {
+                return;
+            }
+
             if (mGUIInputRequired || (TackEngine.Core.GUI.BaseTackGUI.Instance.FocusedGUIObject != null)) {
                 if (_key == KeyboardKey.LeftShift || _key == KeyboardKey.RightShift) {
                     mInputBufferShift = false;
@@ -241,6 +249,10 @@ namespace TackEngine.Core.Input {
         }
 
         internal void MouseDownEvent(MouseButtonKey _key) {
+            if ((int)_key < 0 || (int)_key >= mMouseKeysDownPerFrame.Length) {
+                return;
+            }
+
             if (!locker_mMouseKeysDownPerFrame[(int)_key]) // if the down key isn't locked
             {
                 mMouseKeysDownPerFrame[(int)_key] = true;
@@ -254,6 +266,10 @@ namespace TackEngine.Core.Input {
         }
 
         internal void MouseUpEvent(MouseButtonKey _key) {
+            if ((int)_key < 0 || (int)_key >= mMouseKeysDownPerFrame.Length) {
+                return;
+            }
+
             mMouseKeysUpPerFrame[(int)_key] = true;
             mMouseKeysHeld[(int)_key] = false;
 
