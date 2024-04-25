@@ -85,7 +85,7 @@ namespace TackEngine.Core.GUI {
                         RectangleShape shape = GetShapeWithMask();
 
                         if (Physics.AABB.IsPointInAABB(new Physics.AABB(new Vector2f(shape.X, shape.Y + shape.Height), new Vector2f(shape.X + shape.Width, shape.Y)), TackEngine.Core.Input.TackInput.Instance.MousePosition.ToVector2f())) {
-                            Vector2f sizeOfString = BaseTackGUI.Instance.MeasureStringSize(Text, BaseTackGUI.Instance.DefaultFont, NormalStyle.FontSize, new RectangleShape(Position, Size));
+                            Vector2f sizeOfString = GetContentSize();
 
                             if (sizeOfString.Y > Size.Y) {
                                 float diff = sizeOfString.Y - Size.Y;
@@ -97,7 +97,7 @@ namespace TackEngine.Core.GUI {
                     if (m_isDragging) {
                         float touchDragAmount = TackInput.Instance.TouchPosition.ToVector2f().Y - m_dragStartY;
 
-                        Vector2f sizeOfString = BaseTackGUI.Instance.MeasureStringSize(Text, NormalStyle.Font, NormalStyle.FontSize, new RectangleShape(Position, Size));
+                        Vector2f sizeOfString = GetContentSize();
 
                         if (sizeOfString.Y > Size.Y) {
                             float diff = sizeOfString.Y - Size.Y;
@@ -141,6 +141,10 @@ namespace TackEngine.Core.GUI {
 
         internal override void OnClose() {
             base.OnClose();
+        }
+
+        public Vector2f GetContentSize() {
+            return BaseTackGUI.Instance.MeasureStringSize(Text, BaseTackGUI.Instance.DefaultFont, NormalStyle.FontSize, new RectangleShape(Position, Size));
         }
     }
 }

@@ -38,7 +38,6 @@ namespace TackEngine.Core.GUI {
         }
 
         private RectangleShape m_handleBounds;
-        private bool m_isDragging = false;
         private Vector2i m_mouseDownOffset;
         private bool m_shouldRender = false;
         private float m_parentContentSize;
@@ -48,6 +47,7 @@ namespace TackEngine.Core.GUI {
         public GUIScrollBarStyle NormalStyle { get; set; }
         public GUIScrollBarOrientation Orientation { get; set; }
         public GUIScrollBarDisplayMode DisplayMode { get; set; }
+        public bool IsDragging { get; private set; }
 
         public GUIScrollBar(IGUIScrollable parentScrollable) {
             m_parentScrollable = parentScrollable;
@@ -58,10 +58,10 @@ namespace TackEngine.Core.GUI {
             DisplayMode = GUIScrollBarDisplayMode.Auto;
 
             if (Orientation == GUIScrollBarOrientation.Vertical) {
-                Size = new Vector2f(30, 200);
+                Size = new Vector2f(10, 200);
             }
 
-            m_handleBounds = new RectangleShape(0, 0, 30, 30);
+            m_handleBounds = new RectangleShape(0, 0, 10, 30);
 
             BaseTackGUI.Instance.RegisterGUIObject(this);
         }
@@ -69,32 +69,52 @@ namespace TackEngine.Core.GUI {
         internal override void OnUpdate() {
             base.OnUpdate();
 
-            if (IsWaitingForMouseUp(MouseButtonKey.Left)) {
-                if (TackInput.MouseButtonUp(MouseButtonKey.Left)) {
-                    m_isDragging = false;
+            if (IsDragging) {
+                Vector2f mousePos = TackInput.Instance.MousePosition.ToVector2f();
+
+                if (TackEngineInstance.Instance.Platform == TackEngineInstance.TackEnginePlatform.Android) {
+                    mousePos = TackInput.Instance.TouchPosition.ToVector2f();
                 }
+
+                float delta = m_mouseDownOffset.Y - mousePos.Y;
+                float diff = m_parentScrollable.GetContentSize().Y - Size.Y;
+
+                m_parentScrollable.VerticalScrollPosition = Math.TackMath.Clamp(m_parentScrollable.VerticalScrollPosition - (delta * (m_parentScrollable.ScrollSensitivity * 1)), 0, diff);
+                m_mouseDownOffset = new Vector2i((int)mousePos.X, (int)mousePos.Y);
             }
         }
 
         internal override void OnRender(GUIMaskData maskData) {
             if (m_shouldRender) {
-                BaseTackGUI.Instance.InternalBox(new RectangleShape(Position, Size), new GUIBox.GUIBoxStyle() { Colour = Colour4b.Red }, maskData);
-                BaseTackGUI.Instance.InternalBox(new RectangleShape(Position.X, m_handleBounds.Y + Position.Y, m_handleBounds.Width, m_handleBounds.Height), new GUIBox.GUIBoxStyle() { Colour = Colour4b.Green }, maskData);
+                // Scrollbar background
+                BaseTackGUI.Instance.InternalBox(new RectangleShape(Position, Size), new GUIBox.GUIBoxStyle() { Colour = NormalStyle.Colour, Texture = Sprite.DefaultSprite }, maskData);
+
+                // Scrollbar handle
+                BaseTackGUI.Instance.InternalBox(new RectangleShape(Position.X, m_handleBounds.Y + Position.Y, m_handleBounds.Width, m_handleBounds.Height), new GUIBox.GUIBoxStyle() { Colour = NormalStyle.HandleColour, Texture = Sprite.DefaultSprite }, maskData);
             }
         }
 
         internal override void OnMouseEvent(GUIMouseEventArgs args) {
             base.OnMouseEvent(args);
 
-            Vector2f mousePos = TackInput.Instance.MousePosition.ToVector2f();
+            if (args.MouseAction == MouseButtonAction.Down) {
+                Vector2f mousePos = TackInput.Instance.MousePosition.ToVector2f();
 
-            if (TackEngineInstance.Instance.Platform == TackEngineInstance.TackEnginePlatform.Android) {
-                mousePos = TackInput.Instance.TouchPosition.ToVector2f();
+                if (TackEngineInstance.Instance.Platform == TackEngineInstance.TackEnginePlatform.Android ||
+                    TackEngineInstance.Instance.Platform == TackEngineInstance.TackEnginePlatform.iOS) {
+                    mousePos = TackInput.Instance.TouchPosition.ToVector2f();
+                }
+
+                RectangleShape rect = new RectangleShape(Position.X + m_handleBounds.X, Position.Y + m_handleBounds.Y, m_handleBounds.Width, m_handleBounds.Height);
+
+                if (Physics.AABB.IsPointInAABB(new Physics.AABB(rect), mousePos)) {
+                    IsDragging = true;
+                    m_mouseDownOffset = args.MousePosition;
+                }
             }
 
-            if (Physics.AABB.IsPointInAABB(new Physics.AABB(m_handleBounds), mousePos)) {
-                m_isDragging = true;
-                m_mouseDownOffset = args.MousePosition - new Vector2i((int)m_handleBounds.X, (int)m_handleBounds.Y);
+            if (args.MouseAction == MouseButtonAction.Up) {
+                IsDragging = false;
             }
         }
 

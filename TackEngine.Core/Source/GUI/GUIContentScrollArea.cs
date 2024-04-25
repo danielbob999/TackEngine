@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using TackEngine.Core.Main;
 using TackEngine.Core.Engine;
 using TackEngine.Core.Input;
+using TackEngine.Core.GUI.Events;
 
 namespace TackEngine.Core.GUI {
     public class GUIContentScrollArea : GUIObject, IGUIScrollable {
@@ -19,6 +20,8 @@ namespace TackEngine.Core.GUI {
         private GUIScrollBar m_verticalScrollBar;
 
         private Dictionary<int, Vector2f> m_childOffsets;
+        private bool m_touchScrolling = false;
+        private Vector2f m_touchScrollingDownPos;
 
         public GUIContentScrollArea() {
             Position = new Vector2f(5, 5);
@@ -43,6 +46,7 @@ namespace TackEngine.Core.GUI {
             m_verticalScrollBar.Position = new Vector2f(Position.X + Size.X - m_verticalScrollBar.Size.X, Position.Y);
             m_verticalScrollBar.SetData(Size.Y, GetContentSize().Y, VerticalScrollPosition);
 
+            // Scrolling logic windows/linux
             if (TackInput.Instance.MouseScrollWheelChange != 0) {
                 if (IsMouseHovering) {
                     Vector2f contentSize = GetContentSize();
@@ -52,6 +56,16 @@ namespace TackEngine.Core.GUI {
                         VerticalScrollPosition = Math.TackMath.Clamp(VerticalScrollPosition + (-TackInput.Instance.MouseScrollWheelChange * (ScrollSensitivity * 10)), 0, diff);
                     }
                 }
+            }
+
+            // Scrolling logic mobile
+            if (m_touchScrolling && !m_verticalScrollBar.IsDragging) {
+                Vector2f touchPos = TackInput.Instance.TouchPosition.ToVector2f();
+                float delta = m_touchScrollingDownPos.Y - touchPos.Y;
+                float diff = GetContentSize().Y - Size.Y;
+
+                VerticalScrollPosition = Math.TackMath.Clamp(VerticalScrollPosition + (delta * (ScrollSensitivity * 1)), 0, diff);
+                m_touchScrollingDownPos = touchPos;
             }
 
             for (int i = 0; i < ChildObjects.Count; i++) {
@@ -66,7 +80,7 @@ namespace TackEngine.Core.GUI {
         internal override void OnRender(GUIMaskData maskData) {
             base.OnRender(new GUIMaskData(maskData.Masks));
 
-            BaseTackGUI.Instance.InternalBox(new RectangleShape(Position, Size), new GUIBox.GUIBoxStyle() { Colour = Colour4b.Blue }, new GUIMaskData(maskData.Masks));
+            BaseTackGUI.Instance.InternalBox(new RectangleShape(Position, Size), new GUIBox.GUIBoxStyle() { Colour = new Colour4b(0, 0, 0, 0) }, new GUIMaskData(maskData.Masks));
 
             m_verticalScrollBar.OnRender(new GUIMaskData(maskData.Masks));
 
@@ -80,10 +94,10 @@ namespace TackEngine.Core.GUI {
         }
 
         internal override void OnClose() {
-            
+
         }
 
-        private Vector2f GetContentSize() {
+        public Vector2f GetContentSize() {
             Vector2f largest = new Vector2f();
 
             foreach (KeyValuePair<int, Vector2f> pair in m_childOffsets) {
@@ -99,6 +113,22 @@ namespace TackEngine.Core.GUI {
             }
 
             return largest;
+        }
+
+        internal override void OnMouseEvent(GUIMouseEventArgs args) {
+            base.OnMouseEvent(args);
+
+            if (TackEngineInstance.Instance.Platform == TackEngineInstance.TackEnginePlatform.Android || 
+                TackEngineInstance.Instance.Platform == TackEngineInstance.TackEnginePlatform.iOS) {
+                if (args.MouseAction == MouseButtonAction.Down) {
+                    m_touchScrolling = true;
+                    m_touchScrollingDownPos = TackInput.Instance.TouchPosition.ToVector2f();
+                }
+
+                if (args.MouseAction == MouseButtonAction.Up) {
+                    m_touchScrolling = false;
+                }
+            }
         }
     }
 }
