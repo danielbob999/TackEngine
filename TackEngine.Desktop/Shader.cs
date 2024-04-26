@@ -145,6 +145,15 @@ namespace TackEngine.Core.Renderer {
             GL.Uniform4(GL.GetUniformLocation(Id, name), ref vec4tk);
         }
 
+        internal override void SetUniformValue(string name, Sprite sprite) {
+            GL.ActiveTexture(TextureUnit.Texture0 + TackRenderer.Instance.CurrentTextureUnitIndex);
+            GL.BindTexture(TextureTarget.Texture2D, sprite.Id);
+
+            SetUniformValue(name, TackRenderer.Instance.CurrentTextureUnitIndex);
+
+            TackRenderer.Instance.IncrementCurrentTextureUnitIndex();
+        }
+
         internal override void Use() {
             GL.UseProgram(Id);
         }

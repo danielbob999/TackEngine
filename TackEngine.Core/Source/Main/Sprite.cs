@@ -164,6 +164,9 @@ namespace TackEngine.Core.Main {
         /// </summary>
         public static Sprite DefaultUISprite { get; internal set; }
 
+        private SpriteFilter m_filter;
+        private SpriteWrapMode m_wrapMode;
+
         /// <summary>
         /// The width of the Sprite
         /// </summary>
@@ -182,12 +185,24 @@ namespace TackEngine.Core.Main {
         /// <summary>
         /// The image filter used when rendering
         /// </summary>
-        public SpriteFilter Filter { get; set; }
+        public SpriteFilter Filter {
+            get { return m_filter; }
+            set {
+                m_filter = value;
+                SpriteManager.Instance.UpdateSpriteFilterMode(this);
+            }
+        }
 
         /// <summary>
         /// The image wrap mode to use when rendering
         /// </summary>
-        public SpriteWrapMode WrapMode { get; set; }
+        public SpriteWrapMode WrapMode {
+            get { return m_wrapMode; }
+            set {
+                m_wrapMode = value;
+                SpriteManager.Instance.UpdateSpriteWrapMode(this);
+            }
+        }
 
         /// <summary>
         /// The PixelFormat of the data for this Sprite

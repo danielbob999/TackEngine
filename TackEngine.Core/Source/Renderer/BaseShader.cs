@@ -54,6 +54,8 @@ namespace TackEngine.Core.Renderer {
 
         internal abstract void SetUniformValue(string name, Vector4 vec4);
 
+        internal abstract void SetUniformValue(string name, Sprite sprite);
+
         internal abstract void Use();
     }
 }

@@ -44,14 +44,8 @@ namespace TackEngine.Desktop {
         }
 
         public override void RenderToScreen(out int drawCallCount) {
-            GL.Enable(EnableCap.Texture2D);
             GL.Enable(EnableCap.Blend);
             GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
-
-            GL.EnableClientState(ArrayCap.ColorArray);
-            GL.EnableClientState(ArrayCap.VertexArray);
-            GL.EnableClientState(ArrayCap.IndexArray);
-            GL.EnableClientState(ArrayCap.TextureCoordArray);
 
             int lastBoundSpriteId = -1;
 
@@ -146,6 +140,9 @@ namespace TackEngine.Desktop {
                     }
                 }
 
+                // Reset the current texture unit index back to 0
+                TackRenderer.Instance.ResetCurrentTextureUnitIndex();
+
                 //Shader connectedShader = m_defaultWorldShader;
                 BaseShader connectedShader = rendererComp.Shader;
 
@@ -164,6 +161,8 @@ namespace TackEngine.Desktop {
                 GL.ActiveTexture(TextureUnit.Texture0);
                 GL.BindTexture(TextureTarget.Texture2D, rendererComp.Sprite.Id);
 
+                TackRenderer.Instance.IncrementCurrentTextureUnitIndex();
+
                 if (rendererComp.Sprite.IsDynamic && rendererComp.Sprite.IsDirty) {
                     GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, rendererComp.Sprite.Width, rendererComp.Sprite.Height, 0, OpenTK.Graphics.OpenGL.PixelFormat.Rgba, PixelType.UnsignedByte, rendererComp.Sprite.Data);
 
@@ -171,21 +170,11 @@ namespace TackEngine.Desktop {
                     rendererComp.Sprite.IsDirty = false;
                 }
 
-                // set texture filtering parameters
-                GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)rendererComp.Sprite.Filter);
-                GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)rendererComp.Sprite.Filter);
-
-                // set the texture wrapping parameters
-                GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)rendererComp.Sprite.WrapMode);
-                GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)rendererComp.Sprite.WrapMode);
-
                 TackProfiler.Instance.StartTimer("Renderer.Loop.SetUniformData");
 
-                //GL.Uniform1(GL.GetUniformLocation(m_defaultWorldShader.Id, "uTexture"), 0);
                 connectedShader.SetUniformValue("uTexture", (int)0);
 
                 Vector4 colourVector = new Vector4(rendererComp.Colour.R / 255.0f, rendererComp.Colour.G / 255.0f, rendererComp.Colour.B / 255.0f, rendererComp.Colour.A / 255.0f);
-                //GL.Uniform4(GL.GetUniformLocation(m_defaultWorldShader.Id, "uColour"), ref colourVector);
                 connectedShader.SetUniformValue("uColour", colourVector);
 
                 foreach (KeyValuePair<string, object> uniformValue in rendererComp.ShaderUniformValues) {
@@ -215,6 +204,8 @@ namespace TackEngine.Desktop {
                         connectedShader.SetUniformValue(uniformValue.Key, (Vector3)uniformValue.Value);
                     } else if (valueType == typeof(Vector4)) {
                         connectedShader.SetUniformValue(uniformValue.Key, (Vector4)uniformValue.Value);
+                    } else if (valueType == typeof(Sprite)) {
+                        connectedShader.SetUniformValue(uniformValue.Key, (Sprite)uniformValue.Value);
                     } else {
                         TackConsole.EngineLog(TackConsole.LogType.Error, "Error: Type '" + valueType.Name + "' is not supported as a Shader Uniform Variable");
                     }
@@ -268,6 +259,11 @@ namespace TackEngine.Desktop {
                 GL.DrawElements(PrimitiveType.Triangles, 6, DrawElementsType.UnsignedInt, IntPtr.Zero);
                 localDrawCallCount++;
                 TackProfiler.Instance.StopTimer("Renderer.Loop.DrawCall");
+
+                for (int cti = 0; cti < TackRenderer.Instance.CurrentTextureUnitIndex; cti++) {
+                    GL.ActiveTexture(TextureUnit.Texture0 + cti);
+                    GL.BindTexture(TextureTarget.Texture2D, 0);
+                }
             }
 
             GL.DeleteBuffers(1, ref EBO);

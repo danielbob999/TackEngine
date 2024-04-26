@@ -29,6 +29,7 @@ namespace TackEngine.Core.Renderer
         protected GUITextArea m_fpsCounterTextArea;
         protected float m_previousRenderTime;
         protected int m_previousDrawCallCount;
+        private int m_currentTextureUnitIndex = 0;
 
         public static Colour4b BackgroundColour
         {
@@ -41,6 +42,8 @@ namespace TackEngine.Core.Renderer
         public BaseTackGUI GUIInstance { get; set; }
 
         public BaseShader DefaultWorldShader { get { return m_currentRenderer.DefaultWorldShader; } }
+
+        internal int CurrentTextureUnitIndex { get { return m_currentTextureUnitIndex; } }
 
         internal TackRenderer() {
             mBackgroundColour = new Colour4b(150, 150, 150, 255);
@@ -62,6 +65,14 @@ namespace TackEngine.Core.Renderer
 
         public BaseShader GetShader(string shaderName) {
             return m_currentRenderer.GetShader(shaderName);
+        }
+
+        internal void IncrementCurrentTextureUnitIndex() {
+            m_currentTextureUnitIndex++;
+        }
+
+        internal void ResetCurrentTextureUnitIndex() {
+            m_currentTextureUnitIndex = 0;
         }
 
         public static void SetFpsCounterState(bool state) {
