@@ -43,7 +43,34 @@ namespace TackEngine.Android {
             GL.BindTexture(TextureTarget.Texture2D, sprite.Id);
             GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, sprite.Width, sprite.Height, 0, PixelFormat.Rgba, PixelType.UnsignedByte, sprite.Data);
 
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)sprite.Filter);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)sprite.Filter);
+
+            // set the texture wrapping parameters
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)sprite.WrapMode);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)sprite.WrapMode);
+
             m_sprites.Add(sprite);
+        }
+
+        internal override void UpdateSpriteFilterMode(Sprite sprite) {
+            GL.ActiveTexture(TextureUnit.Texture0);
+            GL.BindTexture(TextureTarget.Texture2D, sprite.Id);
+
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)sprite.Filter);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)sprite.Filter);
+
+            GL.BindTexture(TextureTarget.Texture2D, 0);
+        }
+
+        internal override void UpdateSpriteWrapMode(Sprite sprite) {
+            GL.ActiveTexture(TextureUnit.Texture0);
+            GL.BindTexture(TextureTarget.Texture2D, sprite.Id);
+
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)sprite.WrapMode);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)sprite.WrapMode);
+
+            GL.BindTexture(TextureTarget.Texture2D, 0);
         }
 
         public override Sprite LoadFromFile(string path) {

@@ -149,6 +149,12 @@ namespace TackEngine.Core.Renderer {
             GL.ActiveTexture(TextureUnit.Texture0 + TackRenderer.Instance.CurrentTextureUnitIndex);
             GL.BindTexture(TextureTarget.Texture2D, sprite.Id);
 
+            if (sprite.IsDynamic && sprite.IsDirty) {
+                GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, sprite.Width, sprite.Height, 0, OpenTK.Graphics.OpenGL.PixelFormat.Rgba, PixelType.UnsignedByte, sprite.Data);
+
+                sprite.IsDirty = false;
+            }
+
             SetUniformValue(name, TackRenderer.Instance.CurrentTextureUnitIndex);
 
             TackRenderer.Instance.IncrementCurrentTextureUnitIndex();

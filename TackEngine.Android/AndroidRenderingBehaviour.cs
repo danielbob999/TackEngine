@@ -67,13 +67,8 @@ namespace TackEngine.Android {
         }
 
         public override void RenderToScreen(out int drawCallCount) {
-            //GL.Enable(EnableCap.Texture2D);
             GL.Enable(EnableCap.Blend);
             GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
-
-            //GL.Viewport(0, 0, (int)TackEngine.Core.Engine.TackEngine.Instance.Window.Size.X, (int)TackEngine.Core.Engine.TackEngine.Instance.Window.Size.Y);
-
-            //GL.EnableVertexAttribArray(0);
 
             int lastBoundSpriteId = -1;
 
@@ -88,21 +83,7 @@ namespace TackEngine.Android {
 
             TackProfiler.Instance.StartTimer("Renderer.CreateBindBuffers");
 
-            //int VAO;
-            //int VBO;
-            //int EBO;
-
-
-            GL.UseProgram(m_defaultWorldShader.Id);
-
             CheckForErrors(true);
-
-            /*
-            GL.EnableVertexAttribArray(posHandle);
-
-            //GL.VertexAttribPointer(posHandle, 3, All.Float, false, 0, m_vData1); // this may need to be converted to a IntPtr
-            GL.VertexAttribPointer(posHandle, 3, VertexAttribPointerType.Float, false, 0, m_vData1);
-            */
 
             GL.GenBuffers(1, out int VBO);
 
@@ -172,7 +153,9 @@ namespace TackEngine.Android {
                     }
                 }
 
-                //Shader connectedShader = m_defaultWorldShader;
+                // Reset the current texture unit index back to 0
+                TackRenderer.Instance.ResetCurrentTextureUnitIndex();
+
                 BaseShader connectedShader = rendererComp.Shader;
 
                 connectedShader.Use();
@@ -192,29 +175,20 @@ namespace TackEngine.Android {
                 GL.ActiveTexture(TextureUnit.Texture0);
                 GL.BindTexture(TextureTarget.Texture2D, rendererComp.Sprite.Id);
 
+                TackRenderer.Instance.IncrementCurrentTextureUnitIndex();
+
                 if (rendererComp.Sprite.IsDynamic && rendererComp.Sprite.IsDirty) {
                     GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, rendererComp.Sprite.Width, rendererComp.Sprite.Height, 0, PixelFormat.Rgba, PixelType.UnsignedByte, rendererComp.Sprite.Data);
 
-                    Console.WriteLine("Writing data of dirty sprite with id: " + rendererComp.Sprite.Id);
                     rendererComp.Sprite.IsDirty = false;
                 }
-
-                // set texture filtering parameters
-                GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)rendererComp.Sprite.Filter);
-                GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)rendererComp.Sprite.Filter);
-
-                // set the texture wrapping parameters
-                GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)rendererComp.Sprite.WrapMode);
-                GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)rendererComp.Sprite.WrapMode);
-
+                
                 TackProfiler.Instance.StopTimer("Renderer.Loop.BindTextureData");
                 TackProfiler.Instance.StartTimer("Renderer.Loop.SetUniformData");
 
-                //GL.Uniform1(GL.GetUniformLocation(m_defaultWorldShader.Id, "uTexture"), 0);
                 connectedShader.SetUniformValue("uTexture", (int)0);
 
                 Vector4 colourVector = new Vector4(rendererComp.Colour.R / 255.0f, rendererComp.Colour.G / 255.0f, rendererComp.Colour.B / 255.0f, rendererComp.Colour.A / 255.0f);
-                //GL.Uniform4(GL.GetUniformLocation(m_defaultWorldShader.Id, "uColour"), ref colourVector);
                 connectedShader.SetUniformValue("uColour", colourVector);
 
                 foreach (KeyValuePair<string, object> uniformValue in rendererComp.ShaderUniformValues) {
@@ -244,6 +218,8 @@ namespace TackEngine.Android {
                         connectedShader.SetUniformValue(uniformValue.Key, (Vector3)uniformValue.Value);
                     } else if (valueType == typeof(Vector4)) {
                         connectedShader.SetUniformValue(uniformValue.Key, (Vector4)uniformValue.Value);
+                    } else if (valueType == typeof(Sprite)) {
+                        connectedShader.SetUniformValue(uniformValue.Key, (Sprite)uniformValue.Value);
                     } else {
                         TackConsole.EngineLog(TackConsole.LogType.Error, "Error: Type '" + valueType.Name + "' is not supported as a Shader Uniform Variable");
                     }
@@ -301,33 +277,18 @@ namespace TackEngine.Android {
                     }
                 }
 
-                //GL.DrawElements(PrimitiveType.Triangles, 6, DrawElementsType.UnsignedInt, IntPtr.Zero);
                 localDrawCallCount++;
                 TackProfiler.Instance.StopTimer("Renderer.Loop.DrawCall");
+
+                for (int cti = 0; cti < TackRenderer.Instance.CurrentTextureUnitIndex; cti++) {
+                    GL.ActiveTexture(TextureUnit.Texture0 + cti);
+                    GL.BindTexture(TextureTarget.Texture2D, 0);
+                }
             }
 
             GL.DeleteBuffers(1, ref VBO);
 
             drawCallCount = localDrawCallCount;
-
-            /*
-            float v = (MathF.Sin((float)EngineTimer.Instance.TotalRunTime) + 1) / 2f;
-
-            Vector4 colourVector = new Vector4(v, 0, 0, 1f);
-            //GL.Uniform4(GL.GetUniformLocation(m_defaultWorldShader.Id, "uColour"), ref colourVector);
-            m_defaultWorldShader.SetUniformValue("uColour", colourVector);
-            
-            unsafe {
-                fixed (void* ptr = m_indiceData) {
-                    GL.DrawElements(BeginMode.Triangles, 6, DrawElementsType.UnsignedInt, new IntPtr(ptr));
-                }
-            }
-
-            drawCallCount = 1;
-
-            GL.DisableVertexAttribArray(posHandle);
-            */
-
         }
 
         public override void PostRender() {

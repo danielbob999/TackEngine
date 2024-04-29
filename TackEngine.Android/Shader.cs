@@ -149,6 +149,21 @@ namespace TackEngine.Android {
             GL.Uniform4(GL.GetUniformLocation(Id, name), ref vec4tk);
         }
 
+        internal override void SetUniformValue(string name, Sprite sprite) {
+            GL.ActiveTexture(TextureUnit.Texture0 + TackRenderer.Instance.CurrentTextureUnitIndex);
+            GL.BindTexture(TextureTarget.Texture2D, sprite.Id);
+
+            if (sprite.IsDynamic && sprite.IsDirty) {
+                GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, sprite.Width, sprite.Height, 0, PixelFormat.Rgba, PixelType.UnsignedByte, sprite.Data);
+
+                sprite.IsDirty = false;
+            }
+
+            SetUniformValue(name, TackRenderer.Instance.CurrentTextureUnitIndex);
+
+            TackRenderer.Instance.IncrementCurrentTextureUnitIndex();
+        }
+
         internal override void Use() {
             GL.UseProgram(Id);
         }
