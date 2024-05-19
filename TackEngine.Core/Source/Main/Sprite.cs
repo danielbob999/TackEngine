@@ -341,11 +341,8 @@ namespace TackEngine.Core.Main {
             return SpriteManager.Instance.LoadFromFile(path);
         }
 
-        public static Sprite LoadFromFile(byte[] data) {
-            Sprite newSprite = new Sprite();
-
-
-            return newSprite;
+        public static Sprite LoadFromBitmap(object bitmap) {
+            return SpriteManager.Instance.LoadSpriteFromBitmap(bitmap);
         }
     }
 }

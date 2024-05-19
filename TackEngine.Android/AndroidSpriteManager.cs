@@ -116,5 +116,66 @@ namespace TackEngine.Android {
 
             TackConsole.EngineLog(TackConsole.LogType.Message, "Loaded the default UI sprite into Sprite.DefaultUISprite");
         }
+
+        public override SpriteSheet LoadSpriteSheetFromFile(string path, int sizeX, int sizeY, int countX, int countY) {
+            try {
+                SpriteSheet newSpriteSheet = new SpriteSheet(countX * countY);
+
+                Bitmap masterBmp = BitmapFactory.DecodeStream(AndroidContext.CurrentAssetManager.Open(path));
+
+                if ((sizeX * countX) > masterBmp.Width || (sizeY * countY) > masterBmp.Height) {
+                    throw new Exception("The SpriteSheet master Bitmap is too small for the size/count given");
+                }
+
+                int spriteId = 0;
+
+                for (int y = 0; y < countY; y++) {
+                    for (int x = 0; x < countX; x++) {
+                        Bitmap spriteBitmap = Bitmap.CreateBitmap(masterBmp, x * sizeX, y * sizeY, sizeX, sizeY);
+
+                        Sprite newSprite = Sprite.LoadFromBitmap(spriteBitmap);
+                        newSprite.Create();
+
+                        spriteBitmap.Recycle();
+
+                        spriteId++;
+                    }
+                }
+
+                masterBmp.Recycle();
+
+                TackConsole.EngineLog(TackConsole.LogType.Message, "Successfully loaded SpriteSheet with " + newSpriteSheet.SpriteCount + " Sprites");
+            } catch (Exception e) {
+                TackConsole.EngineLog(TackConsole.LogType.Error, "Failed to load SpriteSheet from file with path '" + path + "'");
+                TackConsole.EngineLog(TackConsole.LogType.Error, "Error Message: " + e.Message);
+                return null;
+            }
+        }
+
+        public override Sprite LoadSpriteFromBitmap(object bitmap) {
+            try {
+                Sprite newSprite = new Sprite();
+                Bitmap newBp = (Bitmap)bitmap;
+
+                newSprite.Width = newBp.Width;
+                newSprite.Height = newBp.Height;
+                newSprite.PixelFormat = (Sprite.SpritePixelFormat)newBp.GetBitmapInfo().Format;
+                newSprite.Data = new byte[newBp.Width * newBp.Height * 4];
+
+                for (int y = 0; y < newBp.Height; y++) {
+                    for (int x = 0; x < newBp.Width; x++) {
+                        int col = newBp.GetPixel(x, y);
+
+                        newSprite.InternalSetPixel(x, y, new Colour4b((byte)Color.GetRedComponent(col), (byte)Color.GetGreenComponent(col), (byte)Color.GetBlueComponent(col), (byte)Color.GetAlphaComponent(col)));
+                    }
+                }
+
+                return newSprite;
+            } catch (Exception e) {
+                TackConsole.EngineLog(TackConsole.LogType.Error, "Failed to load sprite");
+                TackConsole.EngineLog(TackConsole.LogType.Error, string.Format("'{0}'", e.ToString()));
+                return null;
+            }
+        }
     }
 }

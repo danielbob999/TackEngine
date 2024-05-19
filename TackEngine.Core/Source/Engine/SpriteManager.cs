@@ -29,6 +29,10 @@ namespace TackEngine.Core.Engine {
 
         public abstract Sprite LoadFromFile(string path);
 
+        public abstract Sprite LoadSpriteFromBitmap(object bitmap);
+
+        public abstract SpriteSheet LoadSpriteSheetFromFile(string path, int sizeX, int sizeY, int countX, int countY);
+
         internal abstract void UpdateSpriteFilterMode(Sprite sprite);
 
         internal abstract void UpdateSpriteWrapMode(Sprite sprite);
