@@ -11,6 +11,7 @@ using TackEngine.Core.Objects;
 using TackEngine.Core.Objects.Components;
 using TackEngine.Core.Physics;
 using TackEngine.Core.GUI;
+using TackEngine.Android.Renderer;
 
 namespace TackEngine.Android {
     internal class AndroidRenderer : TackRenderer {
@@ -25,6 +26,8 @@ namespace TackEngine.Android {
             GUIInstance.OnStart();
 
             m_currentRenderer = new AndroidRenderingBehaviour();
+            m_lineRenderer = new Core.Source.Renderer.LineRendering.LineRenderer(new AndroidLineRenderingBehaviour());
+            m_lineRenderer.Initialise();
         }
 
         public override void OnUpdate() {
@@ -77,12 +80,17 @@ namespace TackEngine.Android {
             // Render TackPhysics debug objects
             //TackPhysics.GetInstance().Render();
 
+            m_lineRenderer.DrawLinesToScreen(Core.Source.Renderer.LineRendering.LineRenderer.LineContext.World);
+
             TackProfiler.Instance.StartTimer("Renderer.GUIRender");
             // Render GUI
             GUIInstance.OnGUIPreRender();
             GUIInstance.OnGUIRender();
             GUIInstance.OnGUIPostRender();
             TackProfiler.Instance.StopTimer("Renderer.GUIRender");
+
+            m_lineRenderer.DrawLinesToScreen(Core.Source.Renderer.LineRendering.LineRenderer.LineContext.GUI);
+            m_lineRenderer.ClearLineJobQueue();
         }
 
         public override void OnClose() {

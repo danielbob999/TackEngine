@@ -138,6 +138,8 @@ namespace TackEngine.Android {
 
                         spriteBitmap.Recycle();
 
+                        newSpriteSheet.Sprites[spriteId] = newSprite;
+
                         spriteId++;
                     }
                 }
@@ -145,6 +147,8 @@ namespace TackEngine.Android {
                 masterBmp.Recycle();
 
                 TackConsole.EngineLog(TackConsole.LogType.Message, "Successfully loaded SpriteSheet with " + newSpriteSheet.SpriteCount + " Sprites");
+
+                return newSpriteSheet;
             } catch (Exception e) {
                 TackConsole.EngineLog(TackConsole.LogType.Error, "Failed to load SpriteSheet from file with path '" + path + "'");
                 TackConsole.EngineLog(TackConsole.LogType.Error, "Error Message: " + e.Message);

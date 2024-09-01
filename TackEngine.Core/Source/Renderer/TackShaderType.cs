@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 namespace TackEngine.Core.Renderer {
     public enum TackShaderType {
         World,
-        GUI
+        GUI,
+        Line
     }
 }

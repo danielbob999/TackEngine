@@ -183,6 +183,10 @@ namespace TackEngine.Android {
 
                 bool isVerified = GLESShaderParser.VerifyShader(vertSource, fragSource, out GLESShaderParser.ParsedShaderDetails details);
 
+                if (type == TackShaderType.Line) {
+                    isVerified = true;
+                }
+
                 if (!isVerified) {
                     throw new Exception("Failed to verify shader source");
                 }

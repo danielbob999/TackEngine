@@ -112,9 +112,6 @@ namespace TackEngine.Desktop {
             m_tackInput = new TackInput();
             m_tackInput.OnStart();
 
-            m_debugLineRenderer = new DesktopDebugLineRenderer();
-            m_debugLineRenderer.OnStart();
-
             m_audioManager = new DesktopAudioManagerImpl();
             m_audioManager.OnStart();
 

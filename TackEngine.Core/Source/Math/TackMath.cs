@@ -157,5 +157,17 @@ namespace TackEngine.Core.Math
                 return x;
             }
         }
+
+        public static int Map(int val, int aMin, int aMax, int bMin, int bMax) {
+            return (val - aMin) * (bMax - bMin) / (aMax - aMin) + bMin;
+        }
+
+        public static float Map(float val, float aMin, float aMax, float bMin, float bMax) {
+            return (val - aMin) * (bMax - bMin) / (aMax - aMin) + bMin;
+        }
+
+        public static double Map(double val, double aMin, double aMax, double bMin, double bMax) {
+            return (val - aMin) * (bMax - bMin) / (aMax - aMin) + bMin;
+        }
     }
 }

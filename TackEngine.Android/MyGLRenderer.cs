@@ -56,9 +56,6 @@ namespace TackEngine.Android {
             TackEngineActivity.Instance.m_tackInput = new TackInput();
             TackEngineActivity.Instance.m_tackInput.OnStart();
 
-            TackEngineActivity.Instance.m_debugLineRenderer = new AndroidDebugLineRenderer();
-            TackEngineActivity.Instance.m_debugLineRenderer.OnStart();
-
             TackEngineActivity.Instance.m_audioManager = new AndroidAudioManagerImpl();
             TackEngineActivity.Instance.m_audioManager.OnStart();
 

@@ -14,6 +14,7 @@ using TackEngine.Core.Objects.Components;
 using TackEngine.Core.Renderer;
 using TackEngine.Core.GUI;
 using TackEngine.Core.Physics;
+using TackEngine.Core.Source.Renderer.LineRendering;
 
 namespace TackEngine.Core.Renderer
 {
@@ -30,6 +31,7 @@ namespace TackEngine.Core.Renderer
         protected float m_previousRenderTime;
         protected int m_previousDrawCallCount;
         private int m_currentTextureUnitIndex = 0;
+        protected LineRenderer m_lineRenderer;
 
         public static Colour4b BackgroundColour
         {

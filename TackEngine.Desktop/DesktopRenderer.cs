@@ -12,6 +12,8 @@ using TackEngine.Core.Physics;
 using OpenTK;
 using TackEngine.Core.GUI;
 using OpenTK.Graphics.OpenGL;
+using TackEngine.Desktop.Renderer;
+using TackEngine.Core.Source.Renderer.LineRendering;
 
 namespace TackEngine.Desktop {
     internal class DesktopRenderer : TackRenderer {
@@ -26,6 +28,8 @@ namespace TackEngine.Desktop {
             GUIInstance.OnStart();
 
             m_currentRenderer = new DesktopRenderingBehaviour();
+            m_lineRenderer = new Core.Source.Renderer.LineRendering.LineRenderer(new DesktopLineRenderingBehaviour());
+            m_lineRenderer.Initialise();
 
             m_fpsCounterTextArea = new GUITextArea();
             m_fpsCounterTextArea.Position = new Vector2f(Camera.MainCamera.RenderTarget.Width - 150, 5);
@@ -77,12 +81,18 @@ namespace TackEngine.Desktop {
             //TackPhysics.GetInstance().Render();
             PhysicsDebugDraw();
 
+            m_lineRenderer.DrawLinesToScreen(Core.Source.Renderer.LineRendering.LineRenderer.LineContext.World);
+
             TackProfiler.Instance.StartTimer("Renderer.GUIRender");
             // Render GUI
             GUIInstance.OnGUIPreRender();
             GUIInstance.OnGUIRender();
             GUIInstance.OnGUIPostRender();
             TackProfiler.Instance.StopTimer("Renderer.GUIRender");
+
+            m_lineRenderer.DrawLinesToScreen(Core.Source.Renderer.LineRendering.LineRenderer.LineContext.GUI);
+
+            m_lineRenderer.ClearLineJobQueue();
         }
 
         public override void OnClose() {
@@ -91,6 +101,8 @@ namespace TackEngine.Desktop {
             }
 
             GUIInstance.OnClose();
+
+            m_lineRenderer.Close();
         }
 
         public void PhysicsDebugDraw() {

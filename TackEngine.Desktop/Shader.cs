@@ -171,6 +171,10 @@ namespace TackEngine.Core.Renderer {
 
                 bool isVerified = ShaderParser.VerifyShader(vertSource, fragSource, out ShaderParser.ParsedShaderDetails details);
 
+                if (type == TackShaderType.Line) {
+                    isVerified = true;
+                }
+
                 if (!isVerified) {
                     throw new Exception("Failed to verify shader source");
                 }

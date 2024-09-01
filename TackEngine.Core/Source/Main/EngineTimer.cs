@@ -51,6 +51,9 @@ namespace TackEngine.Core.Main {
             } 
         }
 
+        internal List<double> AllUpdateTimesOverLastSecond { get { return m_lastSecondUpdateTimes; } }
+        internal List<double> AllRenderTimesOverLastSecond { get { return m_lastSecondRenderTimes; } }
+
         internal EngineTimer() {
             m_watch = new System.Diagnostics.Stopwatch();
         }
