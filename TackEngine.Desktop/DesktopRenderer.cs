@@ -18,21 +18,23 @@ using TackEngine.Core.Source.Renderer.LineRendering;
 namespace TackEngine.Desktop {
     internal class DesktopRenderer : TackRenderer {
 
-        public DesktopRenderer() {
+        internal DesktopRenderer() {
             Instance = this;
             mRenderFpsCounter = true;
         }
 
-        public override void OnStart() {
+        internal override void OnStart() {
             GUIInstance = new TackGUI();
             GUIInstance.OnStart();
+
+            LoadShadersForSplitScreenMode();
 
             m_currentRenderer = new DesktopRenderingBehaviour();
             m_lineRenderer = new Core.Source.Renderer.LineRendering.LineRenderer(new DesktopLineRenderingBehaviour());
             m_lineRenderer.Initialise();
 
             m_fpsCounterTextArea = new GUITextArea();
-            m_fpsCounterTextArea.Position = new Vector2f(Camera.MainCamera.RenderTarget.Width - 150, 5);
+            m_fpsCounterTextArea.Position = new Vector2f(TackEngineInstance.Instance.Window.WindowSize.X - 150, 5);
             m_fpsCounterTextArea.Size = new Vector2f(145, 53);
             m_fpsCounterTextArea.LinkedSceneType = null;
 
@@ -47,10 +49,10 @@ namespace TackEngine.Desktop {
             m_fpsCounterTextArea.NormalStyle = style;
         }
 
-        public override void OnUpdate() {
+        internal override void OnUpdate() {
             if (mRenderFpsCounter) {
                 m_fpsCounterTextArea.Active = mRenderFpsCounter;
-                m_fpsCounterTextArea.Position = new Vector2f(Camera.MainCamera.RenderTarget.Width - 150, 5);
+                m_fpsCounterTextArea.Position = new Vector2f(TackEngineInstance.Instance.Window.WindowSize.X - 150, 5);
                 m_fpsCounterTextArea.Size = new Vector2f(145, 53);
 
                 m_fpsCounterTextArea.Text = "U: " + (1f / EngineTimer.Instance.UpdateTimeAverageLastSecond).ToString("0") + "(" + (EngineTimer.Instance.UpdateTimeAverageLastSecond * 1000f).ToString("0.00") + "ms)\n" +
@@ -61,7 +63,7 @@ namespace TackEngine.Desktop {
             GUIInstance.OnUpdate();
         }
 
-        public override void OnRender(double timeSinceLastRender) {
+        internal override void OnRender(double timeSinceLastRender) {
             m_previousRenderTime = (float)timeSinceLastRender;
 
             TackProfiler.Instance.StartTimer("Renderer.PreRender");
@@ -95,9 +97,9 @@ namespace TackEngine.Desktop {
             m_lineRenderer.ClearLineJobQueue();
         }
 
-        public override void OnClose() {
-            for (int i = 0; i < m_loadedShaders.Count; i++) {
-                m_loadedShaders[i].Destroy();
+        internal override void OnClose() {
+            for (int i = 0; i < m_shaders.Count; i++) {
+                m_shaders[i].Destroy();
             }
 
             GUIInstance.OnClose();
@@ -105,7 +107,7 @@ namespace TackEngine.Desktop {
             m_lineRenderer.Close();
         }
 
-        public void PhysicsDebugDraw() {
+        internal void PhysicsDebugDraw() {
             TackObject[] objs = TackObject.Get();
 
             List<TackObject> physObjs = new List<TackObject>();
@@ -119,6 +121,26 @@ namespace TackEngine.Desktop {
             for (int i = 0; i < physObjs.Count; i++) {
                 BasePhysicsComponent comp = physObjs[i].GetComponent<BasePhysicsComponent>();
             }
+        }
+
+        internal override void LoadShadersForSplitScreenMode() {
+            base.LoadShadersForSplitScreenMode();
+
+            string vertShaderNamePref = "";
+
+            if (CurrentSplitScreenMode == Core.Source.Renderer.SplitScreenMode.DualScreen) {
+                vertShaderNamePref = "dual_screen_";
+            }
+
+            if (CurrentSplitScreenMode == Core.Source.Renderer.SplitScreenMode.QuadScreen) {
+                vertShaderNamePref = "quad_screen_";
+            }
+
+            DefaultWorldShader = Shader.LoadFromFile("shaders.default_world_shader", TackShaderType.World, "tackresources/shaders/world/" + vertShaderNamePref + "world_vertex_shader.vs",
+                                                                                             "tackresources/shaders/world/world_fragment_shader.fs");
+
+            DefaultLitWorldShader = Shader.LoadFromFile("shaders.default_world_shader_lit", TackShaderType.World, "tackresources/shaders/world/" + vertShaderNamePref + "world_vertex_shader.vs",
+                                                                                                          "tackresources/shaders/world/world_fragment_shader_lit.fs");
         }
     }
 }

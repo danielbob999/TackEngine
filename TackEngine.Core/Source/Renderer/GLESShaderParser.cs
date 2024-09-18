@@ -144,9 +144,6 @@ namespace TackEngine.Core.Renderer {
                 details = new ParsedShaderDetails() { m_supportsLighting = false };
                 return false;
             }
-
-            details = new ParsedShaderDetails() { m_supportsLighting = false };
-            return false;
         }
 
         private static bool MatchCameraInfoStructAndVariable(string source, out string variableName) {

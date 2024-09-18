@@ -74,12 +74,12 @@ namespace TackEngine.Core.Engine
 
         [CommandMethod("renderer.enableFpsCounter", "")]
         public static void RendererEnableFpsCounter(string[] args) {
-            Renderer.TackRenderer.SetFpsCounterState(true);
+            //Renderer.TackRenderer.SetFpsCounterState(true);
         }
 
         [CommandMethod("renderer.disableFpsCounter", "")]
         public static void RendererDisableFpsCounter(string[] args) {
-            Renderer.TackRenderer.SetFpsCounterState(false);
+            //Renderer.TackRenderer.SetFpsCounterState(false);
         }
 
         [CommandMethod("console.printOperationsOfCommandclass", "commandClassName:string")]

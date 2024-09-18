@@ -15,14 +15,14 @@ using TackEngine.Core.Renderer;
 using TackEngine.Core.GUI;
 using TackEngine.Core.Physics;
 using TackEngine.Core.Source.Renderer.LineRendering;
+using TackEngine.Core.Source.Renderer;
 
 namespace TackEngine.Core.Renderer
 {
-    internal abstract class TackRenderer
-    {
+    public abstract class TackRenderer {
         public static TackRenderer Instance { get; protected set; }
 
-        protected List<BaseShader> m_loadedShaders;
+        protected List<BaseShader> m_shaders;
         protected float[] mVertexData;
         protected bool mRenderFpsCounter;
         protected Colour4b mBackgroundColour;
@@ -32,42 +32,37 @@ namespace TackEngine.Core.Renderer
         protected int m_previousDrawCallCount;
         private int m_currentTextureUnitIndex = 0;
         protected LineRenderer m_lineRenderer;
+        protected SplitScreenMode m_splitScreenMode = SplitScreenMode.Single;
 
-        public static Colour4b BackgroundColour
-        {
+        public static Colour4b BackgroundColour {
             get { return Instance.mBackgroundColour; }
             set { Instance.mBackgroundColour = value; }
         }
 
         public static int MaxTextureUnits { get; set; }
-
-        public BaseTackGUI GUIInstance { get; set; }
-
-        public BaseShader DefaultWorldShader { get { return m_currentRenderer.DefaultWorldShader; } }
-
+        internal BaseTackGUI GUIInstance { get; set; }
         internal int CurrentTextureUnitIndex { get { return m_currentTextureUnitIndex; } }
+        internal SplitScreenMode CurrentSplitScreenMode { get { return m_splitScreenMode; } }
+        internal Camera[] Cameras { get; }
+
+        public BaseShader DefaultWorldShader { get; protected set; }
+        public BaseShader DefaultLitWorldShader { get; protected set; }
 
         internal TackRenderer() {
             mBackgroundColour = new Colour4b(150, 150, 150, 255);
 
-            m_loadedShaders = new List<BaseShader>();
+            m_shaders = new List<BaseShader>();
+
+            Cameras = new Camera[4];
         }
 
-        public abstract void OnStart();
+        internal abstract void OnStart();
 
-        public abstract void OnUpdate();
+        internal abstract void OnUpdate();
 
-        public abstract void OnRender(double timeSinceLastRender);
+        internal abstract void OnRender(double timeSinceLastRender);
 
-        public abstract void OnClose();
-
-        public void AddShader(BaseShader shader) {
-            m_currentRenderer.AddShader(shader);
-        }
-
-        public BaseShader GetShader(string shaderName) {
-            return m_currentRenderer.GetShader(shaderName);
-        }
+        internal abstract void OnClose();
 
         internal void IncrementCurrentTextureUnitIndex() {
             m_currentTextureUnitIndex++;
@@ -77,11 +72,58 @@ namespace TackEngine.Core.Renderer
             m_currentTextureUnitIndex = 0;
         }
 
-        public static void SetFpsCounterState(bool state) {
+        public virtual void SetSplitScreenMode(SplitScreenMode mode) {
+            m_splitScreenMode = mode;
+
+            LoadShadersForSplitScreenMode();
         }
 
-        public static TackRenderer GetInstance() {
-            return Instance;
+        internal virtual void LoadShadersForSplitScreenMode() {
+            if (DefaultWorldShader != null) {
+                DefaultWorldShader.Destroy();
+            }
+
+            if (DefaultLitWorldShader != null) {
+                DefaultLitWorldShader.Destroy();
+            }
+        }
+
+        internal void AddShader(BaseShader shader) {
+            if (!shader.CompiledAndLinked) {
+                TackConsole.EngineLog(TackConsole.LogType.Error, "Error: Cannot add a shader that is not compiled and linked");
+                return;
+            }
+
+            if (m_shaders.Count(x => x.Name == shader.Name) == 0) {
+                m_shaders.Add(shader);
+
+                TackConsole.EngineLog(TackConsole.LogType.Message, "Successfully added a new Shader to the current renderer with the name '" + shader.Name + "'");
+                return;
+            }
+
+            TackConsole.EngineLog(TackConsole.LogType.Error, "Error: Failed to add a new Shader to the current renderer. There is already a Shader with the name '" + shader.Name + "'");
+        }
+
+        internal BaseShader GetShader(string shaderName) {
+            BaseShader shader = m_shaders.Find(x => x.Name == shaderName);
+
+            if (shader == null) {
+                return DefaultWorldShader;
+            }
+
+            return shader;
+        }
+
+        internal Camera[] GetCameraListForCurrentSplitScreenMode() {
+            if (m_splitScreenMode == SplitScreenMode.DualScreen) {
+                return new Camera[] { Cameras[0], Cameras[1] };
+            }
+
+            if (CurrentSplitScreenMode == SplitScreenMode.QuadScreen) {
+                return Cameras;
+            }
+
+            return new Camera[] { Cameras[0] };
         }
 
         public static Vector2f FindScreenCoordsFromPosition(Vector2f _pos)

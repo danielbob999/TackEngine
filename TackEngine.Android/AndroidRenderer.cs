@@ -16,21 +16,23 @@ using TackEngine.Android.Renderer;
 namespace TackEngine.Android {
     internal class AndroidRenderer : TackRenderer {
 
-        public AndroidRenderer() {
+        internal AndroidRenderer() {
             Instance = this;
             mRenderFpsCounter = true;
         }
 
-        public override void OnStart() {
+        internal override void OnStart() {
             GUIInstance = new TackGUI();
             GUIInstance.OnStart();
+
+            LoadShadersForSplitScreenMode();
 
             m_currentRenderer = new AndroidRenderingBehaviour();
             m_lineRenderer = new Core.Source.Renderer.LineRendering.LineRenderer(new AndroidLineRenderingBehaviour());
             m_lineRenderer.Initialise();
         }
 
-        public override void OnUpdate() {
+        internal override void OnUpdate() {
             if (m_fpsCounterTextArea == null) {
                 m_fpsCounterTextArea = new GUITextArea();
                 m_fpsCounterTextArea.Position = new Vector2f(Camera.MainCamera.RenderTarget.Width - 300, 5);
@@ -61,7 +63,7 @@ namespace TackEngine.Android {
             GUIInstance.OnUpdate();
         }
 
-        public override void OnRender(double timeSinceLastRender) {
+        internal override void OnRender(double timeSinceLastRender) {
             m_previousRenderTime = (float)timeSinceLastRender;
 
             TackProfiler.Instance.StartTimer("Renderer.PreRender");
@@ -93,12 +95,32 @@ namespace TackEngine.Android {
             m_lineRenderer.ClearLineJobQueue();
         }
 
-        public override void OnClose() {
-            for (int i = 0; i < m_loadedShaders.Count; i++) {
-                m_loadedShaders[i].Destroy();
+        internal override void OnClose() {
+            for (int i = 0; i < m_shaders.Count; i++) {
+                m_shaders[i].Destroy();
             }
 
             GUIInstance.OnClose();
+        }
+
+        internal override void LoadShadersForSplitScreenMode() {
+            base.LoadShadersForSplitScreenMode();
+
+            string vertShaderNamePref = "";
+
+            if (CurrentSplitScreenMode == Core.Source.Renderer.SplitScreenMode.DualScreen) {
+                vertShaderNamePref = "dual_screen_";
+            }
+
+            if (CurrentSplitScreenMode == Core.Source.Renderer.SplitScreenMode.QuadScreen) {
+                vertShaderNamePref = "quad_screen_";
+            }
+
+            DefaultWorldShader = Shader.LoadFromFile("shaders.default_world_shader", TackShaderType.World, "tackresources/shaders/world/" + vertShaderNamePref + "world_vertex_shader.vs",
+                                                                                             "tackresources/shaders/world/world_fragment_shader.fs");
+
+            DefaultLitWorldShader = Shader.LoadFromFile("shaders.default_world_shader_lit", TackShaderType.World, "tackresources/shaders/world/" + vertShaderNamePref + "world_vertex_shader.vs",
+                                                                                                          "tackresources/shaders/world/world_fragment_shader_lit.fs");
         }
     }
 }

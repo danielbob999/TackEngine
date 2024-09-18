@@ -6,6 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 using TackEngine.Core.Engine;
 using TackEngine.Core.Main;
+using TackEngine.Core.Renderer;
+using TackEngine.Core.Source.Renderer;
 
 namespace TackEngine.Core.Objects.Components
 {
@@ -14,27 +16,35 @@ namespace TackEngine.Core.Objects.Components
     /// </summary>
     public class Camera : TackComponent
     {
-        private static Camera s_mainCamera = null;
         public static Camera MainCamera {
-            get {
-                if (s_mainCamera == null) {
-                    // Create an object
-                    TackObject camObject = TackObject.Create("Camera", new Vector2f(0, 0), new Vector2f(0, 0), 0);
-                    camObject.SetDoNotDestroyBetweenScenes();
-
-                    Camera newCamera = new Camera();
-
-                    camObject.AddComponent(newCamera);
-                    s_mainCamera = newCamera;
-                }
-
-                return s_mainCamera;
+            get { return TackRenderer.Instance.Cameras[0]; }
+            set { 
+                TackRenderer.Instance.Cameras[0] = value;
+                TackRenderer.Instance.Cameras[0].RenderTarget = GetRenderTargetForSplitScreenMode(0, TackRenderer.Instance.CurrentSplitScreenMode);
             }
+        }
 
+        public static Camera SecondCamera {
+            get { return TackRenderer.Instance.Cameras[1]; }
+            set { 
+                TackRenderer.Instance.Cameras[1] = value;
+                TackRenderer.Instance.Cameras[1].RenderTarget = GetRenderTargetForSplitScreenMode(1, TackRenderer.Instance.CurrentSplitScreenMode);
+            }
+        }
+
+        public static Camera ThirdCamera {
+            get { return TackRenderer.Instance.Cameras[2]; }
+            set { 
+                TackRenderer.Instance.Cameras[2] = value;
+                TackRenderer.Instance.Cameras[2].RenderTarget = GetRenderTargetForSplitScreenMode(2, TackRenderer.Instance.CurrentSplitScreenMode);
+            }
+        }
+
+        public static Camera FourthCamera {
+            get { return TackRenderer.Instance.Cameras[3]; }
             set {
-                if (value != null) {
-                    s_mainCamera = value;
-                }
+                TackRenderer.Instance.Cameras[3] = value;
+                TackRenderer.Instance.Cameras[3].RenderTarget = GetRenderTargetForSplitScreenMode(3, TackRenderer.Instance.CurrentSplitScreenMode);
             }
         }
 
@@ -60,6 +70,8 @@ namespace TackEngine.Core.Objects.Components
             internal set {
                 if (value.X >= 0 && value.Y >= 0 && value.Width > 0 && value.Height > 0) {
                     m_renderTarget = value;
+                } else {
+                    TackConsole.EngineLog(TackConsole.LogType.Warning, "Cannot set Camera RenderTarget to value: {0}", value.ToString());
                 }
             }
         }
@@ -71,6 +83,42 @@ namespace TackEngine.Core.Objects.Components
         public Camera() {
             m_renderTarget = new RectangleShape(0, 0, TackEngineInstance.Instance.Window.WindowSize.X, TackEngineInstance.Instance.Window.WindowSize.Y);
             m_zoomFactor = 1f;
+        }
+
+        public override void OnAttachedToTackObject() {
+            base.OnAttachedToTackObject();
+
+            if (MainCamera == null) {
+                MainCamera = this;
+            }
+        }
+
+        internal static RectangleShape GetRenderTargetForSplitScreenMode(int cameraIndex, SplitScreenMode mode) {
+            switch (mode) {
+                case SplitScreenMode.Single:
+                    return new RectangleShape(0, 0, TackEngineInstance.Instance.Window.WindowSize.X, TackEngineInstance.Instance.Window.WindowSize.Y);
+                case SplitScreenMode.DualScreen:
+                    if (cameraIndex == 0) {
+                        return new RectangleShape(0, 0, TackEngineInstance.Instance.Window.WindowSize.X / 2f, TackEngineInstance.Instance.Window.WindowSize.Y);
+                    } else {
+                        return new RectangleShape(TackEngineInstance.Instance.Window.WindowSize.X / 2f, 0, TackEngineInstance.Instance.Window.WindowSize.X / 2f, TackEngineInstance.Instance.Window.WindowSize.Y);
+                    }
+                case SplitScreenMode.QuadScreen:
+                    float halfWidth = TackEngineInstance.Instance.Window.WindowSize.X / 2f;
+                    float halfHeight = TackEngineInstance.Instance.Window.WindowSize.Y / 2f;
+
+                    if (cameraIndex == 0) {
+                        return new RectangleShape(0, 0, halfWidth, halfHeight);
+                    } else if (cameraIndex == 1) {
+                        return new RectangleShape(halfWidth, 0, halfWidth, halfHeight);
+                    } else if (cameraIndex == 2) {
+                        return new RectangleShape(0, halfHeight, halfWidth, halfHeight);
+                    } else {
+                        return new RectangleShape(halfWidth, halfHeight, halfWidth, halfHeight);
+                    }
+                default:
+                    return new RectangleShape(0, 0, TackEngineInstance.Instance.Window.WindowSize.X, TackEngineInstance.Instance.Window.WindowSize.Y);
+            }
         }
     }
 }

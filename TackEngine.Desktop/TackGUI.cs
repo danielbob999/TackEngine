@@ -407,16 +407,16 @@ namespace TackEngine.Core.GUI {
             // Set camera info
             GL.Uniform2(GL.GetUniformLocation(Instance.DefaultGUIShader.Id, "uCameraInfo.position"), TackEngine.Core.Objects.Components.Camera.MainCamera.GetParent().Position.ToOpenTKVec2());
             GL.Uniform1(GL.GetUniformLocation(Instance.DefaultGUIShader.Id, "uCameraInfo.zoomFactor"), TackEngine.Core.Objects.Components.Camera.MainCamera.ZoomFactor);
-            GL.Uniform2(GL.GetUniformLocation(Instance.DefaultGUIShader.Id, "uCameraInfo.size"), new OpenTK.Mathematics.Vector2(TackEngine.Core.Objects.Components.Camera.MainCamera.RenderTarget.Width, TackEngine.Core.Objects.Components.Camera.MainCamera.RenderTarget.Height));
+            GL.Uniform2(GL.GetUniformLocation(Instance.DefaultGUIShader.Id, "uCameraInfo.size"), new OpenTK.Mathematics.Vector2(TackEngineInstance.Instance.Window.WindowSize.X, TackEngineInstance.Instance.Window.WindowSize.Y));
 
             for (int m = 0; m < maskData.Masks.Count; m++) {
                 OpenTK.Mathematics.Vector2 topRight = new OpenTK.Mathematics.Vector2(
-                    ((maskData.Masks[m].X + maskData.Masks[m].Width) / (Camera.MainCamera.RenderTarget.Width / 2f)) - 1f,
-                    (((maskData.Masks[m].Y) / (Camera.MainCamera.RenderTarget.Height / 2f)) - 1f));
+                    ((maskData.Masks[m].X + maskData.Masks[m].Width) / (TackEngineInstance.Instance.Window.WindowSize.X / 2f)) - 1f,
+                    (((maskData.Masks[m].Y) / (TackEngineInstance.Instance.Window.WindowSize.Y / 2f)) - 1f));
 
                 OpenTK.Mathematics.Vector2 bottomLeft = new OpenTK.Mathematics.Vector2(
-                    ((maskData.Masks[m].X) / (Camera.MainCamera.RenderTarget.Width / 2f)) - 1f,
-                    ((maskData.Masks[m].Y + maskData.Masks[m].Height) / (Camera.MainCamera.RenderTarget.Height / 2f)) - 1f);
+                    ((maskData.Masks[m].X) / (TackEngineInstance.Instance.Window.WindowSize.X / 2f)) - 1f,
+                    ((maskData.Masks[m].Y + maskData.Masks[m].Height) / (TackEngineInstance.Instance.Window.WindowSize.Y / 2f)) - 1f);
 
                 GL.Uniform2(GL.GetUniformLocation(Instance.DefaultGUIShader.Id, "uMaskList[" + m + "].topRight"), topRight);
                 GL.Uniform2(GL.GetUniformLocation(Instance.DefaultGUIShader.Id, "uMaskList[" + m + "].bottomLeft"), bottomLeft);
@@ -619,16 +619,16 @@ namespace TackEngine.Core.GUI {
                 // Set camera info
                 GL.Uniform2(GL.GetUniformLocation(TackGUI.Instance.DefaultTextShader.Id, "uCameraInfo.position"), TackEngine.Core.Objects.Components.Camera.MainCamera.GetParent().Position.ToOpenTKVec2());
                 GL.Uniform1(GL.GetUniformLocation(TackGUI.Instance.DefaultTextShader.Id, "uCameraInfo.zoomFactor"), TackEngine.Core.Objects.Components.Camera.MainCamera.ZoomFactor);
-                GL.Uniform2(GL.GetUniformLocation(TackGUI.Instance.DefaultTextShader.Id, "uCameraInfo.size"), new OpenTK.Mathematics.Vector2(TackEngine.Core.Objects.Components.Camera.MainCamera.RenderTarget.Width, TackEngine.Core.Objects.Components.Camera.MainCamera.RenderTarget.Height));
+                GL.Uniform2(GL.GetUniformLocation(TackGUI.Instance.DefaultTextShader.Id, "uCameraInfo.size"), new OpenTK.Mathematics.Vector2(TackEngineInstance.Instance.Window.WindowSize.X, TackEngineInstance.Instance.Window.WindowSize.Y));
 
                 for (int m = 0; m < maskData.Masks.Count; m++) {
                     OpenTK.Mathematics.Vector2 topRight = new OpenTK.Mathematics.Vector2(
-                        ((maskData.Masks[m].X + maskData.Masks[m].Width) / (Camera.MainCamera.RenderTarget.Width / 2f)) - 1f,
-                        (((maskData.Masks[m].Y) / (Camera.MainCamera.RenderTarget.Height / 2f)) - 1f));
+                        ((maskData.Masks[m].X + maskData.Masks[m].Width) / (TackEngineInstance.Instance.Window.WindowSize.X / 2f)) - 1f,
+                        (((maskData.Masks[m].Y) / (TackEngineInstance.Instance.Window.WindowSize.Y / 2f)) - 1f));
 
                     OpenTK.Mathematics.Vector2 bottomLeft = new OpenTK.Mathematics.Vector2(
-                        ((maskData.Masks[m].X) / (Camera.MainCamera.RenderTarget.Width / 2f)) - 1f,
-                        ((maskData.Masks[m].Y + maskData.Masks[m].Height) / (Camera.MainCamera.RenderTarget.Height / 2f)) - 1f);
+                        ((maskData.Masks[m].X) / (TackEngineInstance.Instance.Window.WindowSize.X / 2f)) - 1f,
+                        ((maskData.Masks[m].Y + maskData.Masks[m].Height) / (TackEngineInstance.Instance.Window.WindowSize.Y / 2f)) - 1f);
 
                     GL.Uniform2(GL.GetUniformLocation(TackGUI.Instance.DefaultTextShader.Id, "uMaskList[" + m + "].topRight"), topRight);
                     GL.Uniform2(GL.GetUniformLocation(TackGUI.Instance.DefaultTextShader.Id, "uMaskList[" + m + "].bottomLeft"), bottomLeft);

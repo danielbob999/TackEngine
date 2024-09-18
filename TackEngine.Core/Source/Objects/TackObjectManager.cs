@@ -71,7 +71,7 @@ namespace TackEngine.Core.Objects {
                         }
 
                         if (Input.TackInput.MouseButtonDown(Input.MouseButtonKey.Left) || Input.TackInput.TouchDown()) {
-                            if (!TackRenderer.GetInstance().GUIInstance.MouseClickDetectedThisFrame) {
+                            if (!TackRenderer.Instance.GUIInstance.MouseClickDetectedThisFrame) {
                                 components[c].OnMouseClick();
                             }
                         }

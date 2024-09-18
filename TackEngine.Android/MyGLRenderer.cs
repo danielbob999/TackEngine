@@ -101,8 +101,6 @@ namespace TackEngine.Android {
             // All OnRender here
             TackEngineActivity.Instance.mTackRender.OnRender(TackEngineActivity.Instance.m_engineTimer.LastRenderTime);
 
-            TackEngineActivity.Instance.m_debugLineRenderer.OnRender();
-
             TackEngineActivity.Instance.m_currentUpdateLoopIndex++;
             TackEngineActivity.Instance.m_currentRenderLoopIndex++;
         }

@@ -82,7 +82,7 @@ namespace TackEngine.Core.Objects.Components {
             SpriteSheet = null;
             ShouldLoop = true;
 
-            SetShader(TackRenderer.GetInstance().DefaultWorldShader);
+            SetShader(TackRenderer.Instance.DefaultLitWorldShader);
         }
 
         /// <summary>
@@ -98,7 +98,7 @@ namespace TackEngine.Core.Objects.Components {
             ShouldLoop = true;
             RefreshTime = 0.2f;
 
-            SetShader(TackRenderer.GetInstance().DefaultWorldShader);
+            SetShader(TackRenderer.Instance.DefaultLitWorldShader);
         }
 
         /// <summary>
@@ -115,7 +115,7 @@ namespace TackEngine.Core.Objects.Components {
             ShouldLoop = true;
             RefreshTime = refreshTime;
 
-            SetShader(TackRenderer.GetInstance().DefaultWorldShader);
+            SetShader(TackRenderer.Instance.DefaultLitWorldShader);
         }
 
         /// <summary>
@@ -133,7 +133,7 @@ namespace TackEngine.Core.Objects.Components {
             ShouldLoop = true;
             RefreshTime = refreshTime;
 
-            SetShader(TackRenderer.GetInstance().DefaultWorldShader);
+            SetShader(TackRenderer.Instance.DefaultLitWorldShader);
         }
 
         /// <summary>
@@ -152,7 +152,7 @@ namespace TackEngine.Core.Objects.Components {
             ShouldLoop = shouldLoop;
             RefreshTime = refreshTime;
 
-            SetShader(TackRenderer.GetInstance().DefaultWorldShader);
+            SetShader(TackRenderer.Instance.DefaultLitWorldShader);
         }
 
         /// <summary>

@@ -48,7 +48,7 @@ namespace TackEngine.Core.Objects.Components {
             Colour = Colour4b.White;
             this.Sprite = Sprite.DefaultSprite;
             RenderLayer = 10;
-            SetShader(TackRenderer.GetInstance().DefaultWorldShader);
+            SetShader(TackRenderer.Instance.DefaultLitWorldShader);
         }
 
         /// <summary>
@@ -61,7 +61,7 @@ namespace TackEngine.Core.Objects.Components {
             Colour = colour;
             this.Sprite = Sprite.DefaultSprite;
             RenderLayer = 10;
-            SetShader(TackRenderer.GetInstance().DefaultWorldShader);
+            SetShader(TackRenderer.Instance.DefaultLitWorldShader);
         }
 
         /// <summary>
@@ -75,7 +75,7 @@ namespace TackEngine.Core.Objects.Components {
             Colour = colour;
             this.Sprite = sprite;
             RenderLayer = 10;
-            SetShader(TackRenderer.GetInstance().DefaultWorldShader);
+            SetShader(TackRenderer.Instance.DefaultLitWorldShader);
         }
 
         /// <summary>
@@ -90,7 +90,7 @@ namespace TackEngine.Core.Objects.Components {
             Colour = colour;
             this.Sprite = sprite;
             RenderLayer = renderLayer;
-            SetShader(TackRenderer.GetInstance().DefaultWorldShader);
+            SetShader(TackRenderer.Instance.DefaultLitWorldShader);
         }
 
         /// <summary>

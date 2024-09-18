@@ -46,7 +46,6 @@ namespace TackEngine.Desktop {
         private TackProfiler m_tackProfiler;
         private TackInput m_tackInput;
         private DesktopSpriteManager m_spriteManager;
-        private DebugLineRenderer m_debugLineRenderer;
         private AudioManager m_audioManager;
 
         private CancellationTokenSource m_cancelTokenSource;
@@ -155,8 +154,6 @@ namespace TackEngine.Desktop {
 
                 // All OnRender here
                 mTackRender.OnRender(1f);
-
-                m_debugLineRenderer.OnRender();
 
                 Context.SwapBuffers();
 
