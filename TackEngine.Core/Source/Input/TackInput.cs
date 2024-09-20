@@ -148,11 +148,13 @@ namespace TackEngine.Core.Input {
             mLastFramesKeys = mKeysHeld;
             mLastFrameMouseKeys = mMouseKeysHeld;
 
-            mKeysDownPerFrame = new bool[1024];
-            mKeysUpPerFrame = new bool[1024];
+            for (int i = 0; i < 1024; i++) {
+                mKeysDownPerFrame[i] = false;
+                mKeysUpPerFrame[i] = false;
 
-            mMouseKeysDownPerFrame = new bool[1024];
-            mMouseKeysUpPerFrame = new bool[1024];
+                mMouseKeysDownPerFrame[i] = false;
+                mMouseKeysUpPerFrame[i] = false;
+            }
 
             MouseScrollWheelChange = 0;
 
