@@ -7,6 +7,7 @@ using OpenTK.Graphics.OpenGL;
 using System.Drawing;
 using System.Drawing.Imaging;
 using static TackEngine.Core.Main.Sprite;
+using System.IO;
 
 namespace TackEngine.Desktop {
     internal class DesktopSpriteManager : SpriteManager {
@@ -53,7 +54,11 @@ namespace TackEngine.Desktop {
             Sprite newSprite = new Sprite();
             Bitmap newBp;
 
-            string fullPath = System.IO.Directory.GetCurrentDirectory() + "\\" + path;
+            string fullPath = path;
+
+            if (!Path.IsPathFullyQualified(path)) {
+                fullPath = System.IO.Directory.GetCurrentDirectory() + "\\" + path;
+            }
 
             try {
                 newBp = new Bitmap(fullPath);
