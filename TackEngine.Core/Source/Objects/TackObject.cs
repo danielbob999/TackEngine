@@ -164,6 +164,11 @@ namespace TackEngine.Core.Objects {
         }
 
         public object AddComponent(object _component) {
+            if (_component == null) {
+                TackConsole.EngineLog(TackConsole.LogType.Debug, string.Format("Cannot add a null component to TackObject with name '{0}'", Name));
+                return null;
+            }
+
             if (!_component.GetType().IsSubclassOf(typeof(TackComponent))) {
                 TackConsole.EngineLog(TackConsole.LogType.Debug, string.Format("'{0}' cannot be added to TackObject with name '{1}' because it does not inherit from '{2}'", _component.GetType().Name, Name, typeof(TackComponent).Name));
                 return null;
