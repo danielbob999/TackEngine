@@ -9,7 +9,11 @@ namespace TackEngine.Core.Renderer.LineRendering {
 
         public abstract void Initialise();
 
+        public abstract void OnPreRender();
+
         public abstract void RenderLineToScreen(Line line, LineRenderer.LineContext context);
+
+        public abstract void OnPostRender();
 
         public abstract void Close();
     }

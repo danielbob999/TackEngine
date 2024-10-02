@@ -58,6 +58,10 @@ namespace TackEngine.Core.Objects.Components {
 
         public override void OnUpdate() {
             base.OnUpdate();
+        }
+
+        internal override void OnPhysicsStep() {
+            base.OnPhysicsStep();
 
             if (m_wheelJoint != null) {
                 m_wheelJoint.MaxMotorTorque = MaxTorque;

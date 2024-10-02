@@ -9,6 +9,9 @@ using tainicom.Aether.Physics2D.Dynamics;
 using TackEngine.Core.Main;
 using TackEngine.Core.Physics;
 using TackEngine.Core.Renderer;
+using TackEngine.Core.Source.Renderer.LineRendering;
+using TackEngine.Core.Math;
+using tainicom.Aether.Physics2D.Collision;
 
 namespace TackEngine.Core.Objects.Components {
     public abstract class BasePhysicsComponent : TackComponent {
@@ -16,8 +19,10 @@ namespace TackEngine.Core.Objects.Components {
         private float m_mass;
         private float m_friction;
         private float m_restitution;
+        private float m_angularDamping = 0;
         protected Body m_physicsBody = null;
         protected List<Fixture> m_fixtures = null;
+        protected Vector2f[] m_debugLinePoints = null;
 
         private bool m_affectedByGravity;
         private bool m_isStatic;
@@ -106,6 +111,14 @@ namespace TackEngine.Core.Objects.Components {
         }
 
         /// <summary>
+        /// Gets/Sets the angular dampening of this physics body.
+        /// </summary>
+        public float AngularDamping {
+            get { return m_angularDamping; }
+            set { m_angularDamping = value; }
+        }
+
+        /// <summary>
         /// Gets/Sets whether this physics component has a fixed rotation
         /// </summary>
         public bool FixedRotation { get; set; }
@@ -147,7 +160,23 @@ namespace TackEngine.Core.Objects.Components {
 
         public override void OnUpdate() {
             base.OnUpdate();
+        }
 
+        public override void OnClose() {
+            base.OnClose();
+
+            TackPhysics.Instance.DeregisterPhysicsComponent(this);
+        }
+
+        public override void OnAttachedToTackObject() {
+            base.OnAttachedToTackObject();
+
+            TackPhysics.Instance.RegisterPhysicsComponent(this);
+
+            GenerateBody();
+        }
+
+        internal virtual void OnPhysicsStep() {
             if (m_physicsBody != null) {
                 GetParent().ChangePosition(new Vector2f(m_physicsBody.Position.X * 100f, m_physicsBody.Position.Y * 100f));
                 GetParent().ChangeRotation(Math.TackMath.RadToDeg(m_physicsBody.Rotation));
@@ -155,6 +184,7 @@ namespace TackEngine.Core.Objects.Components {
                 m_physicsBody.Mass = Mass;
                 m_physicsBody.BodyType = GetBodyType();
                 m_physicsBody.FixedRotation = FixedRotation;
+                m_physicsBody.AngularDamping = AngularDamping;
 
                 m_physicsBody.Enabled = Active;
             }
@@ -168,18 +198,6 @@ namespace TackEngine.Core.Objects.Components {
             }
         }
 
-        public override void OnClose() {
-            base.OnClose();
-
-            TackPhysics.Instance.DeregisterPhysicsComponent(this);
-        }
-
-        public override void OnAttachedToTackObject() {
-            base.OnAttachedToTackObject();
-
-            GenerateBody();
-        }
-
         internal bool InternalOnCollision(Fixture sender, Fixture other, tainicom.Aether.Physics2D.Dynamics.Contacts.Contact contact) {
             if (!Active) {
                 return false;
@@ -187,9 +205,13 @@ namespace TackEngine.Core.Objects.Components {
 
             TackObject collidedObject = TackObjectManager.Instance.GetByHash((string)other.Body.Tag);
 
-            CallOnCollision(new CollisionData((BasePhysicsComponent)Utilities.FirstNotNull(
-                collidedObject.GetComponent<RectanglePhysicsComponent>(),
-                collidedObject.GetComponent<CirclePhysicsComponent>())));
+            // Discard the collision of the other object is null.
+            // This could occur if the object has been deleted this frame and the physics engine hasn't registered the delete
+            if (collidedObject == null) {
+                return false;
+            }
+
+            CallOnCollision(new CollisionData(collidedObject.GetComponent<BasePhysicsComponent>()));
 
             return true;
         }
@@ -201,9 +223,13 @@ namespace TackEngine.Core.Objects.Components {
 
             TackObject collidedObject = TackObjectManager.Instance.GetByHash((string)other.Body.Tag);
 
-            CallOnSeparation(new CollisionData((BasePhysicsComponent)Utilities.FirstNotNull(
-                collidedObject.GetComponent<RectanglePhysicsComponent>(),
-                collidedObject.GetComponent<CirclePhysicsComponent>())));
+            // Discard the collision of the other object is null.
+            // This could occur if the object has been deleted this frame and the physics engine hasn't registered the delete
+            if (collidedObject == null) {
+                return;
+            }
+
+            CallOnSeparation(new CollisionData(collidedObject.GetComponent<BasePhysicsComponent>()));
         }
 
         public override void OnDetachedFromTackObject() {
@@ -289,10 +315,11 @@ namespace TackEngine.Core.Objects.Components {
             DestroyBody();
 
             m_physicsBody = TackPhysics.Instance.GetWorld().CreateBody(new Vector2((GetParent().Position.X / 100f), (GetParent().Position.Y / 100f)), Math.TackMath.DegToRad(GetParent().Rotation), GetBodyType());
-            m_physicsBody.FixedRotation = false;
+            m_physicsBody.FixedRotation = FixedRotation;
             m_physicsBody.SleepingAllowed = true;
             m_physicsBody.IgnoreGravity = !IsAffectedByGravity;
             m_physicsBody.Tag = GetParent().Hash;
+            m_physicsBody.AngularDamping = AngularDamping;
 
             Fixture fixture = m_physicsBody.CreateRectangle((GetParent().Size.X / 100f), (GetParent().Size.Y / 100f), 1, new Vector2(0, 0));
             fixture.Restitution = Restitution;
@@ -306,6 +333,35 @@ namespace TackEngine.Core.Objects.Components {
         }
 
         internal virtual void OnDebugDraw() {
+            if (m_debugLinePoints == null) {
+                m_debugLinePoints = new Vector2f[4];
+            }
+
+            // topleft, topright, bottomright, bottomleft
+            m_debugLinePoints[0] = GetVertexPointRotated(new Vector2f(GetParent().BoundingBox.Left, GetParent().BoundingBox.Top), 360 - GetParent().Rotation) + GetParent().Position;
+            m_debugLinePoints[1] = GetVertexPointRotated(new Vector2f(GetParent().BoundingBox.Right, GetParent().BoundingBox.Top), 360 - GetParent().Rotation) + GetParent().Position;
+            m_debugLinePoints[2] = GetVertexPointRotated(new Vector2f(GetParent().BoundingBox.Right, GetParent().BoundingBox.Bottom), 360 - GetParent().Rotation) + GetParent().Position;
+            m_debugLinePoints[3] = GetVertexPointRotated(new Vector2f(GetParent().BoundingBox.Left, GetParent().BoundingBox.Bottom), 360 - GetParent().Rotation) + GetParent().Position;
+
+            LineRenderer.Instance.DrawLines(new List<Line>() {
+                new Line(m_debugLinePoints[0], m_debugLinePoints[1], 2f, TackPhysics.BoundsColour),
+                new Line(m_debugLinePoints[1], m_debugLinePoints[2], 2f, TackPhysics.BoundsColour),
+                new Line(m_debugLinePoints[2], m_debugLinePoints[3], 2f, TackPhysics.BoundsColour),
+                new Line(m_debugLinePoints[3], m_debugLinePoints[0], 2f, TackPhysics.BoundsColour),
+                new Line(m_debugLinePoints[0], m_debugLinePoints[2], 2f, TackPhysics.BoundsColour),
+                new Line(m_debugLinePoints[3], m_debugLinePoints[1], 2f, TackPhysics.BoundsColour)
+            }, LineRenderer.LineContext.World);
+        }
+
+        private Vector2f GetVertexPointRotated(Vector2f point, float rotationDeg) {
+            float rad = point.Length;
+            float localRotation = GetRotationOfVertexPoint(point);
+
+            return new Vector2f(rad * MathF.Sin(TackMath.DegToRad(rotationDeg + Camera.MainCamera.GetParent().Rotation - localRotation + 90)), rad * MathF.Cos(TackMath.DegToRad(rotationDeg + Camera.MainCamera.GetParent().Rotation - localRotation + 90)));
+        }
+
+        private float GetRotationOfVertexPoint(Vector2f point) {
+            return (float)TackMath.RadToDeg(System.Math.Atan2(Vector2f.Zero.Y - point.Y, Vector2f.Zero.X - point.X));
         }
     }
 }

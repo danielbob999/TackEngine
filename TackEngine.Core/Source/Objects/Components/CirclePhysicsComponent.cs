@@ -10,9 +10,12 @@ using TackEngine.Core.Math;
 using tainicom.Aether.Physics2D.Common;
 using TackEngine.Core.Renderer;
 using tainicom.Aether.Physics2D.Dynamics;
+using TackEngine.Core.Source.Renderer.LineRendering;
 
 namespace TackEngine.Core.Objects.Components {
     public class CirclePhysicsComponent : BasePhysicsComponent {
+
+        private static readonly int DEBUG_RESOUTION = 20;
 
         /// <summary>
         /// Creates a new CirclePhysicsComponent
@@ -154,28 +157,32 @@ namespace TackEngine.Core.Objects.Components {
         }
 
         internal override void OnDebugDraw() {
-            int numOfSegments = 10;
-            int segAngle = 360 / numOfSegments;
-
-            Vector2f prevPoint = new Vector2f();
-            for (int i = 0; i <= numOfSegments; i++) {
-                if (i == 0) {
-                    prevPoint = new Vector2f(
-                            GetParent().Position.X + (GetParent().Size.X / 2f) * (float)System.Math.Cos(TackMath.DegToRad(i * segAngle)),
-                            GetParent().Position.Y + (GetParent().Size.X / 2f) * (float)System.Math.Sin(TackMath.DegToRad(i * segAngle)));
-
-                    continue;
-                }
-
-                Vector2f posOnCircle = new Vector2f(
-                    GetParent().Position.X + (GetParent().Size.X / 2f) * (float)System.Math.Cos(TackMath.DegToRad(i * segAngle)),
-                    GetParent().Position.Y + (GetParent().Size.X / 2f) * (float)System.Math.Sin(TackMath.DegToRad(i * segAngle)));
-
-                DebugLineRenderer.DrawLine(prevPoint, posOnCircle, TackPhysics.BoundsColour);
-
-                prevPoint = posOnCircle;
-
+            if (m_debugLinePoints == null) {
+                m_debugLinePoints = new Vector2f[DEBUG_RESOUTION];
             }
+
+            float segAngle = 360 / DEBUG_RESOUTION;
+            float rad = (GetParent().Size.X - 1f) / 2f;
+
+            for (int i = 0; i < DEBUG_RESOUTION; i++) {
+                float rotationDeg = GetParent().Rotation + (i * segAngle);
+
+                m_debugLinePoints[i] = new Vector2f(rad * MathF.Sin(TackMath.DegToRad(-rotationDeg + Camera.MainCamera.GetParent().Rotation)), rad * MathF.Cos(TackMath.DegToRad(-rotationDeg + Camera.MainCamera.GetParent().Rotation))) + GetParent().Position;
+            }
+
+            List<Line> lines = new List<Line>() {
+                new Line(GetParent().Position, m_debugLinePoints[0], 2f, TackPhysics.BoundsColour)
+            };
+
+            for (int i = 0; i < DEBUG_RESOUTION; i++) {
+                if (i >= DEBUG_RESOUTION - 1) {
+                    lines.Add(new Line(m_debugLinePoints[i], m_debugLinePoints[0], 2f, TackPhysics.BoundsColour));
+                } else {
+                    lines.Add(new Line(m_debugLinePoints[i], m_debugLinePoints[i + 1], 2f, TackPhysics.BoundsColour));
+                }
+            }
+
+            LineRenderer.Instance.DrawLines(lines, LineRenderer.LineContext.World);
         }
     }
 }

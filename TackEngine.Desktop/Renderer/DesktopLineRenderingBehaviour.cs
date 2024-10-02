@@ -17,14 +17,17 @@ using TackEngine.Core.Math;
 namespace TackEngine.Desktop.Renderer {
     internal class DesktopLineRenderingBehaviour : LineRenderingBehaviour {
         private Shader m_lineShader;
+        private float[] m_vertexData;
+        private int[] m_indiceData;
+        private int m_vao;
+        private int m_vbo;
+        private int m_ebo;
 
         public override void Initialise() {
             m_lineShader = Shader.LoadFromFile("shaders.line", TackShaderType.Line, "tackresources/shaders/linerenderer/line_vertex_shader.vs",
                                                                                      "tackresources/shaders/linerenderer/line_fragment_shader.fs");
-        }
 
-        public override void RenderLineToScreen(Line line, LineRenderer.LineContext context) {
-            float[] vertexData = new float[20] {
+            m_vertexData = new float[20] {
                     //       Position (XYZ)                                                                                                      Colours (RGB)                                                                                  TexCoords (XY)
                     /* v1 */  1f, -1f, 1.0f,       1.0f, 1.0f,
                     /* v2 */  1f,  1f, 1.0f,       1.0f, 0.0f,
@@ -32,11 +35,13 @@ namespace TackEngine.Desktop.Renderer {
                     /* v4 */ -1f, -1f, 1.0f,       0.0f, 1.0f
             };
 
-            int[] indiceData = new int[] {
+            m_indiceData = new int[] {
                     0, 1, 3, // first triangle
                     1, 2, 3  // second triangle
             };
+        }
 
+        public override void OnPreRender() {
             GL.Enable(EnableCap.Blend);
             GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
 
@@ -49,17 +54,17 @@ namespace TackEngine.Desktop.Renderer {
              * 
              */
 
-            int VAO = GL.GenVertexArray();
-            int VBO = GL.GenBuffer();
-            int EBO = GL.GenBuffer();
+            m_vao = GL.GenVertexArray();
+            m_vbo = GL.GenBuffer();
+            m_ebo = GL.GenBuffer();
 
-            GL.BindVertexArray(VAO);
+            GL.BindVertexArray(m_vao);
 
-            GL.BindBuffer(BufferTarget.ArrayBuffer, VBO);
-            GL.BufferData(BufferTarget.ArrayBuffer, sizeof(float) * 20, vertexData, BufferUsageHint.StaticDraw);
+            GL.BindBuffer(BufferTarget.ArrayBuffer, m_vbo);
+            GL.BufferData(BufferTarget.ArrayBuffer, sizeof(float) * 20, m_vertexData, BufferUsageHint.StaticDraw);
 
-            GL.BindBuffer(BufferTarget.ElementArrayBuffer, EBO);
-            GL.BufferData(BufferTarget.ElementArrayBuffer, sizeof(int) * 6, indiceData, BufferUsageHint.StaticDraw);
+            GL.BindBuffer(BufferTarget.ElementArrayBuffer, m_ebo);
+            GL.BufferData(BufferTarget.ElementArrayBuffer, sizeof(int) * 6, m_indiceData, BufferUsageHint.StaticDraw);
 
             // position attribute
             GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 5 * sizeof(float), 0);
@@ -68,7 +73,9 @@ namespace TackEngine.Desktop.Renderer {
             // texture coords attribute
             GL.VertexAttribPointer(1, 2, VertexAttribPointerType.Float, false, 5 * sizeof(float), 3 * sizeof(float));
             GL.EnableVertexAttribArray(1);
+        }
 
+        public override void RenderLineToScreen(Line line, LineRenderer.LineContext context) {
             // set default (4 byte) pixel alignment 
             GL.PixelStore(PixelStoreParameter.UnpackAlignment, 4);
 
@@ -79,19 +86,24 @@ namespace TackEngine.Desktop.Renderer {
 
             OpenTK.Mathematics.Matrix4 modelMatrix = new OpenTK.Mathematics.Matrix4();
 
-            if (context == LineRenderer.LineContext.World) {
-                Vector2f neg = line.PointB - line.PointA;
-                Vector2f centerPosition = line.PointA + (neg.Normalized() * (neg.Length / 2f));
+            Vector2f pointA = line.PointA;
+            Vector2f pointB = line.PointB;
 
+            if (pointA.X > pointB.X) {
+                pointA = line.PointB;
+                pointB = line.PointA;
+            }
+
+            Vector2f neg = pointB - pointA;
+            Vector2f centerPosition = pointA + (neg.Normalized() * (neg.Length / 2f));
+
+            if (context == LineRenderer.LineContext.World) {
                 // Generate model matrix
                 modelMatrix = GenerateWorldModelMatrix(centerPosition, new Vector2f(line.Width, neg.Length), -1 * (float)Math.Acos(Vector2f.Dot(new Vector2f(0, 1), neg.Normalized())));
 
             }
 
             if (context == LineRenderer.LineContext.GUI) {
-                Vector2f neg = line.PointB - line.PointA;
-                Vector2f centerPosition = line.PointA + (neg.Normalized() * (neg.Length / 2f));
-
                 // Generate model matrix
                 modelMatrix = GenerateGUIModelMatrix(centerPosition, new Vector2f(neg.Length, line.Width), (float)Math.Acos(Vector2f.Dot(new Vector2f(0, 1), neg.Normalized())));
             }
@@ -103,11 +115,12 @@ namespace TackEngine.Desktop.Renderer {
             m_lineShader.SetUniformValue("uColour", colourVector);
 
             GL.DrawElements(PrimitiveType.Triangles, 6, DrawElementsType.UnsignedInt, IntPtr.Zero);
+        }
 
-            GL.DeleteBuffers(1, ref EBO);
-            GL.DeleteBuffers(1, ref VBO);
-            GL.DeleteBuffers(1, ref VAO);
-
+        public override void OnPostRender() {
+            GL.DeleteBuffers(1, ref m_ebo);
+            GL.DeleteBuffers(1, ref m_vbo);
+            GL.DeleteBuffers(1, ref m_vao);
         }
 
         public override void Close() {

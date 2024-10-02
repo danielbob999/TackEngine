@@ -126,7 +126,7 @@ namespace TackEngine.Android {
                         // Check if the camera view bounding box and the object bounding box intersect
                         // If they don't, skip this object because it is entirely outside the screen
                         AABB camAABB = camera.BoundingBoxInWorld;
-                        AABB objAABB = sortedObjects[i].BoundingBox;
+                        AABB objAABB = sortedObjects[i].BoundingBoxInWorld;
 
                         if (!AABB.CheckForAABBCollision(objAABB, camAABB)) {
                             continue;

@@ -21,7 +21,7 @@ namespace TackEngine.Core.Physics {
         private Vector2f m_gravityForce;
         private List<BasePhysicsComponent> m_physicBodyComponents;
         private bool m_runBroadphaseAlgorithm;
-        private bool m_debugDrawBodies;
+        private bool m_debugDrawBodies = false;
         private World m_physicsWorld;
         private List<Body> m_bodiesToBeDeleted;
         private float m_timeToSimulate;
@@ -87,7 +87,6 @@ namespace TackEngine.Core.Physics {
         internal override void Start() {
             double startTime = EngineTimer.Instance.TotalRunTime;
 
-            m_debugDrawBodies = false;
             m_physicsWorld = new World(new Vector2(m_gravityForce.X, m_gravityForce.Y));
             m_bodiesToBeDeleted = new List<Body>();
 
@@ -122,15 +121,23 @@ namespace TackEngine.Core.Physics {
                 }
             }
 
-            DebugDraw();
-
             TackProfiler.Instance.StopTimer("TackPhysics.OnUpdate.RemoveBodies");
 
             TackProfiler.Instance.StartTimer("TackPhysics.OnUpdate.WorldStep");
 
-            m_physicsWorld.Step(m_timeToSimulate, ref m_solverIterations);
+            m_physicsWorld.Step((float)EngineTimer.Instance.UpdateTimeAverageLastSecond, ref m_solverIterations);
 
             TackProfiler.Instance.StopTimer("TackPhysics.OnUpdate.WorldStep");
+
+            DebugDraw();
+
+            for (int i = 0; i < m_physicsWorld.BodyList.Count; i++) {
+                TackObject obj = TackObject.GetByHash((string)m_physicsWorld.BodyList[i].Tag);
+
+                if (obj != null) {
+                    obj.GetComponent<BasePhysicsComponent>().OnPhysicsStep();
+                }
+            }
         }
 
         internal override void Render() {
@@ -152,6 +159,10 @@ namespace TackEngine.Core.Physics {
         }
 
         internal void RegisterPhysicsComponent(BasePhysicsComponent component) {
+            if (m_physicBodyComponents == null) {
+                return;
+            }
+
             if (!m_physicBodyComponents.Contains(component)) {
                 m_physicBodyComponents.Add(component);
             }
@@ -232,23 +243,13 @@ namespace TackEngine.Core.Physics {
             return false;
         }
 
-        public void Shutdown() {
-            Instance.Close();
-        }
-
         private void DebugDraw() {
             if (!m_debugDrawBodies) {
                 return;
             }
 
-            TackObject[] physObjects = TackObject.Get();
-
-            for (int i = 0; i < physObjects.Length; i++) {
-                BasePhysicsComponent comp = physObjects[i].GetComponent<BasePhysicsComponent>();
-
-                if (comp != null) {
-                    comp.OnDebugDraw();
-                }
+            for (int i = 0; i < m_physicBodyComponents.Count; i++) {
+                m_physicBodyComponents[i].OnDebugDraw();
             }
         }
     }

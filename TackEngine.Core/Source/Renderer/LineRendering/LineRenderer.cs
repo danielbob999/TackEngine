@@ -15,6 +15,11 @@ namespace TackEngine.Core.Source.Renderer.LineRendering {
 
         private LineRenderingBehaviour m_renderingBehaviour;
         private List<LineRenderingJob> m_lineJobQueue;
+        private int m_itemsRenderedThisFrame = 0;
+        private int m_jobsRendererThisFrame = 0;
+
+        internal int ItemsRenderedLastFrame { get; private set; }
+        internal int JobsRenderedLastFrame { get; private set; }
 
         internal LineRenderer(LineRenderingBehaviour behaviour) {
             m_renderingBehaviour = behaviour;
@@ -35,14 +40,25 @@ namespace TackEngine.Core.Source.Renderer.LineRendering {
             if (m_renderingBehaviour == null) {
                 return;
             }
+            
+            if (m_lineJobQueue.Count == 0) {
+                return;
+            }
 
-            List<LineRenderingJob> jobs = m_lineJobQueue.FindAll(j => j.LineContext == context);
+            m_renderingBehaviour.OnPreRender();
 
-            for (int i = 0; i < jobs.Count; i++) {
-                for (int l = 0; l < jobs[i].Lines.Count; l++) {
-                    m_renderingBehaviour.RenderLineToScreen(jobs[i].Lines[l], context);
+            for (int i = 0; i < m_lineJobQueue.Count; i++) {
+                if (m_lineJobQueue[i].LineContext != context) { continue; }
+
+                m_jobsRendererThisFrame++;
+
+                for (int l = 0; l < m_lineJobQueue[i].Lines.Count; l++) {
+                    m_renderingBehaviour.RenderLineToScreen(m_lineJobQueue[i].Lines[l], context);
+                    m_itemsRenderedThisFrame++;
                 }
             }
+
+            m_renderingBehaviour.OnPostRender();
         }
 
 
@@ -56,6 +72,12 @@ namespace TackEngine.Core.Source.Renderer.LineRendering {
 
         internal void ClearLineJobQueue() {
             m_lineJobQueue.Clear();
+
+            ItemsRenderedLastFrame = m_itemsRenderedThisFrame;
+            JobsRenderedLastFrame = m_jobsRendererThisFrame;
+
+            m_itemsRenderedThisFrame = 0;
+            m_jobsRendererThisFrame = 0;
         }
 
         public void DrawLine(Line line, LineContext context) {

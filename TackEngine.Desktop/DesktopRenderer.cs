@@ -35,7 +35,7 @@ namespace TackEngine.Desktop {
 
             m_fpsCounterTextArea = new GUITextArea();
             m_fpsCounterTextArea.Position = new Vector2f(TackEngineInstance.Instance.Window.WindowSize.X - 150, 5);
-            m_fpsCounterTextArea.Size = new Vector2f(145, 53);
+            m_fpsCounterTextArea.Size = new Vector2f(145, 65);
             m_fpsCounterTextArea.LinkedSceneType = null;
 
             GUITextArea.GUITextAreaStyle style = new GUITextArea.GUITextAreaStyle() {
@@ -53,11 +53,12 @@ namespace TackEngine.Desktop {
             if (mRenderFpsCounter) {
                 m_fpsCounterTextArea.Active = mRenderFpsCounter;
                 m_fpsCounterTextArea.Position = new Vector2f(TackEngineInstance.Instance.Window.WindowSize.X - 150, 5);
-                m_fpsCounterTextArea.Size = new Vector2f(145, 53);
+                m_fpsCounterTextArea.Size = new Vector2f(145, 65);
 
                 m_fpsCounterTextArea.Text = "U: " + (1f / EngineTimer.Instance.UpdateTimeAverageLastSecond).ToString("0") + "(" + (EngineTimer.Instance.UpdateTimeAverageLastSecond * 1000f).ToString("0.00") + "ms)\n" +
                     "R: " + (1f / EngineTimer.Instance.RenderTimeAverageLastSecond).ToString("0") + " (" + (EngineTimer.Instance.RenderTimeAverageLastSecond * 1000f).ToString("0.00") + "ms)\n" +
-                    "DC: " + m_previousDrawCallCount;
+                    "DC: " + m_previousDrawCallCount + "\n" +
+                    "Lines: " + LineRenderer.Instance.ItemsRenderedLastFrame;
             }
 
             GUIInstance.OnUpdate();

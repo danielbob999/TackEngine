@@ -126,33 +126,5 @@ namespace TackEngine.Core.Objects.Components {
         public override void OnClose() {
             base.OnClose();
         }
-
-        internal override void OnDebugDraw() {
-            Vector2f pos = GetParent().Position;
-            Vector2f halfSize = GetParent().Size / 2f;
-
-            // top line
-            DebugLineRenderer.DrawLine(new Vector2f(pos.X, pos.Y + halfSize.Y), GetParent().Rotation, TackPhysics.BoundsColour, GetParent().Size.X);
-
-            // bottom line
-            DebugLineRenderer.DrawLine(new Vector2f(pos.X, pos.Y - halfSize.Y), GetParent().Rotation, TackPhysics.BoundsColour, GetParent().Size.X);
-
-            // left line
-            Vector2f rotatedPosLeft = new Vector2f(
-                (float)(System.Math.Cos(TackMath.DegToRad(GetParent().Rotation)) * ((pos.X - halfSize.X) - pos.X) - System.Math.Sin(TackMath.DegToRad(GetParent().Rotation)) * (pos.Y - pos.Y) + pos.X),
-                (float)(System.Math.Sin(TackMath.DegToRad(GetParent().Rotation)) * ((pos.X - halfSize.X) - pos.X) + System.Math.Cos(TackMath.DegToRad(GetParent().Rotation)) * (pos.Y - pos.Y) + pos.Y)
-                );
-            DebugLineRenderer.DrawLine(rotatedPosLeft, GetParent().Rotation + 90f, TackPhysics.BoundsColour, GetParent().Size.Y);
-
-            // right line
-            Vector2f rotatedPosRight = new Vector2f(
-                (float)(System.Math.Cos(TackMath.DegToRad(GetParent().Rotation)) * ((pos.X + halfSize.X) - pos.X) - System.Math.Sin(TackMath.DegToRad(GetParent().Rotation)) * (pos.Y - pos.Y) + pos.X),
-                (float)(System.Math.Sin(TackMath.DegToRad(GetParent().Rotation)) * ((pos.X + halfSize.X) - pos.X) + System.Math.Cos(TackMath.DegToRad(GetParent().Rotation)) * (pos.Y - pos.Y) + pos.Y)
-                );
-            DebugLineRenderer.DrawLine(rotatedPosRight, GetParent().Rotation + 90f, TackPhysics.BoundsColour, GetParent().Size.Y);
-
-            // Diagonal lines
-
-        }
     }
 }

@@ -14,14 +14,17 @@ using TackEngine.Core.Objects.Components;
 namespace TackEngine.Android.Renderer {
     internal class AndroidLineRenderingBehaviour : LineRenderingBehaviour {
         private Shader m_lineShader;
+        private float[] m_vertexData;
+        private int[] m_indiceData;
+        private int m_vbo;
+        private int m_posHandle;
+        private int m_uvHandle;
 
         public override void Initialise() {
             m_lineShader = Shader.LoadFromFile("shaders.line", TackShaderType.Line, "tackresources/shaders/linerenderer/line_vertex_shader.vs",
                                                                                      "tackresources/shaders/linerenderer/line_fragment_shader.fs");
-        }
 
-        public override void RenderLineToScreen(Line line, LineRenderer.LineContext context) {
-            float[] vertexData = new float[20] {
+            m_vertexData = new float[20] {
                     //       Position (XYZ)                                                                                                      Colours (RGB)                                                                                  TexCoords (XY)
                     /* v1 */  1f, -1f, 1.0f,       1.0f, 1.0f,
                     /* v2 */  1f,  1f, 1.0f,       1.0f, 0.0f,
@@ -29,11 +32,13 @@ namespace TackEngine.Android.Renderer {
                     /* v4 */ -1f, -1f, 1.0f,       0.0f, 1.0f
             };
 
-            int[] indiceData = new int[] {
+            m_indiceData = new int[] {
                     0, 1, 3, // first triangle
                     1, 2, 3  // second triangle
             };
+        }
 
+        public override void OnPreRender() {
             GL.Enable(EnableCap.Blend);
             GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
 
@@ -46,21 +51,21 @@ namespace TackEngine.Android.Renderer {
              * 
              */
 
-            GL.GenBuffers(1, out int VBO);
+            GL.GenBuffers(1, out m_vbo);
 
-            int posHandle = GL.GetAttribLocation(m_lineShader.Id, "aPos");
-            int uvHandle = GL.GetAttribLocation(m_lineShader.Id, "aTexCoord");
+            m_posHandle = GL.GetAttribLocation(m_lineShader.Id, "aPos");
+            m_uvHandle = GL.GetAttribLocation(m_lineShader.Id, "aTexCoord");
 
-            GL.BindBuffer(BufferTarget.ArrayBuffer, VBO);
-            GL.BufferData(BufferTarget.ArrayBuffer, new IntPtr(sizeof(float) * 20), vertexData, BufferUsage.StaticDraw);
-
-            // position attribute
-            GL.VertexAttribPointer(posHandle, 3, VertexAttribPointerType.Float, false, 5 * sizeof(float), 0);
-            GL.EnableVertexAttribArray(posHandle);
+            GL.BindBuffer(BufferTarget.ArrayBuffer, m_vbo);
+            GL.BufferData(BufferTarget.ArrayBuffer, new IntPtr(sizeof(float) * 20), m_vertexData, BufferUsage.StaticDraw);
 
             // position attribute
-            GL.VertexAttribPointer(uvHandle, 2, VertexAttribPointerType.Float, false, 5 * sizeof(float), 3 * sizeof(float));
-            GL.EnableVertexAttribArray(uvHandle);
+            GL.VertexAttribPointer(m_posHandle, 3, VertexAttribPointerType.Float, false, 5 * sizeof(float), 0);
+            GL.EnableVertexAttribArray(m_posHandle);
+
+            // position attribute
+            GL.VertexAttribPointer(m_uvHandle, 2, VertexAttribPointerType.Float, false, 5 * sizeof(float), 3 * sizeof(float));
+            GL.EnableVertexAttribArray(m_uvHandle);
 
             // position attribute
             GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 5 * sizeof(float), 0);
@@ -69,7 +74,9 @@ namespace TackEngine.Android.Renderer {
             // texture coords attribute
             GL.VertexAttribPointer(1, 2, VertexAttribPointerType.Float, false, 5 * sizeof(float), 3 * sizeof(float));
             GL.EnableVertexAttribArray(1);
+        }
 
+        public override void RenderLineToScreen(Line line, LineRenderer.LineContext context) {
             // set default (4 byte) pixel alignment 
             GL.PixelStore(PixelStoreParameter.UnpackAlignment, 4);
 
@@ -101,13 +108,14 @@ namespace TackEngine.Android.Renderer {
             m_lineShader.SetUniformValue("uColour", colourVector);
 
             unsafe {
-                fixed (void* ptr = indiceData) {
+                fixed (void* ptr = m_indiceData) {
                     GL.DrawElements(BeginMode.Triangles, 6, DrawElementsType.UnsignedInt, new IntPtr(ptr));
                 }
             }
+        }
 
-            GL.DeleteBuffers(1, ref VBO);
-
+        public override void OnPostRender() {
+            GL.DeleteBuffers(1, ref m_vbo);
         }
 
         public override void Close() {
@@ -124,9 +132,6 @@ namespace TackEngine.Android.Renderer {
 
             // Generate rotation matrix
             OpenTK.Matrix4 rotationMat = OpenTK.Matrix4.CreateRotationZ(rotation);
-
-            // Generate the view matrix
-            float widthToHeightRatio = TackEngine.Core.Engine.TackEngineInstance.Instance.Window.WindowSize.Y / (float)TackEngine.Core.Engine.TackEngineInstance.Instance.Window.WindowSize.X;
 
             OpenTK.Matrix4 orthoView = new OpenTK.Matrix4(
                 new OpenTK.Vector4((1 * Camera.MainCamera.ZoomFactor) * (1f / ((float)TackEngine.Core.Engine.TackEngineInstance.Instance.Window.WindowSize.X / 2.0f)), 0, 0, 0),
@@ -150,9 +155,6 @@ namespace TackEngine.Android.Renderer {
 
             // Generate rotation matrix
             OpenTK.Matrix4 rotationMat = OpenTK.Matrix4.CreateRotationZ(rotation + TackMath.DegToRad(90));
-
-            // Generate the view matrix
-            float widthToHeightRatio = TackEngine.Core.Engine.TackEngineInstance.Instance.Window.WindowSize.Y / (float)TackEngine.Core.Engine.TackEngineInstance.Instance.Window.WindowSize.X;
 
             OpenTK.Matrix4 orthoView = new OpenTK.Matrix4(
                 new OpenTK.Vector4(2.0f / (float)TackEngine.Core.Engine.TackEngineInstance.Instance.Window.WindowSize.X, 0, 0, 0),
