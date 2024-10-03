@@ -8,13 +8,13 @@ using TackEngine.Core.Renderer;
 
 namespace TackEngine.Core.Objects.Components {
     interface IRendererComponent {
-        BaseShader Shader { get; }
+        Shader Shader { get; }
         Sprite Sprite { get; }
         Colour4b Colour { get; set; }
         int RenderLayer { get; set; }
         Dictionary<string, object> ShaderUniformValues { get; }
         bool DisableRenderingBoundsCheck { get; set; }
 
-        void SetShader(BaseShader shader);
+        void SetShader(Shader shader);
     }
 }

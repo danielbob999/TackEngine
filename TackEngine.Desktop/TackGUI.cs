@@ -61,10 +61,10 @@ namespace TackEngine.Core.GUI {
                                                                                               System.IO.File.ReadAllText("tackresources/shaders/gui/default_gui_fragment_shader.fs"));
             */
 
-            m_defaultGUIShader = new Shader("shaders.new_gui_shader", TackShaderType.GUI, System.IO.File.ReadAllText("tackresources/shaders/gui/new/gui_vertex_shader.vs"),
+            m_defaultGUIShader = new Shader("shaders.new_gui_shader", Shader.ShaderContext.GUI, System.IO.File.ReadAllText("tackresources/shaders/gui/new/gui_vertex_shader.vs"),
                                                                                           System.IO.File.ReadAllText("tackresources/shaders/gui/new/gui_fragment_shader.fs"));
 
-            m_defaultTextShader = new Shader("shaders.text_shader", TackShaderType.GUI, System.IO.File.ReadAllText("tackresources/shaders/gui/text/text_vertex_shader.vs"),
+            m_defaultTextShader = new Shader("shaders.text_shader", Shader.ShaderContext.GUI, System.IO.File.ReadAllText("tackresources/shaders/gui/text/text_vertex_shader.vs"),
                                                                                         System.IO.File.ReadAllText("tackresources/shaders/gui/text/text_fragment_shader.fs"));
 
             m_vertexData = new float[20] {

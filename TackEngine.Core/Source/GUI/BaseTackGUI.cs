@@ -14,11 +14,11 @@ namespace TackEngine.Core.GUI {
         public static BaseTackGUI Instance { get; protected set; }
 
         protected List<GUIOperation> m_guiOperations;
-        protected BaseShader m_defaultGUIShader;
+        protected Shader m_defaultGUIShader;
         protected List<GUIObject> m_guiObjects = new List<GUIObject>();
         protected Library m_fontLibrary;
         protected TackFont m_defaultFont;
-        protected BaseShader m_defaultTextShader;
+        protected Shader m_defaultTextShader;
         protected List<Events.GUIMouseEvent> m_mouseEventQueue;
         protected List<Events.GUIKeyboardEvent> m_keyboardEventQueue;
         protected List<int> m_guiObjectsToRemove;
@@ -27,8 +27,8 @@ namespace TackEngine.Core.GUI {
 
         internal static List<GUIInputField> inputFields = new List<GUIInputField>();
 
-        public BaseShader DefaultGUIShader { get { return m_defaultGUIShader; } }
-        public BaseShader DefaultTextShader { get { return m_defaultTextShader; } }
+        public Shader DefaultGUIShader { get { return m_defaultGUIShader; } }
+        public Shader DefaultTextShader { get { return m_defaultTextShader; } }
         public Library FontLibrary { get { return m_fontLibrary; } }
         public TackFont DefaultFont { get { return m_defaultFont; } }
         public GUIObject FocusedGUIObject {

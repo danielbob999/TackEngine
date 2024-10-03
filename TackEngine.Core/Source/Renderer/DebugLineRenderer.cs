@@ -19,7 +19,7 @@ namespace TackEngine.Core.Renderer {
 
         internal static DebugLineRenderer Instance { get; set; }
 
-        protected BaseShader m_shader;
+        protected Shader m_shader;
         protected List<Line> m_lines;
         protected float[] m_vertexData;
         protected int[] m_indiceData;

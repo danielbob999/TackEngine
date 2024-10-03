@@ -18,7 +18,6 @@ using TackEngine.Core.Physics;
 using Android.Content.Res;
 using Java.Security.Cert;
 using System.Diagnostics.Tracing;
-using Android.Graphics;
 using Android.Opengl;
 using Javax.Microedition.Khronos.Opengles;
 using System.Runtime.InteropServices;
@@ -76,7 +75,7 @@ namespace TackEngine.Android {
                 using (StreamReader fragReader = new StreamReader(AndroidContext.CurrentAssetManager.Open("tackresources/shaders/gui/new/gui_fragment_shader.fs"))) {
                     string fragSource = fragReader.ReadToEnd();
 
-                   m_defaultGUIShader = new Shader("shaders.new_gui_shader", TackShaderType.GUI, vertSource, fragSource);
+                   m_defaultGUIShader = new Shader("shaders.new_gui_shader", Shader.ShaderContext.GUI, vertSource, fragSource);
                 }
             }
 
@@ -87,7 +86,7 @@ namespace TackEngine.Android {
                 using (StreamReader fragReader = new StreamReader(AndroidContext.CurrentAssetManager.Open("tackresources/shaders/gui/text/text_fragment_shader.fs"))) {
                     string fragSource = fragReader.ReadToEnd();
 
-                    m_defaultTextShader = new Shader("shaders.text_gui_shader", TackShaderType.GUI, vertSource, fragSource);
+                    m_defaultTextShader = new Shader("shaders.text_gui_shader", Shader.ShaderContext.GUI, vertSource, fragSource);
                 }
             }
 

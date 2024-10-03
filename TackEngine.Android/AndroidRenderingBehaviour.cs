@@ -136,7 +136,7 @@ namespace TackEngine.Android {
                     // Reset the current texture unit index back to 0
                     TackRenderer.Instance.ResetCurrentTextureUnitIndex();
 
-                    BaseShader connectedShader = rendererComp.Shader;
+                    Shader connectedShader = rendererComp.Shader;
 
                     connectedShader.Use();
 
@@ -147,7 +147,7 @@ namespace TackEngine.Android {
 
                     TackProfiler.Instance.StopTimer("Renderer.Loop.BuildMatrix");
 
-                    connectedShader.SetUniformValue("uModelMat", false, modelMatrix.ToTEMat4());
+                    connectedShader.SetUniformValue("uModelMat", modelMatrix.ToTEMat4());
                     //GL.UniformMatrix4(GL.GetUniformLocation(m_defaultWorldShader.Id, "uModelMat"), false, ref modelMatrix);
 
                     TackProfiler.Instance.StartTimer("Renderer.Loop.BindTextureData");
@@ -187,11 +187,11 @@ namespace TackEngine.Android {
                         } else if (valueType == typeof(uint)) {
                             connectedShader.SetUniformValue(uniformValue.Key, (uint)uniformValue.Value);
                         } else if (valueType == typeof(Matrix2)) {
-                            connectedShader.SetUniformValue(uniformValue.Key, false, ((Matrix2)uniformValue.Value));
+                            connectedShader.SetUniformValue(uniformValue.Key, ((Matrix2)uniformValue.Value));
                         } else if (valueType == typeof(Matrix3)) {
-                            connectedShader.SetUniformValue(uniformValue.Key, false, ((Matrix3)uniformValue.Value));
+                            connectedShader.SetUniformValue(uniformValue.Key, ((Matrix3)uniformValue.Value));
                         } else if (valueType == typeof(Matrix4)) {
-                            connectedShader.SetUniformValue(uniformValue.Key, false, ((Matrix4)uniformValue.Value));
+                            connectedShader.SetUniformValue(uniformValue.Key, ((Matrix4)uniformValue.Value));
                         } else if (valueType == typeof(Vector2f)) {
                             connectedShader.SetUniformValue(uniformValue.Key, (Vector2f)uniformValue.Value);
                         } else if (valueType == typeof(Vector3)) {

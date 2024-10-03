@@ -21,7 +21,7 @@ namespace TackEngine.Android.Renderer {
         private int m_uvHandle;
 
         public override void Initialise() {
-            m_lineShader = Shader.LoadFromFile("shaders.line", TackShaderType.Line, "tackresources/shaders/linerenderer/line_vertex_shader.vs",
+            m_lineShader = Shader.LoadFromFile("shaders.line", Shader.ShaderContext.Line, "tackresources/shaders/linerenderer/line_vertex_shader.vs",
                                                                                      "tackresources/shaders/linerenderer/line_fragment_shader.fs");
 
             m_vertexData = new float[20] {
@@ -101,7 +101,7 @@ namespace TackEngine.Android.Renderer {
                 modelMatrix = GenerateGUIModelMatrix(centerPosition, new Vector2f(neg.Length, line.Width), (float)Math.Acos(Vector2f.Dot(new Vector2f(0, 1), neg.Normalized())));
             }
 
-            m_lineShader.SetUniformValue("uModelMat", false, modelMatrix.ToTEMat4());
+            m_lineShader.SetUniformValue("uModelMat", modelMatrix.ToTEMat4());
             m_lineShader.SetUniformValue("uLineContext", (int)context);
 
             Vector4 colourVector = new Vector4(line.Colour.R / 255.0f, line.Colour.G / 255.0f, line.Colour.B / 255.0f, line.Colour.A / 255.0f);

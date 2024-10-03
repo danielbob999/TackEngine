@@ -22,6 +22,8 @@ namespace TackEngine.Android {
         }
 
         internal override void OnStart() {
+            m_shaderImplementation = new AndroidShaderImpl();
+
             GUIInstance = new TackGUI();
             GUIInstance.OnStart();
 
@@ -116,10 +118,10 @@ namespace TackEngine.Android {
                 vertShaderNamePref = "quad_screen_";
             }
 
-            DefaultWorldShader = Shader.LoadFromFile("shaders.default_world_shader", TackShaderType.World, "tackresources/shaders/world/" + vertShaderNamePref + "world_vertex_shader.vs",
+            DefaultWorldShader = Shader.LoadFromFile("shaders.default_world_shader", Shader.ShaderContext.World, "tackresources/shaders/world/" + vertShaderNamePref + "world_vertex_shader.vs",
                                                                                              "tackresources/shaders/world/world_fragment_shader.fs");
 
-            DefaultLitWorldShader = Shader.LoadFromFile("shaders.default_world_shader_lit", TackShaderType.World, "tackresources/shaders/world/" + vertShaderNamePref + "world_vertex_shader.vs",
+            DefaultLitWorldShader = Shader.LoadFromFile("shaders.default_world_shader_lit", Shader.ShaderContext.World, "tackresources/shaders/world/" + vertShaderNamePref + "world_vertex_shader.vs",
                                                                                                           "tackresources/shaders/world/world_fragment_shader_lit.fs");
         }
     }

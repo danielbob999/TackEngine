@@ -22,7 +22,7 @@ namespace TackEngine.Core.Objects.Components {
         /// <summary>
         /// The shader used on this component
         /// </summary>
-        public BaseShader Shader { get; private set; }
+        public Shader Shader { get; private set; }
 
         /// <summary>
         /// The render layer of this component. Smaller values will render first (behind components with a higher value)
@@ -100,7 +100,7 @@ namespace TackEngine.Core.Objects.Components {
         /// <param name="sprite">The Sprite that this component will renderer</param>
         /// <param name="renderLayer">The render layer of this component</param>
         /// <param name="shader">The shader used when renderering this component</param>
-        public SpriteRendererComponent(Colour4b colour, Sprite sprite, int renderLayer, BaseShader shader) : base() {
+        public SpriteRendererComponent(Colour4b colour, Sprite sprite, int renderLayer, Shader shader) : base() {
             ShaderUniformValues = new Dictionary<string, object>();
 
             Colour = colour;
@@ -142,7 +142,7 @@ namespace TackEngine.Core.Objects.Components {
         /// Note: Calling this method will reset the uniform variable values attached to this component
         /// </summary>
         /// <param name="shader"></param>
-        public void SetShader(BaseShader shader) {
+        public void SetShader(Shader shader) {
             if (shader == null) {
                 return;
             }

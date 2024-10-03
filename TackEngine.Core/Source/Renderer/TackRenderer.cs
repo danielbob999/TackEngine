@@ -22,7 +22,7 @@ namespace TackEngine.Core.Renderer
     public abstract class TackRenderer {
         public static TackRenderer Instance { get; protected set; }
 
-        protected List<BaseShader> m_shaders;
+        protected List<Shader> m_shaders;
         protected float[] mVertexData;
         protected bool mRenderFpsCounter;
         protected Colour4b mBackgroundColour;
@@ -33,6 +33,7 @@ namespace TackEngine.Core.Renderer
         private int m_currentTextureUnitIndex = 0;
         protected LineRenderer m_lineRenderer;
         protected SplitScreenMode m_splitScreenMode = SplitScreenMode.Single;
+        internal IShaderImplementation m_shaderImplementation;
 
         public static Colour4b BackgroundColour {
             get { return Instance.mBackgroundColour; }
@@ -44,14 +45,15 @@ namespace TackEngine.Core.Renderer
         internal int CurrentTextureUnitIndex { get { return m_currentTextureUnitIndex; } }
         internal SplitScreenMode CurrentSplitScreenMode { get { return m_splitScreenMode; } }
         internal Camera[] Cameras { get; }
+        internal IShaderImplementation ShaderImplementation { get { return m_shaderImplementation; } }
 
-        public BaseShader DefaultWorldShader { get; protected set; }
-        public BaseShader DefaultLitWorldShader { get; protected set; }
+        public Shader DefaultWorldShader { get; protected set; }
+        public Shader DefaultLitWorldShader { get; protected set; }
 
         internal TackRenderer() {
             mBackgroundColour = new Colour4b(150, 150, 150, 255);
 
-            m_shaders = new List<BaseShader>();
+            m_shaders = new List<Shader>();
 
             Cameras = new Camera[4];
         }
@@ -88,7 +90,7 @@ namespace TackEngine.Core.Renderer
             }
         }
 
-        internal void AddShader(BaseShader shader) {
+        internal void AddShader(Shader shader) {
             if (!shader.CompiledAndLinked) {
                 TackConsole.EngineLog(TackConsole.LogType.Error, "Error: Cannot add a shader that is not compiled and linked");
                 return;
@@ -104,8 +106,8 @@ namespace TackEngine.Core.Renderer
             TackConsole.EngineLog(TackConsole.LogType.Error, "Error: Failed to add a new Shader to the current renderer. There is already a Shader with the name '" + shader.Name + "'");
         }
 
-        internal BaseShader GetShader(string shaderName) {
-            BaseShader shader = m_shaders.Find(x => x.Name == shaderName);
+        internal Shader GetShader(string shaderName) {
+            Shader shader = m_shaders.Find(x => x.Name == shaderName);
 
             if (shader == null) {
                 return DefaultWorldShader;

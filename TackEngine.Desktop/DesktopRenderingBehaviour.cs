@@ -136,7 +136,7 @@ namespace TackEngine.Desktop {
                     TackRenderer.Instance.ResetCurrentTextureUnitIndex();
 
                     //Shader connectedShader = m_defaultWorldShader;
-                    BaseShader connectedShader = rendererComp.Shader;
+                    Shader connectedShader = rendererComp.Shader;
 
                     if (connectedShader == null) {
                         connectedShader = TackRenderer.Instance.DefaultLitWorldShader;
@@ -151,7 +151,7 @@ namespace TackEngine.Desktop {
 
                     TackProfiler.Instance.StopTimer("Renderer.Loop.BuildMatrix");
 
-                    connectedShader.SetUniformValue("uModelMat", false, modelMatrix.ToTEMat4());
+                    connectedShader.SetUniformValue("uModelMat", modelMatrix.ToTEMat4());
                     //GL.UniformMatrix4(GL.GetUniformLocation(connectedShader.Id, "uModelMat"), false, ref modelMatrix);
 
                     GL.ActiveTexture(TextureUnit.Texture0);
@@ -189,11 +189,11 @@ namespace TackEngine.Desktop {
                         } else if (valueType == typeof(uint)) {
                             connectedShader.SetUniformValue(uniformValue.Key, (uint)uniformValue.Value);
                         } else if (valueType == typeof(Matrix2)) {
-                            connectedShader.SetUniformValue(uniformValue.Key, false, ((Matrix2)uniformValue.Value));
+                            connectedShader.SetUniformValue(uniformValue.Key, ((Matrix2)uniformValue.Value));
                         } else if (valueType == typeof(Matrix3)) {
-                            connectedShader.SetUniformValue(uniformValue.Key, false, ((Matrix3)uniformValue.Value));
+                            connectedShader.SetUniformValue(uniformValue.Key, ((Matrix3)uniformValue.Value));
                         } else if (valueType == typeof(Matrix4)) {
-                            connectedShader.SetUniformValue(uniformValue.Key, false, ((Matrix4)uniformValue.Value));
+                            connectedShader.SetUniformValue(uniformValue.Key, ((Matrix4)uniformValue.Value));
                         } else if (valueType == typeof(Vector2f)) {
                             connectedShader.SetUniformValue(uniformValue.Key, (Vector2f)uniformValue.Value);
                         } else if (valueType == typeof(Vector3)) {

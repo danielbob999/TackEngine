@@ -23,7 +23,7 @@ namespace TackEngine.Core.Objects.Components {
         /// <summary>
         /// The shader used on this component
         /// </summary>
-        public BaseShader Shader { get; private set; }
+        public Shader Shader { get; private set; }
 
         /// <summary>
         /// The render layer of this component. Smaller values will render first (behind components with a higher value)
@@ -163,7 +163,7 @@ namespace TackEngine.Core.Objects.Components {
         /// <param name="colour">The colour of this component</param>
         /// <param name="shouldLoop">Should the component be looping the SpriteSheet</param>
         /// <param name="shader">The Shader to use when rendering this component</param>
-        public SpriteSheetRendererComponent(SpriteSheet spriteSheet, float refreshTime, Colour4b colour, bool shouldLoop, BaseShader shader) {
+        public SpriteSheetRendererComponent(SpriteSheet spriteSheet, float refreshTime, Colour4b colour, bool shouldLoop, Shader shader) {
             ShaderUniformValues = new Dictionary<string, object>();
 
             Colour = colour;
@@ -223,7 +223,7 @@ namespace TackEngine.Core.Objects.Components {
             }
         }
 
-        public void SetShader(BaseShader shader) {
+        public void SetShader(Shader shader) {
             if (shader == null) {
                 return;
             }
