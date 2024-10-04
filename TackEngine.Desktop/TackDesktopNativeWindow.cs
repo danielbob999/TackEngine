@@ -22,6 +22,7 @@ using TackEngine.Desktop;
 using TackEngine.Core.Audio;
 using TackEngine.Desktop.Audio;
 using TackEngine.Core.SceneManagement;
+using OpenTK.Core;
 
 namespace TackEngine.Desktop {
     public class TackDesktopNativeWindow : NativeWindow, IBaseTackWindow {
@@ -31,7 +32,7 @@ namespace TackEngine.Desktop {
         public ulong CurrentUpdateLoopIndex { get { return m_currentUpdateLoopIndex; } }
         public ulong CurrentRenderLoopIndex { get { return m_currentRenderLoopIndex; } }
 
-        private float m_targetFrameTime;
+        private int m_targetUpdateFrequency = 60;
 
         private ulong m_currentUpdateLoopIndex;
         private ulong m_currentRenderLoopIndex;
@@ -71,9 +72,9 @@ namespace TackEngine.Desktop {
             VSync = (settings.VSync == true ? VSyncMode.On : VSyncMode.Off);
 
             if (!settings.VSync) {
-                m_targetFrameTime = 1f / (float)settings.TargetUpdateRenderFrequency;
+                m_targetUpdateFrequency = settings.TargetUpdateRenderFrequency;
             } else {
-                m_targetFrameTime = 1f / (float)Monitors.GetMonitorFromWindow(this).CurrentVideoMode.RefreshRate;
+                m_targetUpdateFrequency = 0;
             }
 
             Instance = this;
@@ -105,7 +106,7 @@ namespace TackEngine.Desktop {
             m_tackProfiler = new TackProfiler();
             m_tackProfiler.OnStart();
 
-            mTackPhysics = new TackPhysics((int)(1f / m_targetFrameTime));
+            mTackPhysics = new TackPhysics(1);
             mTackPhysics.Start();
 
             m_tackInput = new TackInput();
@@ -119,56 +120,57 @@ namespace TackEngine.Desktop {
             mTackObjectManager.OnStart();
 
             while (GLFW.WindowShouldClose(WindowPtr) == false) {
-                loopWatch.Stop();
-                double lastCycleTime = loopWatch.Elapsed.TotalSeconds;
-                loopWatch.Restart();
+                double updateFrequency = m_targetUpdateFrequency == 0 ? 0 : 1 / (float)m_targetUpdateFrequency;
 
-                // Read input devices, and let the OS update the window.
-                ProcessWindowEvents(false);
+                double elapsed = loopWatch.Elapsed.TotalSeconds;
 
-                /*
-                 * Update
-                 */
-                m_engineTimer.OnUpdate();
+                if (elapsed > updateFrequency) {
+                    loopWatch.Restart();
 
-                // All OnUpdate here
-                m_tackProfiler.OnUpdate();
-                mTackPhysics.Update();      // If issues arise, try running this below RunTackObjectUpdateMethods()
-                mTackObjectManager.OnUpdate();
-                mTackLightingSystem.OnUpdate();
-                m_audioManager.OnUpdate();
+                    // Read input devices, and let the OS update the window.
+                    ProcessWindowEvents(false);
 
-                mTackConsole.OnUpdate();
-                mTackRender.OnUpdate();
-                m_tackInput.OnUpdate();
+                    /*
+                     * Update
+                     */
+                    m_engineTimer.OnUpdate();
 
-                /*
-                 * Render
-                 */
-                m_engineTimer.OnRender();
+                    // All OnUpdate here
+                    m_tackProfiler.OnUpdate();
+                    mTackPhysics.Update();      // If issues arise, try running this below RunTackObjectUpdateMethods()
+                    mTackObjectManager.OnUpdate();
+                    mTackLightingSystem.OnUpdate();
+                    m_audioManager.OnUpdate();
 
-                GL.Clear(ClearBufferMask.ColorBufferBit);
-                GL.ClearColor(TackRenderer.BackgroundColour.R / 255f, TackRenderer.BackgroundColour.G / 255f, TackRenderer.BackgroundColour.B / 255f, TackRenderer.BackgroundColour.A / 255f);
+                    mTackConsole.OnUpdate();
+                    mTackRender.OnUpdate();
+                    m_tackInput.OnUpdate();
 
-                mTackConsole.OnGUIRender(); // TackConsole should be rendered above everything else, including the onGUIRenderFunction
+                    /*
+                     * Render
+                     */
+                    m_engineTimer.OnRender();
 
-                // All OnRender here
-                mTackRender.OnRender(1f);
+                    GL.Clear(ClearBufferMask.ColorBufferBit);
+                    GL.ClearColor(TackRenderer.BackgroundColour.R / 255f, TackRenderer.BackgroundColour.G / 255f, TackRenderer.BackgroundColour.B / 255f, TackRenderer.BackgroundColour.A / 255f);
 
-                Context.SwapBuffers();
+                    mTackConsole.OnGUIRender(); // TackConsole should be rendered above everything else, including the onGUIRenderFunction
 
-                // Hold the thread for the specified time
-                if (VSync == VSyncMode.Off) {
-                    double loopTimeToThisPoint = loopWatch.Elapsed.TotalSeconds;
+                    // All OnRender here
+                    mTackRender.OnRender(1f);
 
-                    if (loopTimeToThisPoint < m_targetFrameTime) {
-                        int sleepTime = (int)((m_targetFrameTime - loopTimeToThisPoint) * 1000f);
-                        System.Threading.Thread.Sleep(sleepTime);
+                    Context.SwapBuffers();
+
+                    // The time we have left to the next update.
+                    double timeToNextUpdate = updateFrequency - loopWatch.Elapsed.TotalSeconds;
+
+                    if (timeToNextUpdate > 0) {
+                        AccurateSleep(timeToNextUpdate, 8);
                     }
-                }
 
-                m_currentUpdateLoopIndex++;
-                m_currentRenderLoopIndex++;
+                    m_currentUpdateLoopIndex++;
+                    m_currentRenderLoopIndex++;
+                }
             }
 
             m_engineTimer.OnClose();
@@ -232,6 +234,24 @@ namespace TackEngine.Desktop {
                 m_tackInput.RegisterGamepad(new GamepadData(e.JoystickId));
             }
             */
+        }
+
+        //
+        private void AccurateSleep(double seconds, int expectedSchedulerPeriod) {
+            const double TOLERANCE = 0.02;
+
+            long t0 = Stopwatch.GetTimestamp();
+            long target = t0 + (long)(seconds * Stopwatch.Frequency);
+
+            double ms = (seconds * 1000) - (expectedSchedulerPeriod * TOLERANCE);
+            int ticks = (int)(ms / expectedSchedulerPeriod);
+            if (ticks > 0) {
+                Thread.Sleep(ticks * expectedSchedulerPeriod);
+            }
+
+            while (Stopwatch.GetTimestamp() < target) {
+                Thread.Yield();
+            }
         }
     }
 }
