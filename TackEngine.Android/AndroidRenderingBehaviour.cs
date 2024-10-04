@@ -14,6 +14,7 @@ using Java.Security.Cert;
 using Java.Lang;
 using tainicom.Aether.Physics2D.Fluids;
 using TackEngine.Core.Source.Renderer;
+using TackEngine.Core.Math;
 
 namespace TackEngine.Android {
     public class AndroidRenderingBehaviour : RenderingBehaviour {
@@ -45,6 +46,8 @@ namespace TackEngine.Android {
         public override void RenderToScreen(out int drawCallCount) {
             GL.Enable(EnableCap.Blend);
             GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
+            GL.Enable(EnableCap.DepthTest);
+            GL.DepthFunc(DepthFunction.Less);
 
             int lastBoundSpriteId = -1;
 
@@ -143,7 +146,7 @@ namespace TackEngine.Android {
                     TackProfiler.Instance.StartTimer("Renderer.Loop.BuildMatrix");
 
                     // Generate model matrix
-                    OpenTK.Matrix4 modelMatrix = GenerateModelMatrix(sortedObjects[i], camera, TackRenderer.Instance.CurrentSplitScreenMode);
+                    OpenTK.Matrix4 modelMatrix = GenerateModelMatrix(sortedObjects[i], camera, TackRenderer.Instance.CurrentSplitScreenMode, rendererComp.RenderLayer);
 
                     TackProfiler.Instance.StopTimer("Renderer.Loop.BuildMatrix");
 
@@ -274,16 +277,18 @@ namespace TackEngine.Android {
             GL.DeleteBuffers(1, ref VBO);
 
             drawCallCount = localDrawCallCount;
+
+            GL.Disable(EnableCap.DepthTest);
         }
 
         public override void PostRender() {
         }
 
-        private OpenTK.Matrix4 GenerateModelMatrix(TackObject obj, Camera camera, SplitScreenMode splitScreenMode) {
+        private OpenTK.Matrix4 GenerateModelMatrix(TackObject obj, Camera camera, SplitScreenMode splitScreenMode, int renderLayer) {
             TackObject cameraObject = camera.GetParent();
 
             // Generate translation matrix
-            OpenTK.Matrix4 transMat = OpenTK.Matrix4.CreateTranslation(obj.Position.X - cameraObject.Position.X, obj.Position.Y - cameraObject.Position.Y, 0);
+            OpenTK.Matrix4 transMat = OpenTK.Matrix4.CreateTranslation(obj.Position.X - cameraObject.Position.X, obj.Position.Y - cameraObject.Position.Y, ( TackMath.Clamp(renderLayer, 0, TackRenderer.MAX_RENDER_LAYER) / (float)TackRenderer.MAX_RENDER_LAYER) * -1f);
 
             // Generate scale matrix
             OpenTK.Matrix4 scaleMat = MatrixUtility.CreateScaleMatrix(obj.Size.X / 2.0f, obj.Size.Y / 2.0f, 1);

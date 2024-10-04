@@ -22,6 +22,9 @@ namespace TackEngine.Core.Renderer
     public abstract class TackRenderer {
         public static TackRenderer Instance { get; protected set; }
 
+        public static readonly int MIN_RENDER_LAYER = 0;
+        public static readonly int MAX_RENDER_LAYER = 10000;
+
         protected List<Shader> m_shaders;
         protected float[] mVertexData;
         protected bool mRenderFpsCounter;

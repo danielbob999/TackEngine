@@ -93,7 +93,7 @@ namespace TackEngine.Android {
             TackEngineActivity.Instance.m_engineTimer.OnRender();
 
             //OpenTK.Graphics.ES30.GL.ClearColor(1f, 0f, 0f, 1f);
-            OpenTK.Graphics.ES30.GL.Clear(OpenTK.Graphics.ES30.ClearBufferMask.ColorBufferBit);
+            OpenTK.Graphics.ES30.GL.Clear(OpenTK.Graphics.ES30.ClearBufferMask.ColorBufferBit | OpenTK.Graphics.ES30.ClearBufferMask.DepthBufferBit);
             OpenTK.Graphics.ES30.GL.ClearColor(TackRenderer.BackgroundColour.R / 255f, TackRenderer.BackgroundColour.G / 255f, TackRenderer.BackgroundColour.B / 255f, TackRenderer.BackgroundColour.A / 255f);
 
             TackEngineActivity.Instance.mTackConsole.OnGUIRender(); // TackConsole should be rendered above everything else, including the onGUIRenderFunction
