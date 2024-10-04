@@ -8,6 +8,7 @@ using TackEngine.Core.Main;
 using TackEngine.Core.Renderer.Operations;
 using TackEngine.Core.Renderer;
 using SharpFont;
+using TackEngine.Core.Engine;
 
 namespace TackEngine.Core.GUI {
     public abstract class BaseTackGUI {
@@ -278,5 +279,22 @@ namespace TackEngine.Core.GUI {
         internal abstract float MeasureStringLength(string text, TackFont font, float finalFontSize);
 
         internal abstract Vector2f MeasureStringSize(string text, TackFont font, float fontSize, RectangleShape rect);
+
+        public static float GetDefaultPlatformFontSize(TackEngineInstance.TackEnginePlatform platform) {
+            switch (platform) {
+                case TackEngineInstance.TackEnginePlatform.Windows:
+                    return 8f;
+                case TackEngineInstance.TackEnginePlatform.Android:
+                    return 10.5f;
+                case TackEngineInstance.TackEnginePlatform.iOS:
+                    return 10.5f;
+                case TackEngineInstance.TackEnginePlatform.Linux:
+                    return 8f;
+                case TackEngineInstance.TackEnginePlatform.MacOS:
+                    return 8f;
+                default:
+                    return 8f;
+            }
+        }
     }
 }

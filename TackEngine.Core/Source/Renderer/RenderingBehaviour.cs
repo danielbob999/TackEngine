@@ -13,9 +13,11 @@ namespace TackEngine.Core.Renderer {
         protected float[] m_vertexData;
         protected int[] m_indiceData;
 
-        public RenderingBehaviour(Type childType) {
-            TackConsole.EngineLog(TackConsole.LogType.Message, "Initialised a new RenderingBehaviour of type: " + childType.Name);
+        public RenderingBehaviour() {
+            TackConsole.EngineLog(TackConsole.LogType.Message, "Initialised a new RenderingBehaviour of type: " + this.GetType().Name);
         }
+
+        public abstract void OnStart();
 
         public abstract void PreRender();
 

@@ -26,7 +26,7 @@ namespace TackEngine.Core.GUI {
             public GUIToggleStyle() {
                 Colour = Colour4b.Black;
                 Border = new GUIBorder(0, 0, 0, 0, Colour4b.Black);
-                FontSize = 8f;
+                FontSize = BaseTackGUI.GetDefaultPlatformFontSize(TackEngineInstance.Instance.Platform);
                 Font = BaseTackGUI.Instance.DefaultFont;
                 FontColour = Colour4b.Black;
             }

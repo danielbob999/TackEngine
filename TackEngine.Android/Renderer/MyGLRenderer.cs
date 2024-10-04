@@ -18,10 +18,13 @@ using TackEngine.Core.Physics;
 using TackEngine.Core.Renderer;
 using static Android.Icu.Text.ListFormatter;
 
-namespace TackEngine.Android {
-    public class MyGLRenderer : Java.Lang.Object, GLSurfaceView.IRenderer {
+namespace TackEngine.Android.Renderer
+{
+    public class MyGLRenderer : Java.Lang.Object, GLSurfaceView.IRenderer
+    {
 
-        public void OnSurfaceCreated(IGL10? gl, Javax.Microedition.Khronos.Egl.EGLConfig? config) {
+        public void OnSurfaceCreated(IGL10? gl, Javax.Microedition.Khronos.Egl.EGLConfig? config)
+        {
             // Create your application here
 
             //gl.GlEnableClientState(IGL10.GlColorArray);
@@ -44,7 +47,7 @@ namespace TackEngine.Android {
             TackEngineActivity.Instance.mTackLightingSystem = new TackLightingSystem();
             TackEngineActivity.Instance.mTackLightingSystem.OnStart();
 
-            TackEngineActivity.Instance.mTackRender = new AndroidRenderer();
+            TackEngineActivity.Instance.mTackRender = new TackRenderer(new AndroidRenderingBehaviour(), new AndroidLineRenderingBehaviour(), new TackGUI(), new AndroidShaderImpl());
             TackEngineActivity.Instance.mTackRender.OnStart();
 
             TackEngineActivity.Instance.m_tackProfiler = new TackProfiler();
@@ -64,7 +67,8 @@ namespace TackEngine.Android {
             TackEngineActivity.Instance.mTackObjectManager.OnStart();
         }
 
-        public void OnDrawFrame(IGL10? unused) {
+        public void OnDrawFrame(IGL10? unused)
+        {
             // Redraw background color
             //OpenTK.Graphics.ES30.GL.ClearColor(1f, 0f, 0f, 1f);
             //OpenTK.Graphics.ES30.GL.Clear(OpenTK.Graphics.ES30.ClearBufferMask.ColorBufferBit);
@@ -94,7 +98,7 @@ namespace TackEngine.Android {
 
             //OpenTK.Graphics.ES30.GL.ClearColor(1f, 0f, 0f, 1f);
             OpenTK.Graphics.ES30.GL.Clear(OpenTK.Graphics.ES30.ClearBufferMask.ColorBufferBit | OpenTK.Graphics.ES30.ClearBufferMask.DepthBufferBit);
-            OpenTK.Graphics.ES30.GL.ClearColor(TackRenderer.BackgroundColour.R / 255f, TackRenderer.BackgroundColour.G / 255f, TackRenderer.BackgroundColour.B / 255f, TackRenderer.BackgroundColour.A / 255f);
+            OpenTK.Graphics.ES30.GL.ClearColor(TackRenderer.Instance.BackgroundColour.R / 255f, TackRenderer.Instance.BackgroundColour.G / 255f, TackRenderer.Instance.BackgroundColour.B / 255f, TackRenderer.Instance.BackgroundColour.A / 255f);
 
             TackEngineActivity.Instance.mTackConsole.OnGUIRender(); // TackConsole should be rendered above everything else, including the onGUIRenderFunction
 
@@ -105,12 +109,13 @@ namespace TackEngine.Android {
             TackEngineActivity.Instance.m_currentRenderLoopIndex++;
         }
 
-        public void OnSurfaceChanged(IGL10? unused, int width, int height) {
+        public void OnSurfaceChanged(IGL10? unused, int width, int height)
+        {
             OpenTK.Graphics.ES30.GL.Viewport(0, 0, width, height);
 
             TackEngineActivity.Instance.WindowSize = new Vector2f(width, height);
 
-            TackEngine.Core.Objects.Components.Camera c = TackEngine.Core.Objects.Components.Camera.MainCamera;
+            Core.Objects.Components.Camera c = Core.Objects.Components.Camera.MainCamera;
             c.RenderTarget = new RectangleShape(0, 0, width, height);
         }
     }

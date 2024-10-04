@@ -32,7 +32,7 @@ namespace TackEngine.Core.GUI {
             public GUIButtonStyle() {
                 Colour = Colour4b.White;
                 Border = new GUIBorder(0, 0, 0, 0, Colour4b.Black);
-                FontSize = 8f;
+                FontSize = BaseTackGUI.GetDefaultPlatformFontSize(TackEngineInstance.Instance.Platform);
                 Font = BaseTackGUI.Instance.DefaultFont;
                 FontColour = Colour4b.Black;
                 HorizontalAlignment = HorizontalAlignment.Middle;

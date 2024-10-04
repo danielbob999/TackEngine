@@ -113,7 +113,7 @@ namespace TackEngine.Core.Main {
                     Colour = new Colour4b(0, 0, 0, 220),
                     Border = null,
                     Font = BaseTackGUI.Instance.DefaultFont,
-                    FontSize = 8f,
+                    FontSize = BaseTackGUI.GetDefaultPlatformFontSize(TackEngineInstance.Instance.Platform),
                     FontColour = Colour4b.Green,
                     Texture = Sprite.DefaultSprite
                 };

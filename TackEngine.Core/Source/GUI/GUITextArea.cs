@@ -32,7 +32,7 @@ namespace TackEngine.Core.GUI {
             public GUITextAreaStyle() {
                 Colour = Colour4b.White;
                 Border = new GUIBorder(0, 0, 0, 0, Colour4b.Black);
-                FontSize = 8f;
+                FontSize = BaseTackGUI.GetDefaultPlatformFontSize(TackEngineInstance.Instance.Platform);
                 FontColour = Colour4b.Black;
                 HorizontalAlignment = HorizontalAlignment.Left;
                 VerticalAlignment = VerticalAlignment.Top;

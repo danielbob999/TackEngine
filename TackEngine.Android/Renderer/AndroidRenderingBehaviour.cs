@@ -16,12 +16,15 @@ using tainicom.Aether.Physics2D.Fluids;
 using TackEngine.Core.Source.Renderer;
 using TackEngine.Core.Math;
 
-namespace TackEngine.Android {
-    public class AndroidRenderingBehaviour : RenderingBehaviour {
+namespace TackEngine.Android.Renderer
+{
+    public class AndroidRenderingBehaviour : RenderingBehaviour
+    {
         private int posHandle;
         private int uvHandle;
 
-        public AndroidRenderingBehaviour() : base(typeof(AndroidRenderer)) {
+        public AndroidRenderingBehaviour()
+        {
 
             m_vertexData = new float[20] {
                     //       Position (XYZ)                                                                                                      Colours (RGB)                                                                                  TexCoords (XY)
@@ -35,15 +38,20 @@ namespace TackEngine.Android {
                     0, 1, 3, // first triangle 
                     1, 2, 3  // second triangle - 1, 2, 3
             };
+        }
 
+        public override void OnStart()
+        {
             posHandle = GL.GetAttribLocation(TackRenderer.Instance.DefaultLitWorldShader.Id, "aPos");
             uvHandle = GL.GetAttribLocation(TackRenderer.Instance.DefaultLitWorldShader.Id, "aTexCoord");
         }
 
-        public override void PreRender() {
+        public override void PreRender()
+        {
         }
 
-        public override void RenderToScreen(out int drawCallCount) {
+        public override void RenderToScreen(out int drawCallCount)
+        {
             GL.Enable(EnableCap.Blend);
             GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
             GL.Enable(EnableCap.DepthTest);
@@ -104,8 +112,10 @@ namespace TackEngine.Android {
             int localDrawCallCount = 0;
 
             // Run the main draw loop
-            for (int i = 0; i < sortedObjects.Count; i++) {
-                if (!TackObject.IsActiveInHierarchy(sortedObjects[i])) {
+            for (int i = 0; i < sortedObjects.Count; i++)
+            {
+                if (!TackObject.IsActiveInHierarchy(sortedObjects[i]))
+                {
                     continue;
                 }
 
@@ -113,25 +123,30 @@ namespace TackEngine.Android {
 
                 //SpriteRendererComponent rendererComp = sortedObjects[i].GetComponent<SpriteRendererComponent>();
 
-                if (rendererComp == null) {
+                if (rendererComp == null)
+                {
                     continue;
                 }
 
-                if (!((TackComponent)rendererComp).Active) {
+                if (!((TackComponent)rendererComp).Active)
+                {
                     continue;
                 }
 
                 Camera[] cameras = TackRenderer.Instance.GetCameraListForCurrentSplitScreenMode();
 
-                for (int camIndex = 0; camIndex < cameras.Length; camIndex++) {
+                for (int camIndex = 0; camIndex < cameras.Length; camIndex++)
+                {
 
-                    if (!rendererComp.DisableRenderingBoundsCheck) {
+                    if (!rendererComp.DisableRenderingBoundsCheck)
+                    {
                         // Check if the camera view bounding box and the object bounding box intersect
                         // If they don't, skip this object because it is entirely outside the screen
                         AABB camAABB = camera.BoundingBoxInWorld;
                         AABB objAABB = sortedObjects[i].BoundingBoxInWorld;
 
-                        if (!AABB.CheckForAABBCollision(objAABB, camAABB)) {
+                        if (!AABB.CheckForAABBCollision(objAABB, camAABB))
+                        {
                             continue;
                         }
                     }
@@ -160,7 +175,8 @@ namespace TackEngine.Android {
 
                     TackRenderer.Instance.IncrementCurrentTextureUnitIndex();
 
-                    if (rendererComp.Sprite.IsDynamic && rendererComp.Sprite.IsDirty) {
+                    if (rendererComp.Sprite.IsDynamic && rendererComp.Sprite.IsDirty)
+                    {
                         GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, rendererComp.Sprite.Width, rendererComp.Sprite.Height, 0, PixelFormat.Rgba, PixelType.UnsignedByte, rendererComp.Sprite.Data);
 
                         rendererComp.Sprite.IsDirty = false;
@@ -169,41 +185,66 @@ namespace TackEngine.Android {
                     TackProfiler.Instance.StopTimer("Renderer.Loop.BindTextureData");
                     TackProfiler.Instance.StartTimer("Renderer.Loop.SetUniformData");
 
-                    connectedShader.SetUniformValue("uTexture", (int)0);
+                    connectedShader.SetUniformValue("uTexture", 0);
 
                     Vector4 colourVector = new Vector4(rendererComp.Colour.R / 255.0f, rendererComp.Colour.G / 255.0f, rendererComp.Colour.B / 255.0f, rendererComp.Colour.A / 255.0f);
                     connectedShader.SetUniformValue("uColour", colourVector);
 
-                    foreach (KeyValuePair<string, object> uniformValue in rendererComp.ShaderUniformValues) {
-                        if (uniformValue.Value == null) {
+                    foreach (KeyValuePair<string, object> uniformValue in rendererComp.ShaderUniformValues)
+                    {
+                        if (uniformValue.Value == null)
+                        {
                             continue;
                         }
 
                         Type valueType = uniformValue.Value.GetType();
 
-                        if (valueType == typeof(int)) {
+                        if (valueType == typeof(int))
+                        {
                             connectedShader.SetUniformValue(uniformValue.Key, (int)uniformValue.Value);
-                        } else if (valueType == typeof(double)) {
+                        }
+                        else if (valueType == typeof(double))
+                        {
                             connectedShader.SetUniformValue(uniformValue.Key, (double)uniformValue.Value);
-                        } else if (valueType == typeof(float)) {
+                        }
+                        else if (valueType == typeof(float))
+                        {
                             connectedShader.SetUniformValue(uniformValue.Key, (float)uniformValue.Value);
-                        } else if (valueType == typeof(uint)) {
+                        }
+                        else if (valueType == typeof(uint))
+                        {
                             connectedShader.SetUniformValue(uniformValue.Key, (uint)uniformValue.Value);
-                        } else if (valueType == typeof(Matrix2)) {
-                            connectedShader.SetUniformValue(uniformValue.Key, ((Matrix2)uniformValue.Value));
-                        } else if (valueType == typeof(Matrix3)) {
-                            connectedShader.SetUniformValue(uniformValue.Key, ((Matrix3)uniformValue.Value));
-                        } else if (valueType == typeof(Matrix4)) {
-                            connectedShader.SetUniformValue(uniformValue.Key, ((Matrix4)uniformValue.Value));
-                        } else if (valueType == typeof(Vector2f)) {
+                        }
+                        else if (valueType == typeof(Matrix2))
+                        {
+                            connectedShader.SetUniformValue(uniformValue.Key, (Matrix2)uniformValue.Value);
+                        }
+                        else if (valueType == typeof(Matrix3))
+                        {
+                            connectedShader.SetUniformValue(uniformValue.Key, (Matrix3)uniformValue.Value);
+                        }
+                        else if (valueType == typeof(Matrix4))
+                        {
+                            connectedShader.SetUniformValue(uniformValue.Key, (Matrix4)uniformValue.Value);
+                        }
+                        else if (valueType == typeof(Vector2f))
+                        {
                             connectedShader.SetUniformValue(uniformValue.Key, (Vector2f)uniformValue.Value);
-                        } else if (valueType == typeof(Vector3)) {
+                        }
+                        else if (valueType == typeof(Vector3))
+                        {
                             connectedShader.SetUniformValue(uniformValue.Key, (Vector3)uniformValue.Value);
-                        } else if (valueType == typeof(Vector4)) {
+                        }
+                        else if (valueType == typeof(Vector4))
+                        {
                             connectedShader.SetUniformValue(uniformValue.Key, (Vector4)uniformValue.Value);
-                        } else if (valueType == typeof(Sprite)) {
+                        }
+                        else if (valueType == typeof(Sprite))
+                        {
                             connectedShader.SetUniformValue(uniformValue.Key, (Sprite)uniformValue.Value);
-                        } else {
+                        }
+                        else
+                        {
                             TackConsole.EngineLog(TackConsole.LogType.Error, "Error: Type '" + valueType.Name + "' is not supported as a Shader Uniform Variable");
                         }
                     }
@@ -213,16 +254,21 @@ namespace TackEngine.Android {
 
                     TackLightingSystem.Instance.Enabled = true;
 
-                    if (TackLightingSystem.Instance.Enabled) {
-                        if (connectedShader.SupportsLighting) {
-                            if (!shadersLightingDataSet.Contains(connectedShader.Id)) {
+                    if (TackLightingSystem.Instance.Enabled)
+                    {
+                        if (connectedShader.SupportsLighting)
+                        {
+                            if (!shadersLightingDataSet.Contains(connectedShader.Id))
+                            {
                                 GL.Uniform1(GL.GetUniformLocation(connectedShader.Id, connectedShader.LightingFragVariableName + ".ambientColourIntensity"), TackLightingSystem.Instance.AmbientLightIntensity);
                                 GL.Uniform4(GL.GetUniformLocation(connectedShader.Id, connectedShader.LightingFragVariableName + ".ambientColour"), TackLightingSystem.Instance.AmbientLightColour.ToOpenTKVec4());
 
                                 int indx = 0;
 
-                                foreach (LightComponent light in lights) {
-                                    if (indx >= TackLightingSystem.Instance.MaxLights) {
+                                foreach (LightComponent light in lights)
+                                {
+                                    if (indx >= TackLightingSystem.Instance.MaxLights)
+                                    {
                                         break;
                                     }
 
@@ -241,7 +287,8 @@ namespace TackEngine.Android {
                         }
                     }
 
-                    if (!shadersCamDataSet.Contains(connectedShader.Id)) {
+                    if (!shadersCamDataSet.Contains(connectedShader.Id))
+                    {
                         // Set camera info
                         GL.Uniform2(GL.GetUniformLocation(connectedShader.Id, "uCameraInfo.position"), camera.GetParent().Position.ToOpenTKVec2());
                         GL.Uniform1(GL.GetUniformLocation(connectedShader.Id, "uCameraInfo.zoomFactor"), camera.ZoomFactor);
@@ -252,14 +299,17 @@ namespace TackEngine.Android {
 
                     TackProfiler.Instance.StopTimer("Renderer.Loop.SetLightingData");
 
-                    if (TackRenderer.Instance.CurrentSplitScreenMode != SplitScreenMode.Single) {
+                    if (TackRenderer.Instance.CurrentSplitScreenMode != SplitScreenMode.Single)
+                    {
                         connectedShader.SetUniformValue("uSplitScreenCamIndex", camIndex);
                     }
 
                     TackProfiler.Instance.StartTimer("Renderer.Loop.DrawCall");
 
-                    unsafe {
-                        fixed (void* ptr = m_indiceData) {
+                    unsafe
+                    {
+                        fixed (void* ptr = m_indiceData)
+                        {
                             GL.DrawElements(BeginMode.Triangles, 6, DrawElementsType.UnsignedInt, new IntPtr(ptr));
                         }
                     }
@@ -267,7 +317,8 @@ namespace TackEngine.Android {
                     localDrawCallCount++;
                     TackProfiler.Instance.StopTimer("Renderer.Loop.DrawCall");
 
-                    for (int cti = 0; cti < TackRenderer.Instance.CurrentTextureUnitIndex; cti++) {
+                    for (int cti = 0; cti < TackRenderer.Instance.CurrentTextureUnitIndex; cti++)
+                    {
                         GL.ActiveTexture(TextureUnit.Texture0 + cti);
                         GL.BindTexture(TextureTarget.Texture2D, 0);
                     }
@@ -281,50 +332,57 @@ namespace TackEngine.Android {
             GL.Disable(EnableCap.DepthTest);
         }
 
-        public override void PostRender() {
+        public override void PostRender()
+        {
         }
 
-        private OpenTK.Matrix4 GenerateModelMatrix(TackObject obj, Camera camera, SplitScreenMode splitScreenMode, int renderLayer) {
+        private OpenTK.Matrix4 GenerateModelMatrix(TackObject obj, Camera camera, SplitScreenMode splitScreenMode, int renderLayer)
+        {
             TackObject cameraObject = camera.GetParent();
 
             // Generate translation matrix
-            OpenTK.Matrix4 transMat = OpenTK.Matrix4.CreateTranslation(obj.Position.X - cameraObject.Position.X, obj.Position.Y - cameraObject.Position.Y, ( TackMath.Clamp(renderLayer, 0, TackRenderer.MAX_RENDER_LAYER) / (float)TackRenderer.MAX_RENDER_LAYER) * -1f);
+            OpenTK.Matrix4 transMat = OpenTK.Matrix4.CreateTranslation(obj.Position.X - cameraObject.Position.X, obj.Position.Y - cameraObject.Position.Y, TackMath.Clamp(renderLayer, 0, TackRenderer.MAX_RENDER_LAYER) / TackRenderer.MAX_RENDER_LAYER * -1f);
 
             // Generate scale matrix
             OpenTK.Matrix4 scaleMat = MatrixUtility.CreateScaleMatrix(obj.Size.X / 2.0f, obj.Size.Y / 2.0f, 1);
 
             // Generate rotation matrix
-            OpenTK.Matrix4 rotationMat = OpenTK.Matrix4.CreateRotationZ((float)TackEngine.Core.Math.TackMath.DegToRad(obj.Rotation + cameraObject.Rotation));
+            OpenTK.Matrix4 rotationMat = OpenTK.Matrix4.CreateRotationZ((float)TackMath.DegToRad(obj.Rotation + cameraObject.Rotation));
 
             float camSizeModX = 2f;
             float camSizeModY = 2f;
 
-            if (splitScreenMode == SplitScreenMode.DualScreen) {
+            if (splitScreenMode == SplitScreenMode.DualScreen)
+            {
                 camSizeModX = 4f;
             }
 
-            if (splitScreenMode == SplitScreenMode.QuadScreen) {
+            if (splitScreenMode == SplitScreenMode.QuadScreen)
+            {
                 camSizeModX = 4f;
                 camSizeModY = 4f;
             }
 
             OpenTK.Matrix4 orthoView = new OpenTK.Matrix4(
-                new OpenTK.Vector4((1 * Camera.MainCamera.ZoomFactor) * (1f / ((float)TackEngine.Core.Engine.TackEngineInstance.Instance.Window.WindowSize.X / camSizeModX)), 0, 0, 0),
-                new OpenTK.Vector4(0, (1 * Camera.MainCamera.ZoomFactor) * (1f / ((float)TackEngine.Core.Engine.TackEngineInstance.Instance.Window.WindowSize.Y / camSizeModY)), 0, 0),
+                new OpenTK.Vector4(1 * Camera.MainCamera.ZoomFactor * (1f / (TackEngineInstance.Instance.Window.WindowSize.X / camSizeModX)), 0, 0, 0),
+                new OpenTK.Vector4(0, 1 * Camera.MainCamera.ZoomFactor * (1f / (TackEngineInstance.Instance.Window.WindowSize.Y / camSizeModY)), 0, 0),
                 new OpenTK.Vector4(0, 0, 1, 0),
                 new OpenTK.Vector4(0, 0, 0, 1)
                 );
 
             // Multiply the above matrices to generate the final model matrix
-            OpenTK.Matrix4 modelMatrix = ((scaleMat * rotationMat) * transMat) * orthoView;
+            OpenTK.Matrix4 modelMatrix = scaleMat * rotationMat * transMat * orthoView;
 
             return modelMatrix;
         }
 
-        private void CheckForErrors(bool clear = false) {
+        private void CheckForErrors(bool clear = false)
+        {
             ErrorCode errorCode = GL.GetErrorCode();
-            if (errorCode != ErrorCode.NoError) {
-                if (!clear) {
+            if (errorCode != ErrorCode.NoError)
+            {
+                if (!clear)
+                {
                     throw new System.Exception(errorCode.ToString());
                 }
             }

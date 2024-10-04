@@ -23,6 +23,7 @@ using TackEngine.Core.Audio;
 using TackEngine.Desktop.Audio;
 using TackEngine.Core.SceneManagement;
 using OpenTK.Core;
+using TackEngine.Desktop.Renderer;
 
 namespace TackEngine.Desktop {
     public class TackDesktopNativeWindow : NativeWindow, IBaseTackWindow {
@@ -100,7 +101,7 @@ namespace TackEngine.Desktop {
             mTackLightingSystem = new TackLightingSystem();
             mTackLightingSystem.OnStart();
 
-            mTackRender = new DesktopRenderer();
+            mTackRender = new TackRenderer(new DesktopRenderingBehaviour(), new DesktopLineRenderingBehaviour(), new TackGUI(), new DesktopShaderImpl());
             mTackRender.OnStart();
 
             m_tackProfiler = new TackProfiler();
@@ -152,7 +153,7 @@ namespace TackEngine.Desktop {
                     m_engineTimer.OnRender();
 
                     GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
-                    GL.ClearColor(TackRenderer.BackgroundColour.R / 255f, TackRenderer.BackgroundColour.G / 255f, TackRenderer.BackgroundColour.B / 255f, TackRenderer.BackgroundColour.A / 255f);
+                    GL.ClearColor(TackRenderer.Instance.BackgroundColour.R / 255f, TackRenderer.Instance.BackgroundColour.G / 255f, TackRenderer.Instance.BackgroundColour.B / 255f, TackRenderer.Instance.BackgroundColour.A / 255f);
 
                     mTackConsole.OnGUIRender(); // TackConsole should be rendered above everything else, including the onGUIRenderFunction
 

@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using TackEngine.Android.Renderer;
 using TackEngine.Core.Audio;
 using TackEngine.Core.Engine;
 using TackEngine.Core.GUI;
@@ -20,7 +21,8 @@ using TackEngine.Core.Objects;
 using TackEngine.Core.Physics;
 using TackEngine.Core.Renderer;
 
-namespace TackEngine.Android {
+namespace TackEngine.Android
+{
     [Activity(Label = "TackEngineActivity", ConfigurationChanges = (ConfigChanges.ScreenSize | ConfigChanges.Orientation))]
     public class TackEngineActivity : Activity, IBaseTackWindow, ISensorEventListener {
         public Vector2f WindowSize { get; set; }

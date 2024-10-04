@@ -10,6 +10,7 @@ using TackEngine.Core.Objects;
 using TackEngine.Core.Objects.Components;
 using TackEngine.Core.GUI;
 using TackEngine.Core.Physics;
+using TackEngine.Core.Renderer;
 
 namespace TackEngine.Core.Engine
 {
@@ -74,12 +75,12 @@ namespace TackEngine.Core.Engine
 
         [CommandMethod("renderer.enableFpsCounter", "")]
         public static void RendererEnableFpsCounter(string[] args) {
-            //Renderer.TackRenderer.SetFpsCounterState(true);
+            TackRenderer.Instance.FpsCounterActive = true;
         }
 
         [CommandMethod("renderer.disableFpsCounter", "")]
         public static void RendererDisableFpsCounter(string[] args) {
-            //Renderer.TackRenderer.SetFpsCounterState(false);
+            TackRenderer.Instance.FpsCounterActive = false;
         }
 
         [CommandMethod("console.printOperationsOfCommandclass", "commandClassName:string")]
@@ -138,7 +139,7 @@ namespace TackEngine.Core.Engine
         [CommandMethod("renderer.backgroundColour", "", "red:byte green:byte blue:byte")]
         public static void ChangeBackgroundColour(string[] args) {
             if (args.Length == 1) {
-                TackConsole.EngineLog(TackConsole.LogType.Message, "Value: " + TackEngine.Core.Renderer.TackRenderer.BackgroundColour.ToString());
+                TackConsole.EngineLog(TackConsole.LogType.Message, "Value: " + TackEngine.Core.Renderer.TackRenderer.Instance.BackgroundColour.ToString());
                 return;
             }
 
@@ -146,8 +147,8 @@ namespace TackEngine.Core.Engine
                 if (byte.TryParse(args[1], out byte r)) {
                     if (byte.TryParse(args[2], out byte g)) {
                         if (byte.TryParse(args[3], out byte b)) {
-                            TackEngine.Core.Renderer.TackRenderer.BackgroundColour = new Colour4b(r, g, b);
-                            TackConsole.EngineLog(TackConsole.LogType.Message, "Set tackrenderer.backgroundColour to value: " + Renderer.TackRenderer.BackgroundColour.ToString());
+                            TackEngine.Core.Renderer.TackRenderer.Instance.BackgroundColour = new Colour4b(r, g, b);
+                            TackConsole.EngineLog(TackConsole.LogType.Message, "Set tackrenderer.backgroundColour to value: " + Renderer.TackRenderer.Instance.BackgroundColour.ToString());
                         } else {
                             TackConsole.EngineLog(TackConsole.LogType.Error, "Failed to convert '{0}' to type: byte", args[3]);
                             return;

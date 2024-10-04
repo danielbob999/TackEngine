@@ -16,7 +16,7 @@ using TackEngine.Core.Math;
 namespace TackEngine.Desktop {
     public class DesktopRenderingBehaviour : RenderingBehaviour {
 
-        public DesktopRenderingBehaviour() : base(typeof(DesktopRenderer)) {
+        public DesktopRenderingBehaviour() {
             m_vertexData = new float[20] {
                     //       Position (XYZ)                                                                                                      Colours (RGB)                                                                                  TexCoords (XY)
                     /* v1 */  1f, -1f, 0.0f,       1.0f, 1.0f,
@@ -30,6 +30,8 @@ namespace TackEngine.Desktop {
                     1, 2, 3  // second triangle
             };
         }
+
+        public override void OnStart() { }
 
         public override void PreRender() {
         }

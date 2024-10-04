@@ -16,58 +16,135 @@ using TackEngine.Core.GUI;
 using TackEngine.Core.Physics;
 using TackEngine.Core.Source.Renderer.LineRendering;
 using TackEngine.Core.Source.Renderer;
+using TackEngine.Core.Renderer.LineRendering;
 
 namespace TackEngine.Core.Renderer
 {
-    public abstract class TackRenderer {
+    public class TackRenderer {
         public static TackRenderer Instance { get; protected set; }
 
         public static readonly int MIN_RENDER_LAYER = 0;
         public static readonly int MAX_RENDER_LAYER = 10000;
 
-        protected List<Shader> m_shaders;
-        protected float[] mVertexData;
-        protected bool mRenderFpsCounter;
-        protected Colour4b mBackgroundColour;
-        protected RenderingBehaviour m_currentRenderer;
-        protected GUITextArea m_fpsCounterTextArea;
-        protected float m_previousRenderTime;
-        protected int m_previousDrawCallCount;
+        private List<Shader> m_shaders;
+        private bool m_fpsCounterActive;
+        private RenderingBehaviour m_currentRenderer;
+        private GUITextArea m_fpsCounterTextArea;
+        private float m_previousRenderTime;
+        private int m_previousDrawCallCount;
         private int m_currentTextureUnitIndex = 0;
-        protected LineRenderer m_lineRenderer;
-        protected SplitScreenMode m_splitScreenMode = SplitScreenMode.Single;
-        internal IShaderImplementation m_shaderImplementation;
+        private LineRenderer m_lineRenderer;
+        private SplitScreenMode m_splitScreenMode = SplitScreenMode.Single;
+        private IShaderImplementation m_shaderImplementation;
 
-        public static Colour4b BackgroundColour {
-            get { return Instance.mBackgroundColour; }
-            set { Instance.mBackgroundColour = value; }
+        public Colour4b BackgroundColour { get; set; }
+
+        public bool FpsCounterActive { 
+            get { return m_fpsCounterActive; } 
+            set {
+                bool oldValue = m_fpsCounterActive;
+                m_fpsCounterActive = value;
+                OnFpsCounterActiveChanged(oldValue, m_fpsCounterActive);
+            }
         }
 
-        public static int MaxTextureUnits { get; set; }
         internal BaseTackGUI GUIInstance { get; set; }
         internal int CurrentTextureUnitIndex { get { return m_currentTextureUnitIndex; } }
         internal SplitScreenMode CurrentSplitScreenMode { get { return m_splitScreenMode; } }
         internal Camera[] Cameras { get; }
         internal IShaderImplementation ShaderImplementation { get { return m_shaderImplementation; } }
 
-        public Shader DefaultWorldShader { get; protected set; }
-        public Shader DefaultLitWorldShader { get; protected set; }
+        public Shader DefaultWorldShader { get; private set; }
+        public Shader DefaultLitWorldShader { get; private set; }
 
-        internal TackRenderer() {
-            mBackgroundColour = new Colour4b(150, 150, 150, 255);
+        internal TackRenderer(RenderingBehaviour renderingBehaviour, LineRenderingBehaviour lineRenderingBehaviour, BaseTackGUI guiInstance, IShaderImplementation shaderImpl) {
+            Instance = this;
+
+            BackgroundColour = new Colour4b(150, 150, 150, 255);
 
             m_shaders = new List<Shader>();
 
             Cameras = new Camera[4];
+
+            m_currentRenderer = renderingBehaviour;
+            m_lineRenderer = new LineRenderer(lineRenderingBehaviour);
+            GUIInstance = guiInstance;
+            m_shaderImplementation = shaderImpl;
         }
 
-        internal abstract void OnStart();
+        internal void OnStart() {
+            GUIInstance.OnStart();
 
-        internal abstract void OnUpdate();
+            LoadShadersForSplitScreenMode();
 
-        internal abstract void OnRender(double timeSinceLastRender);
+            m_currentRenderer.OnStart();
 
-        internal abstract void OnClose();
+            m_lineRenderer.Initialise();
+
+            FpsCounterActive = true;
+        }
+
+        internal void OnUpdate() {
+            if (m_fpsCounterActive) {
+                if (TackEngineInstance.Instance.Platform == TackEngineInstance.TackEnginePlatform.Windows ||
+                    TackEngineInstance.Instance.Platform == TackEngineInstance.TackEnginePlatform.Linux ||
+                    TackEngineInstance.Instance.Platform == TackEngineInstance.TackEnginePlatform.MacOS) {
+
+                    m_fpsCounterTextArea.Position = new Vector2f(TackEngineInstance.Instance.Window.WindowSize.X - 150, 5);
+                    m_fpsCounterTextArea.Size = new Vector2f(145, 65);
+                }
+
+                if (TackEngineInstance.Instance.Platform == TackEngineInstance.TackEnginePlatform.Android) {
+                    m_fpsCounterTextArea.Position = new Vector2f(TackEngineInstance.Instance.Window.WindowSize.X - 205, 5);
+                    m_fpsCounterTextArea.Size = new Vector2f(200, 150);
+                }
+
+                m_fpsCounterTextArea.Text = "U: " + (1f / EngineTimer.Instance.UpdateTimeAverageLastSecond).ToString("0") + "(" + (EngineTimer.Instance.UpdateTimeAverageLastSecond * 1000f).ToString("0.00") + "ms)\n" +
+                    "R: " + (1f / EngineTimer.Instance.RenderTimeAverageLastSecond).ToString("0") + " (" + (EngineTimer.Instance.RenderTimeAverageLastSecond * 1000f).ToString("0.00") + "ms)\n" +
+                    "DC: " + m_previousDrawCallCount + "\n" +
+                    "Lines: " + LineRenderer.Instance.ItemsRenderedLastFrame;
+            }
+
+            GUIInstance.OnUpdate();
+        }
+
+        internal void OnRender(double timeSinceLastRender) {
+            m_previousRenderTime = (float)timeSinceLastRender;
+
+            TackProfiler.Instance.StartTimer("Renderer.PreRender");
+            m_currentRenderer.PreRender();
+            TackProfiler.Instance.StopTimer("Renderer.PreRender");
+
+            TackProfiler.Instance.StartTimer("Renderer.RenderToScreen");
+            // Render everything in the world using the current renderer
+            m_currentRenderer.RenderToScreen(out m_previousDrawCallCount);
+            TackProfiler.Instance.StopTimer("Renderer.RenderToScreen");
+
+            TackProfiler.Instance.StartTimer("Renderer.PostRender");
+            m_currentRenderer.PostRender();
+            TackProfiler.Instance.StopTimer("Renderer.PostRender");
+
+            m_lineRenderer.DrawLinesToScreen(Core.Source.Renderer.LineRendering.LineRenderer.LineContext.World);
+
+            TackProfiler.Instance.StartTimer("Renderer.GUIRender");
+            // Render GUI
+            GUIInstance.OnGUIPreRender();
+            GUIInstance.OnGUIRender();
+            GUIInstance.OnGUIPostRender();
+            TackProfiler.Instance.StopTimer("Renderer.GUIRender");
+
+            m_lineRenderer.DrawLinesToScreen(Core.Source.Renderer.LineRendering.LineRenderer.LineContext.GUI);
+
+            m_lineRenderer.ClearLineJobQueue();
+        }
+
+        internal void OnClose() {
+            for (int i = 0; i < m_shaders.Count; i++) {
+                m_shaders[i].Destroy();
+            }
+
+            GUIInstance.OnClose();
+        }
 
         internal void IncrementCurrentTextureUnitIndex() {
             m_currentTextureUnitIndex++;
@@ -83,7 +160,7 @@ namespace TackEngine.Core.Renderer
             LoadShadersForSplitScreenMode();
         }
 
-        internal virtual void LoadShadersForSplitScreenMode() {
+        internal void LoadShadersForSplitScreenMode() {
             if (DefaultWorldShader != null) {
                 DefaultWorldShader.Destroy();
             }
@@ -91,6 +168,22 @@ namespace TackEngine.Core.Renderer
             if (DefaultLitWorldShader != null) {
                 DefaultLitWorldShader.Destroy();
             }
+
+            string vertShaderNamePref = "";
+
+            if (CurrentSplitScreenMode == Core.Source.Renderer.SplitScreenMode.DualScreen) {
+                vertShaderNamePref = "dual_screen_";
+            }
+
+            if (CurrentSplitScreenMode == Core.Source.Renderer.SplitScreenMode.QuadScreen) {
+                vertShaderNamePref = "quad_screen_";
+            }
+
+            DefaultWorldShader = Shader.LoadFromFile("shaders.default_world_shader", Shader.ShaderContext.World, "tackresources/shaders/world/" + vertShaderNamePref + "world_vertex_shader.vs",
+                                                                                             "tackresources/shaders/world/world_fragment_shader.fs");
+
+            DefaultLitWorldShader = Shader.LoadFromFile("shaders.default_world_shader_lit", Shader.ShaderContext.World, "tackresources/shaders/world/" + vertShaderNamePref + "world_vertex_shader.vs",
+                                                                                                          "tackresources/shaders/world/world_fragment_shader_lit.fs");
         }
 
         internal void AddShader(Shader shader) {
@@ -140,6 +233,29 @@ namespace TackEngine.Core.Renderer
             };
 
             return vec;
+        }
+
+        private void OnFpsCounterActiveChanged(bool oldValue, bool newValue) {
+            if (newValue) {
+                if (m_fpsCounterTextArea == null) {
+                    m_fpsCounterTextArea = new GUITextArea();
+                    m_fpsCounterTextArea.Position = new Vector2f(TackEngineInstance.Instance.Window.WindowSize.X - 300, 5);
+                    m_fpsCounterTextArea.Size = new Vector2f(295, 175);
+                    m_fpsCounterTextArea.LinkedSceneType = null;
+
+                    GUITextArea.GUITextAreaStyle style = new GUITextArea.GUITextAreaStyle() {
+                        Border = null,
+                        Colour = new Colour4b(0, 0, 0, 100),
+                        Font = GUIInstance.DefaultFont,
+                        FontColour = Colour4b.White,
+                        FontSize = BaseTackGUI.GetDefaultPlatformFontSize(TackEngineInstance.Instance.Platform),
+                    };
+
+                    m_fpsCounterTextArea.NormalStyle = style;
+                }
+            }
+
+            m_fpsCounterTextArea.Active = newValue;
         }
     }
 }
