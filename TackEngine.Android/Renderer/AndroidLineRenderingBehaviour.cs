@@ -84,19 +84,24 @@ namespace TackEngine.Android.Renderer {
 
             OpenTK.Matrix4 modelMatrix = new OpenTK.Matrix4();
 
-            if (context == LineRenderer.LineContext.World) {
-                Vector2f neg = line.PointB - line.PointA;
-                Vector2f centerPosition = line.PointA + (neg.Normalized() * (neg.Length / 2f));
+            Vector2f pointA = line.PointA;
+            Vector2f pointB = line.PointB;
 
+            if (pointA.X > pointB.X) {
+                pointA = line.PointB;
+                pointB = line.PointA;
+            }
+
+            Vector2f neg = pointB - pointA;
+            Vector2f centerPosition = pointA + (neg.Normalized() * (neg.Length / 2f));
+
+            if (context == LineRenderer.LineContext.World) {
                 // Generate model matrix
                 modelMatrix = GenerateWorldModelMatrix(centerPosition, new Vector2f(line.Width, neg.Length), -1 * (float)Math.Acos(Vector2f.Dot(new Vector2f(0, 1), neg.Normalized())));
 
             }
 
             if (context == LineRenderer.LineContext.GUI) {
-                Vector2f neg = line.PointB - line.PointA;
-                Vector2f centerPosition = line.PointA + (neg.Normalized() * (neg.Length / 2f));
-
                 // Generate model matrix
                 modelMatrix = GenerateGUIModelMatrix(centerPosition, new Vector2f(neg.Length, line.Width), (float)Math.Acos(Vector2f.Dot(new Vector2f(0, 1), neg.Normalized())));
             }
