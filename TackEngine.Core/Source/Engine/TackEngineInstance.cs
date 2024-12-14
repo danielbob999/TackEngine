@@ -101,6 +101,10 @@ namespace TackEngine.Core.Engine
         public TackEngineInstance() { }
 
         public static void Initialise(object window, InitalisationSettings settings, TackEnginePlatform platform) {
+            if (Instance != null) {
+                return;
+            }
+
             // Create a new instance of TackEngine. This is tracked and used by calling TackEngine.Instance
             Instance = new TackEngineInstance();
             Instance.Window = (IBaseTackWindow)window;
@@ -120,8 +124,14 @@ namespace TackEngine.Core.Engine
             //TackConsole.EngineLog(TackConsole.LogType.Message, "Shutdown of TackEngine completed\n\n");          
         }
 
-        public static void Shutdown() {
-            TackConsole.EngineLog(TackConsole.LogType.Message, "TackEngine shutdown requested");
+        public static void Quit() {
+            if (Instance == null) {
+                return;
+            }
+
+            TackConsole.EngineLog(TackConsole.LogType.Message, "TackEngine Quit requested");
+
+            Instance.Window.Quit();
         }
 
         public static TackEngineVersion GetEngineVersion() {

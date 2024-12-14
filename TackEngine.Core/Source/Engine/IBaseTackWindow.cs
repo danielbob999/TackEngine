@@ -8,5 +8,7 @@ namespace TackEngine.Core.Engine {
         Vector2f WindowSize { get; }
         ulong CurrentUpdateLoopIndex { get; }
         ulong CurrentRenderLoopIndex { get; }
+
+        public void Quit();
     }
 }

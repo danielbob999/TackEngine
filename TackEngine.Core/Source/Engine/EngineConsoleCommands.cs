@@ -325,5 +325,10 @@ namespace TackEngine.Core.Engine
 
             TackConsole.EngineLog(TackConsole.LogType.Error, "Incorrect number of arguments for command: " + args[0]);
         }
+
+        [CommandMethod("quit", "")]
+        public static void QuitCommand(string[] args) {
+            TackEngineInstance.Quit();
+        }
     }
 }

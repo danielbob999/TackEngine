@@ -125,5 +125,9 @@ namespace TackEngine.Android
         public virtual TackEngineInstance.InitalisationSettings GetInitalisationSettings() {
             return new TackEngineInstance.InitalisationSettings();
         }
+
+        public void Quit() {
+
+        }
     }
 }

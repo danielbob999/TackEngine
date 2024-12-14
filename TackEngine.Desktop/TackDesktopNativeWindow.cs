@@ -254,5 +254,9 @@ namespace TackEngine.Desktop {
                 Thread.Yield();
             }
         }
+
+        public unsafe void Quit() {
+            GLFW.SetWindowShouldClose(WindowPtr, true);
+        }
     }
 }
