@@ -91,6 +91,7 @@ namespace TackEngine.Core.Main {
             double startTime = EngineTimer.Instance.TotalRunTime;
 
             GetCommandsFromAssembly(typeof(TackEngineInstance).Assembly.FullName);
+            GetCommandsFromAssembly(Assembly.GetEntryAssembly().FullName);
 
             EngineLog(LogType.Message, "TackConsole started in " + (EngineTimer.Instance.TotalRunTime - startTime).ToString("0.000") + " seconds");
         }
@@ -194,32 +195,28 @@ namespace TackEngine.Core.Main {
         }
 
         private void GetCommandsFromAssembly(string a_assemblyName) {
-            Assembly assembly;
-
             try {
-                assembly = Assembly.Load(a_assemblyName);
+                Assembly assembly = Assembly.Load(a_assemblyName);
+                int i = 0;
+
+                EngineLog(LogType.Message, "Looking for ConsoleMethods in Assembly: " + assembly.FullName);
+                foreach (Type classType in assembly.GetTypes()) {
+                    foreach (MethodInfo methodInfo in classType.GetMethods()) {
+                        foreach (Attribute methodAttribute in methodInfo.GetCustomAttributes()) {
+                            if (methodAttribute.GetType() == typeof(CommandMethod)) {
+                                m_validCommands.Add(new TackCommand(((CommandMethod)methodAttribute).GetCallString(), (EngineDelegates.CommandDelegate)methodInfo.CreateDelegate(typeof(EngineDelegates.CommandDelegate)), ((CommandMethod)methodAttribute).GetArgList().ToList()));
+                                i++;
+                            }
+                        }
+                    }
+                }
+
+                EngineLog(LogType.Message, "Found " + i + " valid CommandMethods in Assembly: " + assembly.FullName);
             } catch (Exception e) {
                 EngineLog(LogType.Error, "Failed to load assembly with name: " + a_assemblyName);
                 EngineLog(LogType.Error, e.Message);
                 return;
             }
-
-            int i = 0;
-
-            EngineLog(LogType.Message, "Looking for ConsoleMethods in Assembly: " + assembly.FullName);
-            foreach (Type classType in assembly.GetTypes()) {
-                foreach (MethodInfo methodInfo in classType.GetMethods()) {
-                    foreach (Attribute methodAttribute in methodInfo.GetCustomAttributes()) {
-                        if (methodAttribute.GetType() == typeof(CommandMethod)) {
-                            //Console.WriteLine("Class: {0}, Method: {1}, Attribute: {3}", classType.Name, methodInfo.Name, methodAttribute.GetType().Name);
-                            m_validCommands.Add(new TackCommand(((CommandMethod)methodAttribute).GetCallString(), (EngineDelegates.CommandDelegate)methodInfo.CreateDelegate(typeof(EngineDelegates.CommandDelegate)), ((CommandMethod)methodAttribute).GetArgList().ToList()));
-                            i++;
-                        }
-                    }
-                }
-            }
-
-            EngineLog(LogType.Message, "Found " + i + " valid CommandMethods in Assembly: " + assembly.FullName);
         }
 
         private void ProcessCommand(object sender, EventArgs e) {

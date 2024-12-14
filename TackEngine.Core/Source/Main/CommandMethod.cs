@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace TackEngine.Core.Main
 {
-    internal class CommandMethod : Attribute
+    public class CommandMethod : Attribute
     {
         private string mCommandCallName;
         private List<string> mArgList;
