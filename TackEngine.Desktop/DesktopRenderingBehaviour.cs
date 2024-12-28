@@ -19,10 +19,10 @@ namespace TackEngine.Desktop {
         public DesktopRenderingBehaviour() {
             m_vertexData = new float[20] {
                     //       Position (XYZ)                                                                                                      Colours (RGB)                                                                                  TexCoords (XY)
-                    /* v1 */  1f, -1f, 0.0f,       1.0f, 1.0f,
-                    /* v2 */  1f,  1f, 0.0f,       1.0f, 0.0f,
-                    /* v3 */ -1f,  1f, 0.0f,       0.0f, 0.0f,
-                    /* v4 */ -1f, -1f, 0.0f,       0.0f, 1.0f
+                    /* v1 */  1f, -1f, 1.0f,       1.0f, 1.0f,
+                    /* v2 */  1f,  1f, 1.0f,       1.0f, 0.0f,
+                    /* v3 */ -1f,  1f, 1.0f,       0.0f, 0.0f,
+                    /* v4 */ -1f, -1f, 1.0f,       0.0f, 1.0f
             };
 
             m_indiceData = new int[] {
@@ -39,8 +39,6 @@ namespace TackEngine.Desktop {
         public override void RenderToScreen(out int drawCallCount) {
             GL.Enable(EnableCap.Blend);
             GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
-            GL.Enable(EnableCap.DepthTest);
-            GL.DepthFunc(DepthFunction.Less);
 
             int lastBoundSpriteId = -1;
 
@@ -152,7 +150,7 @@ namespace TackEngine.Desktop {
                     TackProfiler.Instance.StartTimer("Renderer.Loop.BuildMatrix");
 
                     // Generate model matrix
-                    OpenTK.Mathematics.Matrix4 modelMatrix = GenerateModelMatrix(sortedObjects[i], cameras[camIndex], TackRenderer.Instance.CurrentSplitScreenMode, rendererComp.RenderLayer);
+                    OpenTK.Mathematics.Matrix4 modelMatrix = GenerateModelMatrix(sortedObjects[i], cameras[camIndex], TackRenderer.Instance.CurrentSplitScreenMode);
 
                     TackProfiler.Instance.StopTimer("Renderer.Loop.BuildMatrix");
 
@@ -275,18 +273,16 @@ namespace TackEngine.Desktop {
             GL.DeleteBuffers(1, ref VAO);
 
             drawCallCount = localDrawCallCount;
-
-            GL.Disable(EnableCap.DepthTest);
         }
 
         public override void PostRender() {
         }
 
-        private OpenTK.Mathematics.Matrix4 GenerateModelMatrix(TackObject obj, Camera camera, SplitScreenMode splitScreenMode, int renderLayer) {
+        private OpenTK.Mathematics.Matrix4 GenerateModelMatrix(TackObject obj, Camera camera, SplitScreenMode splitScreenMode) {
             TackObject cameraObject = camera.GetParent();
 
             // Generate translation matrix
-            OpenTK.Mathematics.Matrix4 transMat = OpenTK.Mathematics.Matrix4.CreateTranslation(obj.Position.X - cameraObject.Position.X, obj.Position.Y - cameraObject.Position.Y, (TackMath.Clamp(renderLayer, 0, TackRenderer.MAX_RENDER_LAYER) / (float)TackRenderer.MAX_RENDER_LAYER) * -1);
+            OpenTK.Mathematics.Matrix4 transMat = OpenTK.Mathematics.Matrix4.CreateTranslation(obj.Position.X - cameraObject.Position.X, obj.Position.Y - cameraObject.Position.Y, 0);
 
             // Generate scale matrix
             OpenTK.Mathematics.Matrix4 scaleMat = OpenTK.Mathematics.Matrix4.CreateScale(obj.Size.X / 2.0f,obj.Size.Y / 2.0f, 1);

@@ -152,7 +152,7 @@ namespace TackEngine.Desktop {
                      */
                     m_engineTimer.OnRender();
 
-                    GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+                    GL.Clear(ClearBufferMask.ColorBufferBit);
                     GL.ClearColor(TackRenderer.Instance.BackgroundColour.R / 255f, TackRenderer.Instance.BackgroundColour.G / 255f, TackRenderer.Instance.BackgroundColour.B / 255f, TackRenderer.Instance.BackgroundColour.A / 255f);
 
                     mTackConsole.OnGUIRender(); // TackConsole should be rendered above everything else, including the onGUIRenderFunction

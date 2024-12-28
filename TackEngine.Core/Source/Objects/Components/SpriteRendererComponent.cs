@@ -26,7 +26,6 @@ namespace TackEngine.Core.Objects.Components {
 
         /// <summary>
         /// The render layer of this component. Smaller values will render first (behind components with a higher value)
-        /// Values outside the range of 0 - 10000 are clamped to this range
         /// </summary>
         public int RenderLayer { get; set; }
 

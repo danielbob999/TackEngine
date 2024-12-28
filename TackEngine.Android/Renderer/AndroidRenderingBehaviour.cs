@@ -54,8 +54,6 @@ namespace TackEngine.Android.Renderer
         {
             GL.Enable(EnableCap.Blend);
             GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
-            GL.Enable(EnableCap.DepthTest);
-            GL.DepthFunc(DepthFunction.Less);
 
             int lastBoundSpriteId = -1;
 
@@ -161,7 +159,7 @@ namespace TackEngine.Android.Renderer
                     TackProfiler.Instance.StartTimer("Renderer.Loop.BuildMatrix");
 
                     // Generate model matrix
-                    OpenTK.Matrix4 modelMatrix = GenerateModelMatrix(sortedObjects[i], camera, TackRenderer.Instance.CurrentSplitScreenMode, rendererComp.RenderLayer);
+                    OpenTK.Matrix4 modelMatrix = GenerateModelMatrix(sortedObjects[i], camera, TackRenderer.Instance.CurrentSplitScreenMode);
 
                     TackProfiler.Instance.StopTimer("Renderer.Loop.BuildMatrix");
 
@@ -328,20 +326,18 @@ namespace TackEngine.Android.Renderer
             GL.DeleteBuffers(1, ref VBO);
 
             drawCallCount = localDrawCallCount;
-
-            GL.Disable(EnableCap.DepthTest);
         }
 
         public override void PostRender()
         {
         }
 
-        private OpenTK.Matrix4 GenerateModelMatrix(TackObject obj, Camera camera, SplitScreenMode splitScreenMode, int renderLayer)
+        private OpenTK.Matrix4 GenerateModelMatrix(TackObject obj, Camera camera, SplitScreenMode splitScreenMode)
         {
             TackObject cameraObject = camera.GetParent();
 
             // Generate translation matrix
-            OpenTK.Matrix4 transMat = OpenTK.Matrix4.CreateTranslation(obj.Position.X - cameraObject.Position.X, obj.Position.Y - cameraObject.Position.Y, TackMath.Clamp(renderLayer, 0, TackRenderer.MAX_RENDER_LAYER) / TackRenderer.MAX_RENDER_LAYER * -1f);
+            OpenTK.Matrix4 transMat = OpenTK.Matrix4.CreateTranslation(obj.Position.X - cameraObject.Position.X, obj.Position.Y - cameraObject.Position.Y, 0);
 
             // Generate scale matrix
             OpenTK.Matrix4 scaleMat = MatrixUtility.CreateScaleMatrix(obj.Size.X / 2.0f, obj.Size.Y / 2.0f, 1);
