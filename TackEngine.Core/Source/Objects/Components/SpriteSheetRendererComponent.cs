@@ -177,6 +177,10 @@ namespace TackEngine.Core.Objects.Components {
 
         public override void OnStart() {
             base.OnStart();
+
+            if (SpriteSheet != null && SpriteSheet.SpriteCount > 0) {
+                Sprite = SpriteSheet.Sprites[0];
+            }
         }
 
         public override void OnUpdate() {
