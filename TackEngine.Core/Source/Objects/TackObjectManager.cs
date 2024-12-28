@@ -118,7 +118,7 @@ namespace TackEngine.Core.Objects {
                     TackComponent[] components = tobj.GetAllComponents();
 
                     for (int c = 0; c < components.Length; c++) {
-                        if (components[c] != null) {
+                        if (components[c] != null && components[c].GetParent() != null) {
                             if (TackObject.IsComponentActiveInHierarchy(components[c])) {
                                 if (tobj.InternalState == TackObject.TackObjectState.Initialised) {
                                     components[c].OnStart();
