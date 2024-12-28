@@ -302,6 +302,8 @@ namespace TackEngine.Core.Objects.Components {
                 m_physicsBody.Remove(f);
             }
 
+            m_fixtures.Clear();
+
             TackPhysics.Instance.GetWorld().Remove(m_physicsBody);
 
             m_physicsBody = null;
