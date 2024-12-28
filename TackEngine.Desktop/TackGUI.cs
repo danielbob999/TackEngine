@@ -667,6 +667,10 @@ namespace TackEngine.Core.GUI {
         }
 
         internal override float MeasureStringLength(string text, TackFont font, float finalFontSize) {
+            if (string.IsNullOrEmpty(text) || string.IsNullOrWhiteSpace(text)) {
+                return 0;
+            }
+
             float length = 0;
 
             for (int i = 0; i < text.Length; i++) {
@@ -683,6 +687,10 @@ namespace TackEngine.Core.GUI {
         }
 
         internal override Vector2f MeasureStringSize(string text, TackFont font, float fontSize, RectangleShape rect) {
+            if (string.IsNullOrEmpty(text) || string.IsNullOrWhiteSpace(text)) {
+                return new Vector2f(0, 0);
+            }
+
             float padding = 5f;
             float char_x = padding;
             float largestCharX = 0;

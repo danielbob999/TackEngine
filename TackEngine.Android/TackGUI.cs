@@ -652,6 +652,10 @@ namespace TackEngine.Android {
         /// <param name="fontSize"></param>
         /// <returns></returns>
         internal override float MeasureStringLength(string text, TackFont font, float fontSize) {
+            if (string.IsNullOrEmpty(text) || string.IsNullOrWhiteSpace(text)) {
+                return 0;
+            }
+
             float length = 0;
 
             for (int i = 0; i < text.Length; i++) {
@@ -668,6 +672,10 @@ namespace TackEngine.Android {
         }
 
         internal override Vector2f MeasureStringSize(string text, TackFont font, float fontSize, RectangleShape rect) {
+            if (string.IsNullOrEmpty(text) || string.IsNullOrWhiteSpace(text)) {
+                return new Vector2f(0, 0);
+            }
+
             Vector2f maxSize = new Vector2f();
 
             float currentLength = 0;
