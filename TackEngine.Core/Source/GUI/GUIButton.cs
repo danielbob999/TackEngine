@@ -69,6 +69,7 @@ namespace TackEngine.Core.GUI {
         }
 
         private bool m_pressing;
+        private bool m_hoveringLastFrame = false;
 
         /// <summary>
         /// The regular style of this GUIButton
@@ -91,6 +92,10 @@ namespace TackEngine.Core.GUI {
         public string Text { get; set; }
 
         public event EventHandler OnClickedEvent;
+        public event EventHandler OnIsHoveringEvent;
+        public event EventHandler OnHoveringStartEvent;
+        public event EventHandler OnHoveringEndEvent;
+
 
         /// <summary>
         /// Intialises a new Button
@@ -118,6 +123,27 @@ namespace TackEngine.Core.GUI {
 
         internal override void OnUpdate() {
             base.OnUpdate();
+
+            if (IsMouseHovering) {
+                if (!m_hoveringLastFrame) {
+                    if (OnHoveringStartEvent != null && OnHoveringStartEvent.GetInvocationList().Length > 0) {
+                        OnHoveringStartEvent.Invoke(this, EventArgs.Empty);
+                    }
+                } else {
+                    if (OnIsHoveringEvent != null && OnIsHoveringEvent.GetInvocationList().Length > 0) {
+                        OnIsHoveringEvent.Invoke(this, EventArgs.Empty);
+                    }
+                }
+            } else {
+                if (m_hoveringLastFrame) {
+                    if (OnHoveringEndEvent != null && OnHoveringEndEvent.GetInvocationList().Length > 0) {
+                        OnHoveringEndEvent.Invoke(this, EventArgs.Empty);
+                    }
+                }
+            }
+            
+            m_hoveringLastFrame = IsMouseHovering;
+
         }
 
         internal override void OnRender(GUIMaskData maskData) {
