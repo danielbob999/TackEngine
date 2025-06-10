@@ -12,6 +12,8 @@ namespace TackEngine.Core.SceneManagement {
 
         internal List<Type> SceneTypes { get; private set; }
         internal Scene CurrentScene { get; private set; }
+        internal bool LoadingNextScene { get; private set; }
+        internal Type NextSceneType { get; private set; } = null;
 
         internal SceneManager(List<Type> sceneTypes) {
             Instance = this;
@@ -32,10 +34,15 @@ namespace TackEngine.Core.SceneManagement {
         }
 
         internal void LoadFirstScene() {
-            LoadScene(SceneTypes[0]);
+            InternalLoadScene(SceneTypes[0]);
         }
 
         public void LoadScene(Type type) {
+            LoadingNextScene = true;
+            NextSceneType = type;
+        }
+
+        internal void InternalLoadScene(Type type) {
             if (!SceneTypes.Contains(type)) {
                 TackConsole.EngineLog(TackConsole.LogType.Error, "Cannot load scene of type '{0}' because it is not a valid scene type", type.Name);
                 return;
@@ -67,6 +74,9 @@ namespace TackEngine.Core.SceneManagement {
             watch.Stop();
 
             TackConsole.EngineLog(TackConsole.LogType.Message, "Finished load scene '{0}'. Took {1}", CurrentScene.GetType().Name, (watch.ElapsedMilliseconds > 1000 ? watch.Elapsed.TotalSeconds.ToString("0.000") + "s" : watch.ElapsedMilliseconds.ToString("0") + "ms"));
+
+            NextSceneType = null;
+            LoadingNextScene = false;
         }
     }
 }

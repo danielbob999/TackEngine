@@ -46,49 +46,57 @@ namespace TackEngine.Core.Objects {
 
             TackProfiler.Instance.StartTimer("TackObject.DetectMouse");
 
-            Vector2f mouseWorldCoords = Input.TackInput.Instance.MousePositionInWorld;
+            Vector2f mouseWorldCoords = new Vector2f();
+
+            try {
+                mouseWorldCoords = Input.TackInput.Instance.MousePositionInWorld;
+            } catch (Exception e) { }
 
             if (TackEngineInstance.Instance.Platform == TackEngineInstance.TackEnginePlatform.Android) {
                 mouseWorldCoords = Input.TackInput.Instance.TouchPositionInWorld;
             }
 
-            foreach (KeyValuePair<string, TackObject> pair in m_tackObjects) {
-                if (!TackObject.IsActiveInHierarchy(pair.Value)) {
-                    continue;
-                }
+            TackObject[] objList = m_tackObjects.Values.ToArray();
 
-                Vector2f objPos = pair.Value.Position;
-                Vector2f objScale = pair.Value.Size;
+            foreach (TackObject obj in objList) {
+                try {
+                    if (!TackObject.IsActiveInHierarchy(obj)) {
+                        continue;
+                    }
 
-                if (Physics.AABB.IsPointInAABBWorld(new Physics.AABB(new Vector2f(objPos.X - (objScale.X / 2.0f), objPos.Y - (objScale.Y / 2.0f)), new Vector2f(objPos.X + (objScale.X / 2.0f), objPos.Y + (objScale.Y / 2.0f))), mouseWorldCoords)) {
-                    TackComponent[] components = pair.Value.GetAllComponents();
-                    
-                    for (int c = 0; c < components.Length; c++) {
-                        if (pair.Value.MouseHoverLastFrame) {
-                            components[c].OnMouseOver();
-                        } else {
-                            components[c].OnMouseEnter();
+                    Vector2f objPos = obj.Position;
+                    Vector2f objScale = obj.Size;
+
+                    if (Physics.AABB.IsPointInAABBWorld(new Physics.AABB(new Vector2f(objPos.X - (objScale.X / 2.0f), objPos.Y - (objScale.Y / 2.0f)), new Vector2f(objPos.X + (objScale.X / 2.0f), objPos.Y + (objScale.Y / 2.0f))), mouseWorldCoords)) {
+                        TackComponent[] components = obj.GetAllComponents();
+
+                        for (int c = 0; c < components.Length; c++) {
+                            if (obj.MouseHoverLastFrame) {
+                                components[c].OnMouseOver();
+                            } else {
+                                components[c].OnMouseEnter();
+                            }
+
+                            if (Input.TackInput.MouseButtonDown(Input.MouseButtonKey.Left) || Input.TackInput.TouchDown()) {
+                                if (!TackRenderer.Instance.GUIInstance.MouseClickDetectedThisFrame) {
+                                    components[c].OnMouseClick();
+                                }
+                            }
                         }
 
-                        if (Input.TackInput.MouseButtonDown(Input.MouseButtonKey.Left) || Input.TackInput.TouchDown()) {
-                            if (!TackRenderer.Instance.GUIInstance.MouseClickDetectedThisFrame) {
-                                components[c].OnMouseClick();
+                        obj.MouseHoverLastFrame = true;
+                    } else {
+                        if (obj.MouseHoverLastFrame) {
+                            obj.MouseHoverLastFrame = false;
+
+                            TackComponent[] components = obj.GetAllComponents();
+
+                            for (int c = 0; c < components.Length; c++) {
+                                components[c].OnMouseExit();
                             }
                         }
                     }
-
-                    pair.Value.MouseHoverLastFrame = true;
-                } else {
-                    if (pair.Value.MouseHoverLastFrame) {
-                        pair.Value.MouseHoverLastFrame = false;
-
-                        TackComponent[] components = pair.Value.GetAllComponents();
-
-                        for (int c = 0; c < components.Length; c++) {
-                            components[c].OnMouseExit();
-                        }
-                    }
-                }
+                } catch (Exception e) { }
             }
 
             TackProfiler.Instance.StopTimer("TackObject.DetectMouse");
@@ -98,6 +106,10 @@ namespace TackEngine.Core.Objects {
             TackObject[] objList = m_tackObjects.Values.ToArray();
 
             foreach (TackObject tobj in objList) {
+                if (tobj.InternalState == TackObject.TackObjectState.Looping) {
+                    continue;
+                }
+
                 TackComponent[] components = tobj.GetAllComponents();
 
                 for (int c = 0; c < components.Length; c++) {
@@ -114,25 +126,27 @@ namespace TackEngine.Core.Objects {
             TackObject[] objList = m_tackObjects.Values.ToArray();
 
             foreach (TackObject tobj in objList) {
-                if (tobj != null) {
-                    TackComponent[] components = tobj.GetAllComponents();
+                try {
+                    if (tobj != null) {
+                        TackComponent[] components = tobj.GetAllComponents();
 
-                    for (int c = 0; c < components.Length; c++) {
-                        if (components[c] != null && components[c].GetParent() != null) {
-                            if (TackObject.IsComponentActiveInHierarchy(components[c])) {
-                                if (tobj.InternalState == TackObject.TackObjectState.Initialised) {
-                                    components[c].OnStart();
-                                } else {
-                                    components[c].OnUpdate();
+                        for (int c = 0; c < components.Length; c++) {
+                            if (components[c] != null && components[c].GetParent() != null) {
+                                if (TackObject.IsComponentActiveInHierarchy(components[c])) {
+                                    if (tobj.InternalState == TackObject.TackObjectState.Initialised) {
+                                        components[c].OnStart();
+                                    } else {
+                                        components[c].OnUpdate();
+                                    }
                                 }
                             }
                         }
-                    }
 
-                    if (tobj.InternalState == TackObject.TackObjectState.Initialised) {
-                        tobj.InternalState = TackObject.TackObjectState.Looping;
+                        if (tobj.InternalState == TackObject.TackObjectState.Initialised) {
+                            tobj.InternalState = TackObject.TackObjectState.Looping;
+                        }
                     }
-                }
+                } catch (Exception e) { }
             }
         }
 

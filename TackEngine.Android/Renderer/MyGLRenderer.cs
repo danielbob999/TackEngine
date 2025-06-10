@@ -16,6 +16,7 @@ using TackEngine.Core.Objects;
 using TackEngine.Core.Objects.Components;
 using TackEngine.Core.Physics;
 using TackEngine.Core.Renderer;
+using TackEngine.Core.SceneManagement;
 using static Android.Icu.Text.ListFormatter;
 
 namespace TackEngine.Android.Renderer
@@ -73,6 +74,10 @@ namespace TackEngine.Android.Renderer
             //OpenTK.Graphics.ES30.GL.ClearColor(1f, 0f, 0f, 1f);
             //OpenTK.Graphics.ES30.GL.Clear(OpenTK.Graphics.ES30.ClearBufferMask.ColorBufferBit);
 
+            if (SceneManager.Instance.LoadingNextScene) {
+                SceneManager.Instance.InternalLoadScene(SceneManager.Instance.NextSceneType);
+            }
+
             // ----------
             //  updating
             // ----------
@@ -80,15 +85,17 @@ namespace TackEngine.Android.Renderer
             TackEngineActivity.Instance.m_engineTimer.OnUpdate();
 
             // All OnUpdate here
-            TackEngineActivity.Instance.m_tackProfiler.OnUpdate();
-            TackEngineActivity.Instance.mTackPhysics.Update();      // If issues arise, try running this below RunTackObjectUpdateMethods()
-            TackEngineActivity.Instance.mTackObjectManager.OnUpdate();
-            TackEngineActivity.Instance.mTackLightingSystem.OnUpdate();
-            TackEngineActivity.Instance.m_audioManager.OnUpdate();
+            try {
+                TackEngineActivity.Instance.m_tackProfiler.OnUpdate();
+                TackEngineActivity.Instance.mTackPhysics.Update();      // If issues arise, try running this below RunTackObjectUpdateMethods()
+                TackEngineActivity.Instance.mTackObjectManager.OnUpdate();
+                TackEngineActivity.Instance.mTackLightingSystem.OnUpdate();
+                TackEngineActivity.Instance.m_audioManager.OnUpdate();
 
-            TackEngineActivity.Instance.mTackConsole.OnUpdate();
-            TackEngineActivity.Instance.mTackRender.OnUpdate();
-            TackEngineActivity.Instance.m_tackInput.OnUpdate();
+                TackEngineActivity.Instance.mTackConsole.OnUpdate();
+                TackEngineActivity.Instance.mTackRender.OnUpdate();
+                TackEngineActivity.Instance.m_tackInput.OnUpdate();
+            } catch (System.Exception e) { }
 
             // ----------
             //  Renderering

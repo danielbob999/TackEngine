@@ -128,6 +128,10 @@ namespace TackEngine.Desktop {
                 if (elapsed > updateFrequency) {
                     loopWatch.Restart();
 
+                    if (SceneManager.Instance.LoadingNextScene) {
+                        SceneManager.Instance.InternalLoadScene(SceneManager.Instance.NextSceneType);
+                    }
+
                     // Read input devices, and let the OS update the window.
                     ProcessWindowEvents(false);
 
@@ -136,31 +140,35 @@ namespace TackEngine.Desktop {
                      */
                     m_engineTimer.OnUpdate();
 
-                    // All OnUpdate here
-                    m_tackProfiler.OnUpdate();
-                    mTackPhysics.Update();      // If issues arise, try running this below RunTackObjectUpdateMethods()
-                    mTackObjectManager.OnUpdate();
-                    mTackLightingSystem.OnUpdate();
-                    m_audioManager.OnUpdate();
+                    try {
+                        // All OnUpdate here
+                        m_tackProfiler.OnUpdate();
+                        mTackPhysics.Update();      // If issues arise, try running this below RunTackObjectUpdateMethods()
+                        mTackObjectManager.OnUpdate();
+                        mTackLightingSystem.OnUpdate();
+                        m_audioManager.OnUpdate();
 
-                    mTackConsole.OnUpdate();
-                    mTackRender.OnUpdate();
-                    m_tackInput.OnUpdate();
+                        mTackConsole.OnUpdate();
+                        mTackRender.OnUpdate();
+                        m_tackInput.OnUpdate();
+                    } catch (Exception e) { }
 
                     /*
                      * Render
                      */
-                    m_engineTimer.OnRender();
+                    try {
+                        m_engineTimer.OnRender();
 
-                    GL.Clear(ClearBufferMask.ColorBufferBit);
-                    GL.ClearColor(TackRenderer.Instance.BackgroundColour.R / 255f, TackRenderer.Instance.BackgroundColour.G / 255f, TackRenderer.Instance.BackgroundColour.B / 255f, TackRenderer.Instance.BackgroundColour.A / 255f);
+                        GL.Clear(ClearBufferMask.ColorBufferBit);
+                        GL.ClearColor(TackRenderer.Instance.BackgroundColour.R / 255f, TackRenderer.Instance.BackgroundColour.G / 255f, TackRenderer.Instance.BackgroundColour.B / 255f, TackRenderer.Instance.BackgroundColour.A / 255f);
 
-                    mTackConsole.OnGUIRender(); // TackConsole should be rendered above everything else, including the onGUIRenderFunction
+                        mTackConsole.OnGUIRender(); // TackConsole should be rendered above everything else, including the onGUIRenderFunction
 
-                    // All OnRender here
-                    mTackRender.OnRender(1f);
+                        // All OnRender here
+                        mTackRender.OnRender(1f);
 
-                    Context.SwapBuffers();
+                        Context.SwapBuffers();
+                    } catch (Exception e) { }
 
                     // The time we have left to the next update.
                     double timeToNextUpdate = updateFrequency - loopWatch.Elapsed.TotalSeconds;

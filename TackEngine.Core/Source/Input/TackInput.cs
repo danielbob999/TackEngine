@@ -81,7 +81,11 @@ namespace TackEngine.Core.Input {
                 (MousePosition.X / (TackEngineInstance.Instance.Window.WindowSize.X / 2.0f)) - 1f,
                 ((MousePosition.Y / (TackEngineInstance.Instance.Window.WindowSize.Y / 2.0f)) - 1f) * -1f);
 
-                Vector2f cameraPosition = Camera.MainCamera.GetParent().Position;
+                Vector2f cameraPosition = new Vector2f();
+
+                if (Camera.MainCamera != null) {
+                    cameraPosition = Camera.MainCamera.GetParent().Position;
+                }
 
                 return new Vector2f(
                     (clampedMousePos.X * (TackEngineInstance.Instance.Window.WindowSize.X / (2.0f * Camera.MainCamera.ZoomFactor))) + cameraPosition.X,

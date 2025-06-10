@@ -20,7 +20,10 @@ namespace TackEngine.Core.Objects.Components
             get { return TackRenderer.Instance.Cameras[0]; }
             set { 
                 TackRenderer.Instance.Cameras[0] = value;
-                TackRenderer.Instance.Cameras[0].RenderTarget = GetRenderTargetForSplitScreenMode(0, TackRenderer.Instance.CurrentSplitScreenMode);
+
+                if (value != null) {
+                    TackRenderer.Instance.Cameras[0].RenderTarget = GetRenderTargetForSplitScreenMode(0, TackRenderer.Instance.CurrentSplitScreenMode);
+                }
             }
         }
 
@@ -28,7 +31,10 @@ namespace TackEngine.Core.Objects.Components
             get { return TackRenderer.Instance.Cameras[1]; }
             set { 
                 TackRenderer.Instance.Cameras[1] = value;
-                TackRenderer.Instance.Cameras[1].RenderTarget = GetRenderTargetForSplitScreenMode(1, TackRenderer.Instance.CurrentSplitScreenMode);
+
+                if (value != null) {
+                    TackRenderer.Instance.Cameras[1].RenderTarget = GetRenderTargetForSplitScreenMode(1, TackRenderer.Instance.CurrentSplitScreenMode);
+                }
             }
         }
 
@@ -36,7 +42,10 @@ namespace TackEngine.Core.Objects.Components
             get { return TackRenderer.Instance.Cameras[2]; }
             set { 
                 TackRenderer.Instance.Cameras[2] = value;
-                TackRenderer.Instance.Cameras[2].RenderTarget = GetRenderTargetForSplitScreenMode(2, TackRenderer.Instance.CurrentSplitScreenMode);
+
+                if (value != null) {
+                    TackRenderer.Instance.Cameras[2].RenderTarget = GetRenderTargetForSplitScreenMode(2, TackRenderer.Instance.CurrentSplitScreenMode);
+                }
             }
         }
 
@@ -44,12 +53,15 @@ namespace TackEngine.Core.Objects.Components
             get { return TackRenderer.Instance.Cameras[3]; }
             set {
                 TackRenderer.Instance.Cameras[3] = value;
-                TackRenderer.Instance.Cameras[3].RenderTarget = GetRenderTargetForSplitScreenMode(3, TackRenderer.Instance.CurrentSplitScreenMode);
+                if (value != null) {
+                    TackRenderer.Instance.Cameras[3].RenderTarget = GetRenderTargetForSplitScreenMode(3, TackRenderer.Instance.CurrentSplitScreenMode);
+                }
             }
         }
 
         private float m_zoomFactor;
         private RectangleShape m_renderTarget;
+        private bool m_isMainCamera = false;
 
         internal Physics.AABB BoundingBoxInWorld {
             get {
@@ -80,7 +92,7 @@ namespace TackEngine.Core.Objects.Components
             get { return m_zoomFactor; } 
             set { m_zoomFactor = Math.TackMath.Clamp(value, 0, float.PositiveInfinity); } }
 
-        public Camera() {
+        public Camera(bool isMainCamera = true) {
             m_renderTarget = new RectangleShape(0, 0, TackEngineInstance.Instance.Window.WindowSize.X, TackEngineInstance.Instance.Window.WindowSize.Y);
             m_zoomFactor = 1f;
         }
@@ -88,8 +100,16 @@ namespace TackEngine.Core.Objects.Components
         public override void OnAttachedToTackObject() {
             base.OnAttachedToTackObject();
 
-            if (MainCamera == null) {
+            if (MainCamera == null || m_isMainCamera) {
                 MainCamera = this;
+            }
+        }
+
+        public override void OnDetachedFromTackObject() {
+            base.OnDetachedFromTackObject();
+
+            if (MainCamera == this) {
+                MainCamera = null;
             }
         }
 
